@@ -32,7 +32,7 @@ class Election:
             Resets the votes of all voters to 0.
     """
 
-    def __init__(self, candidates, voters) -> None:
+    def __init__(self, candidates: list[int], voters: list[Voter]) -> None:
         """
         Constructor of the Election class.
         :param candidates: the list of candidates
@@ -43,7 +43,7 @@ class Election:
         self.numberOfVoters = len(voters)
         self.numberOfCandidates = len(candidates)
 
-    def get_voter(self, voter_id) -> Voter:
+    def get_voter(self, voter_id: int) -> Voter:
         """
         Returns the voter with the given id.
         :param voter_id: the id of the voter

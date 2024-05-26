@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+from Election import Election
 from ExperimentHelper import ExperimentHelper
+from VotingRule import VotingRule
+from VotingRuleConstrained import VotingRuleConstrained
 
 
 class Experiment:
@@ -23,7 +25,9 @@ class Experiment:
         experiment() -> int:
             Runs the experiment and returns the distance between the two committees
     """
-    def __init__(self, target_committee_size, election, voting_rule, constrained_voting_rule, number_of_questions):
+
+    def __init__(self, target_committee_size: int, election: Election, voting_rule: VotingRule,
+                 constrained_voting_rule: VotingRuleConstrained, number_of_questions: int):
         """
         Constructor of the Experiment class
         :param target_committee_size: the size of the committee to be found
@@ -38,17 +42,26 @@ class Experiment:
         self.constrainedVotingRule = constrained_voting_rule
         self.numberOfQuestions = number_of_questions
 
-    def experiment(self, ):
-        """
-        Runs the experiment and returns the distance between the two committees
-        :return: the distance between the two committees
-        """
         # Find the committees
-        committee1 = self.votingRule.find_winners(self.election, self.targetCommitteeSize)
-        committee2 = self.constrainedVotingRule.find_winners(self.election, self.targetCommitteeSize,
-                                                             self.numberOfQuestions)
-        # Print the committees
-        print(f"Committee: {committee1}")
-        print(f"Committee restrained: {committee2}")
-        # Return the distance between the two committees
-        return ExperimentHelper.committee_distance(committee1, committee2)
+        self.committee1 = self.votingRule.find_winners(self.election, self.targetCommitteeSize)
+        self.committee2 = self.constrainedVotingRule.find_winners(self.election, self.targetCommitteeSize,
+                                                                  self.numberOfQuestions)
+        # sort the committees
+        self.committee1.sort()
+        self.committee2.sort()
+
+        # Calculate the distance between the committees
+        self.committeeDistance = ExperimentHelper.committee_distance(self.committee1, self.committee2)
+
+    def __str__(self):
+        new_line = '\n'
+        return f"""Experiment with candidates: {self.election.candidates}
+voters:
+{new_line.join([x.__str__() for x in self.election.voters])}
+target committee size: {self.targetCommitteeSize}
+voting rule: {self.votingRule.__str__()}
+constrained voting rule: {self.constrainedVotingRule.__str__()}
+number of questions: {self.numberOfQuestions}
+committee by voting rule: {self.committee1}
+committee by constrained voting rule: {self.committee2}
+committee distance: {self.committeeDistance}"""

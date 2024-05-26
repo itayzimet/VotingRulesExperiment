@@ -46,4 +46,4 @@ class ExperimentHelper:
         :return: the distance between the two committees
         """
         # Return the size of the symmetric difference between the two committees
-        return len(set(committee1).symmetric_difference(set(committee2)))
+        return int(len(set(committee1).symmetric_difference(set(committee2)))/2)
