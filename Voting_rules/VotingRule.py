@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from Election import Election
+
 
 class VotingRule:
     """
@@ -12,7 +14,7 @@ class VotingRule:
             Returns a list of the winners of the election
     """
     @staticmethod
-    def find_winners(election, num_winners) -> list[int]:
+    def find_winners(election: Election, num_winners: int) -> list[int]:
         """
         Returns a list of the winners of the election
         :param election: the election to find the winners of
@@ -20,3 +22,7 @@ class VotingRule:
         :return: a list of the winners of the election
         """
         pass
+
+    @staticmethod
+    def __str__():
+        return "Voting Rule"

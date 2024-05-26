@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-from VotingRule import VotingRule
+from Election import Election
+from Voting_rules.VotingRule import VotingRule
 
 
 class SNTV(VotingRule):
@@ -15,7 +15,7 @@ class SNTV(VotingRule):
             Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
     """
     @staticmethod
-    def find_winners(election, num_winners) -> list[int]:
+    def find_winners(election: Election, num_winners: int) -> list[int]:
         """
         Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
         :param election: the election to find the winners for
@@ -32,3 +32,7 @@ class SNTV(VotingRule):
         candidates.sort(reverse=True, key=lambda x: candidates_scores[x])
         election.reset() # Reset the election
         return candidates[:num_winners] # Return the first num_winners candidates
+
+    @staticmethod
+    def __str__():
+        return "Single Non-Transferable Vote"

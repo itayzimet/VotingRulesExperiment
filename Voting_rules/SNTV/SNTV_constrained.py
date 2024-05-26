@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-from VotingRuleConstrained import VotingRuleConstrained
+from Election import Election
+from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 
 class SNTV_constrained(VotingRuleConstrained):
@@ -15,7 +15,7 @@ class SNTV_constrained(VotingRuleConstrained):
             Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
     """
     @staticmethod
-    def find_winners(election, num_winners, question_limit) -> list[int]:
+    def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
         Returns a list of the winners of the election according to the Single Non-Transferable Vote rule constrained by the number of questions all voters can answer
         :param election: the election to find the winners for
@@ -35,3 +35,7 @@ class SNTV_constrained(VotingRuleConstrained):
         # Sort the candidates by their scores in ascending order
         candidates.sort(reverse=True, key=lambda x: candidates_scores[x])
         return candidates[:num_winners] # Return the first num_winners candidates
+
+    @staticmethod
+    def __str__():
+        return "Single Non-Transferable Vote constrained"
