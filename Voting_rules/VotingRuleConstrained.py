@@ -15,7 +15,7 @@ class VotingRuleConstrained(VotingRule):
             Returns a list of the winners of the election
     """
     @staticmethod
-    def find_winners(election: Election,num_winners:int, question_limit: int) -> list[int]:
+    def find_winners(election: Election, num_winners:int, question_limit: int) -> list[int]:
         """
         Returns a list of the winners of the election
         :param num_winners: the number of winners to find
