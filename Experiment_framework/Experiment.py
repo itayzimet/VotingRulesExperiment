@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from random import random
+import random
 
-from Election import Election
-from Experiment import ExperimentHelper
-from Voter import Voter
+from Experiment_framework.Election import Election
+from Experiment_framework.Voter import Voter
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
@@ -69,6 +68,7 @@ committee by voting rule: {self.committee1}
 committee by constrained voting rule: {self.committee2}
 committee distance: {self.committeeDistance}"""
 
+
 class ExperimentHelper:
     """
     Helper class for the experiment
@@ -80,6 +80,7 @@ class ExperimentHelper:
         committee_distance(committee1, committee2) -> int:
             Returns the distance between two committees
     """
+
     @staticmethod
     def fabricate_election(number_of_candidates: int, number_of_voters: int) -> Election:
         """
@@ -95,7 +96,8 @@ class ExperimentHelper:
         # Create the voters
         voters = list()
         for i in range(number_of_voters):
-            voter_ordinal_preferences = random.sample(candidates, number_of_candidates)  # Randomly shuffle the candidates
+            voter_ordinal_preferences = random.sample(candidates,
+                                                      number_of_candidates)  # Randomly shuffle the candidates
             voter = Voter(voter_ordinal_preferences)  # Create the voter
             voters.append(voter)  # Add the voter to the list of voters
         return Election(candidates, voters)  # Return the fabricated election
@@ -109,5 +111,4 @@ class ExperimentHelper:
         :return: the distance between the two committees
         """
         # Return the size of the symmetric difference between the two committees
-        return int(len(set(committee1).symmetric_difference(set(committee2)))/2)
-
+        return int(len(set(committee1).symmetric_difference(set(committee2))) / 2)

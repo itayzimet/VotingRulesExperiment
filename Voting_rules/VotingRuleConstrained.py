@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from Experiment_framework.Election import Election
-from VotingRule import VotingRule
+from Voting_rules.VotingRule import VotingRule
 
 
 class VotingRuleConstrained(VotingRule):

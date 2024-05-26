@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from Voter import Voter
+from Experiment_framework.Voter import Voter
 
 
 class Election:
