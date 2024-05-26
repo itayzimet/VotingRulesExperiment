@@ -8,8 +8,6 @@ from Voting_rules.SNTV.SNTV_constrained import SNTV_constrained
 from Voting_rules.KBorda.KBorda import KBorda
 from Voting_rules.KBorda.KbordaConstrained import KbordaConstrained
 import matplotlib.pyplot as plt
-import pandas as pd
-
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
