@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from Election import Election
+from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
 
 

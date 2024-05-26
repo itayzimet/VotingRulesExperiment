@@ -1,5 +1,5 @@
-from Experiment import Experiment
-from Experiment import ExperimentHelper
+from Experiment_framework.Experiment import Experiment
+from Experiment_framework.Experiment import ExperimentHelper
 from Voting_rules.SNTV.SNTV import SNTV
 from Voting_rules.SNTV.SNTV_constrained import SNTV_constrained
 from Voting_rules.KBorda.KBorda import KBorda
