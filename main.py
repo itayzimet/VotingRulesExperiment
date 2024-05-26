@@ -1,7 +1,6 @@
 from multiprocessing import Pool
-
 from tqdm import tqdm
-
+from Experiment_framework.Election import Election
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment import ExperimentHelper
 from Voting_rules.SNTV.SNTV import SNTV
@@ -11,8 +10,11 @@ from Voting_rules.KBorda.KbordaConstrained import KbordaConstrained
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from Voting_rules.VotingRule import VotingRule
+from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
-def run_experiment(election, rule1, rule2, i):
+
+def run_experiment(election : Election, rule1: VotingRule, rule2: VotingRuleConstrained, i: int):
     """
     Run the experiment and return the committee distance.
 
@@ -31,7 +33,7 @@ def run_experiment_wrapper(args):
     return run_experiment(*args)
 
 
-def run_multithreaded_experiment(election, rule1, rule2, start, end):
+def run_multithreaded_experiment(election: Election, rule1: VotingRule, rule2: VotingRuleConstrained, start: int, end: int):
     """
     Run the experiment in multiple threads and return the differences.
 

@@ -28,17 +28,6 @@ class Voter:
         self.OrdinalPreferences = preferences
         self.nextPreference = 0
 
-    def get_next_preference(self, ) -> int | None:
-        """
-        Get the next preference of the voter.
-        :return: the next preference of the voter.
-        """
-        if self.nextPreference < len(self.OrdinalPreferences):
-            self.nextPreference += 1
-            return self.OrdinalPreferences[self.nextPreference - 1]
-        else:
-            return None
-
     def get_preferences(self, ) -> list[int]:
         """
         Get the ordinal preferences of the voter.
@@ -54,13 +43,6 @@ class Voter:
         """
         return self.OrdinalPreferences[index]
 
-    def get_candidate_index(self, candidate: int) -> int:
-        """
-        Get the index of the given candidate in the voter's ordinal preferences.
-        :param candidate: the candidate to find the index of.
-        :return: the index of the candidate in the voter's ordinal preferences.
-        """
-        return self.OrdinalPreferences.index(candidate)
 
     def has_next_preference(self, ) -> bool:
         """
