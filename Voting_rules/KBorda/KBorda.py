@@ -27,10 +27,9 @@ class KBorda(VotingRule):
         num_candidates = len(candidates)
         scores = [0] * len(candidates)
         for voter in voters:
-            for candidate in voter.get_preferences():
-                scores[candidate] += num_candidates - voter.get_candidate_index(candidate)
+            for i, candidate in enumerate(voter.get_preferences()):
+                scores[candidate] += num_candidates - i
         candidates.sort(reverse=True, key=lambda x: scores[x])
-        election.reset()
         return candidates[:num_winners]
 
     @staticmethod

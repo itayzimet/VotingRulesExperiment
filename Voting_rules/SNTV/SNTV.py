@@ -27,7 +27,7 @@ class SNTV(VotingRule):
         candidates_scores = [0] * len(candidates) # Initialize the scores of the candidates
         # Count the votes for each candidate
         for voter in range(no_of_voters):
-            candidates_scores[election.voters[voter].get_next_preference()] += 1
+            candidates_scores[election.voters[voter].get_preference(0)] += 1
         # Sort the candidates by their scores in ascending order
         candidates.sort(reverse=True, key=lambda x: candidates_scores[x])
         election.reset() # Reset the election

@@ -30,7 +30,7 @@ class SNTV_constrained(VotingRuleConstrained):
         for voter in range(no_of_voters):
             if question_limit == 0:
                 break
-            candidates_scores[election.voters[voter].get_next_preference()] += 1
+            candidates_scores[election.voters[voter].get_preference(0)] += 1
             question_limit -= 1
         # Sort the candidates by their scores in ascending order
         candidates.sort(reverse=True, key=lambda x: candidates_scores[x])

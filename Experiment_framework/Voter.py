@@ -61,6 +61,14 @@ class Voter:
         :return: the index of the candidate in the voter's ordinal preferences.
         """
         return self.OrdinalPreferences.index(candidate)
+
+    def has_next_preference(self, ) -> bool:
+        """
+        Check if the voter has another preference to consider.
+        :return: True if the voter has another preference, False otherwise.
+        """
+        return self.OrdinalPreferences[self.nextPreference] is not None
+
     def reset(self, ) -> None:
         """
         Reset the voter to the first preference.
