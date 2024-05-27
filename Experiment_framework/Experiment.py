@@ -52,17 +52,13 @@ class Experiment:
         # Find the committees
         self.true_committee = self.votingRule.find_winners(self.election, self.targetCommitteeSize)
         self.committees = []
-        with Pool() as pool:
-            self.committees = list(tqdm(pool.imap(self.find_winners_wrapper,
-                                                  [(self.election, self.targetCommitteeSize, i) for i in
-                                                   self.numberOfQuestions]), total=len(self.numberOfQuestions),
-                                        desc=f"Finding committees for {self.votingRule.__str__()}"))
+        self.committeeDistance = []
+        # Find the committees with the constrained voting rule
+        for i in self.numberOfQuestions:
+            self.committees.append(self.constrainedVotingRule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
-        with Pool() as pool:
-            self.committeeDistance = list(tqdm(pool.imap(self.committee_distance_wrapper,
-                                                        [(self.true_committee, committee) for committee in
-                                                         self.committees]), total=len(self.committees),
-                                               desc="Calculating committee distances"))
+        for committee in self.committees:
+            self.committeeDistance.append(ExperimentHelper.committee_distance(self.true_committee, committee))
 
     def export_to_excel(self) -> 'Experiment':
         """
@@ -142,3 +138,21 @@ class ExperimentHelper:
         """
         # Return the size of the symmetric difference between the two committees
         return int(len(set(committee1).symmetric_difference(set(committee2))) / 2)
+
+    @staticmethod
+    def export_to_excel(number_of_questions: list[int], distances: list[list[int]]) -> None:
+        """
+        Exports the data from the experiments to an Excel file
+        :param number_of_questions: the number of questions all voters can answer
+        :param distances: the distances between the true committee and the committees found
+        :return: None
+        """
+        # Create a Pandas DataFrame with the data from the experiments on the left the number of questions(only once) and on the right the committee distances found in each experiment for that number of questions
+        data = {'Number of questions': number_of_questions}
+        for i in range(len(distances)):
+            data[f'Committee distance {i}'] = distances[i]
+        df = pd.DataFrame(data)
+        # Write the DataFrame to an Excel file
+        df.to_excel(f"Experiments.xlsx")
+
+
