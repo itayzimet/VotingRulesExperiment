@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from Experiment_framework.Election import Election
-from Voting_rules.VotingRule import VotingRule
 
 
-class VotingRuleConstrained(VotingRule):
+class VotingRuleConstrained():
     """
     Abstract class for voting rules with constraints
 
