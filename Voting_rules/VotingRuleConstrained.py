@@ -9,8 +9,6 @@ class VotingRuleConstrained(VotingRule):
     """
     Abstract class for voting rules with constraints
 
-    Attributes:
-
     Methods:
         find_winners(election, question_limit) -> list[int]:
             Returns a list of the winners of the election

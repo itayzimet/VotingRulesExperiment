@@ -7,8 +7,6 @@ class VotingRule:
     """
     Abstract class for voting rules
 
-    Attributes:
-
     Methods:
         find_winners(election, num_winners) -> list[int]:
             Returns a list of the winners of the election

@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import numpy as np
+
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
@@ -7,8 +9,6 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 class KbordaConstrained(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions all voters can answer
-
-    Attributes:
 
     Methods:
         find_winners(election, num_winners) -> list[int]:
@@ -24,20 +24,24 @@ class KbordaConstrained(VotingRuleConstrained):
         :param question_limit: the number of questions all voters can answer
         :return: the list of winners according to the K-Borda rule constrained by the number of questions all voters can answer
         """
-        voters = election.get_voters()
-        candidates = election.get_candidates().copy()
+        voters = election.voters
+        candidates = election.candidates
         num_candidates = len(candidates)
         scores = [0] * len(candidates)
         questions_per_voter = int(question_limit / len(voters))
         for voter in voters:
             questions_answered = 0
             for i in range(num_candidates):
-                if questions_answered >= questions_per_voter or not voter.has_next_preference():
+                if questions_answered >= questions_per_voter or i >= num_candidates:
                     break
                 scores[voter.get_preference(i)] += num_candidates - i
                 questions_answered += 1
-        candidates.sort(reverse=True, key=lambda x: scores[x])
-        return candidates[:num_winners]
+        # partially sort the candidates by their scores in descending order using argpartition() to get the
+        # num_winners first candidates
+        candidates = np.array(candidates)
+        scores = np.array(scores)
+        candidates = candidates[np.argpartition(-scores, num_winners)[:num_winners]]
+        return candidates.tolist()
 
     @staticmethod
     def __str__():
