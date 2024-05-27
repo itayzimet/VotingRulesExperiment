@@ -8,8 +8,6 @@ class Voter:
     Attributes:
         OrdinalPreferences : list[int]
             List of integers representing the ordinal preferences of the voter.
-        nextPreference : int
-            The index of the next preference to be considered.
 
     Methods:
         get_next_preference() -> int | None:
@@ -26,7 +24,6 @@ class Voter:
         :param preferences: list of integers representing the ordinal preferences of the voter.
         """
         self.OrdinalPreferences = preferences
-        self.nextPreference = 0
 
     def get_preferences(self, ) -> list[int]:
         """
@@ -42,20 +39,6 @@ class Voter:
         :return: the ordinal preference of the voter at the given index.
         """
         return self.OrdinalPreferences[index]
-
-
-    def has_next_preference(self, ) -> bool:
-        """
-        Check if the voter has another preference to consider.
-        :return: True if the voter has another preference, False otherwise.
-        """
-        return self.OrdinalPreferences[self.nextPreference] is not None
-
-    def reset(self, ) -> None:
-        """
-        Reset the voter to the first preference.
-        """
-        self.nextPreference = 0
 
     def __str__(self):
         return f"Voter with ordinal preferences: {self.OrdinalPreferences}"
