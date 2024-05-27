@@ -52,14 +52,22 @@ class Experiment:
         self.true_committee = self.votingRule.find_winners(self.election, self.targetCommitteeSize)
         self.committees = []
         with Pool() as pool:
-            self.committees = list(tqdm(pool.imap(self.find_winners_wrapper, [(self.election, self.targetCommitteeSize, i) for i in self.numberOfQuestions]), total=len(self.numberOfQuestions), desc=f"Finding committees for {self.votingRule.__str__()}"))
+            self.committees = list(tqdm(pool.imap(self.find_winners_wrapper,
+                                                  [(self.election, self.targetCommitteeSize, i) for i in
+                                                   self.numberOfQuestions]), total=len(self.numberOfQuestions),
+                                        desc=f"Finding committees for {self.votingRule.__str__()}"))
         # find the distance between the true committee and the committees
         with Pool() as pool:
-            self.committeeDistance = list(tqdm(pool.map(self.committee_distance_wrapper, [(self.true_committee, committee) for committee in self.committees]), total=len(self.committees), desc="Calculating committee distances"))
+            self.committeeDistance = list(tqdm(pool.imap(self.committee_distance_wrapper,
+                                                        [(self.true_committee, committee) for committee in
+                                                         self.committees]), total=len(self.committees),
+                                               desc="Calculating committee distances"))
+
     def find_winners_wrapper(self, args):
         return self.constrainedVotingRule.find_winners(*args)
 
-    def committee_distance_wrapper(self, args):
+    @staticmethod
+    def committee_distance_wrapper(args):
         return ExperimentHelper.committee_distance(*args)
 
     def __str__(self):
@@ -79,7 +87,6 @@ class Experiment:
 class ExperimentHelper:
     """
     Helper class for the experiment
-    Attributes:
 
     Methods:
         fabricate_election(number_of_candidates, number_of_voters) -> Election:
@@ -118,4 +125,4 @@ class ExperimentHelper:
         :return: the distance between the two committees
         """
         # Return the size of the symmetric difference between the two committees
-        return int(len(set(committee1).symmetric_difference(set(committee2)))/2)
+        return int(len(set(committee1).symmetric_difference(set(committee2))) / 2)

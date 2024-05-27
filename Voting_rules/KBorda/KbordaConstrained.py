@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import numpy as np
+from heapq import nlargest
+
 
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
@@ -36,12 +37,8 @@ class KbordaConstrained(VotingRuleConstrained):
                     break
                 scores[voter.get_preference(i)] += num_candidates - i
                 questions_answered += 1
-        # partially sort the candidates by their scores in descending order using argpartition() to get the
-        # num_winners first candidates
-        candidates = np.array(candidates)
-        scores = np.array(scores)
-        candidates = candidates[np.argpartition(-scores, num_winners)[:num_winners]]
-        return candidates.tolist()
+        # Return the num_winners candidates with the highest scores
+        return nlargest(num_winners, candidates, key=scores.__getitem__)
 
     @staticmethod
     def __str__():

@@ -10,12 +10,14 @@ class Voter:
             List of integers representing the ordinal preferences of the voter.
 
     Methods:
-        get_next_preference() -> int | None:
-            Returns the next preference of the voter.
         get_preferences() -> list[int]:
             Returns the ordinal preferences of the voter.
-        reset() -> None:
-            Resets the voter to the first preference.
+        get_preference(index: int) -> int:
+            Returns the candidate at the given index in the voter's ordinal preferences.
+        __init__(preferences: list[int]) -> None:
+            Initializes the voter with ordinal preferences.
+        __str__() -> str:
+            Returns a string representation of the voter.
     """
 
     def __init__(self, preferences: list[int]) -> None:
