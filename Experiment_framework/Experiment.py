@@ -3,6 +3,7 @@
 import random
 from multiprocessing import Pool
 
+import pandas as pd
 from tqdm import tqdm
 
 from Experiment_framework.Election import Election
@@ -62,6 +63,21 @@ class Experiment:
                                                         [(self.true_committee, committee) for committee in
                                                          self.committees]), total=len(self.committees),
                                                desc="Calculating committee distances"))
+
+    def export_to_excel(self) -> 'Experiment':
+        """
+        Exports the data to an Excel file
+        :return: the Experiment object
+        """
+        # Create a Pandas DataFrame with the data
+        data = {'Number of questions': self.numberOfQuestions,
+                'Committee distance': self.committeeDistance,
+                'Committees': self.committees,
+                'True committee': [self.true_committee] * len(self.numberOfQuestions)}
+        df = pd.DataFrame(data)
+        # Write the DataFrame to an Excel file
+        df.to_excel(f"{self.votingRule.__str__()}_{self.constrainedVotingRule.__str__()}.xlsx")
+        return self
 
     def find_winners_wrapper(self, args):
         return self.constrainedVotingRule.find_winners(*args)
