@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from heapq import nlargest
-
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
+import bottleneck as bn
 
 
 class SNTV(VotingRule):
@@ -29,8 +28,8 @@ class SNTV(VotingRule):
         # Count the votes for each candidate
         for voter in voters:
             scores[voter.get_preference(0)] += 1
-        ## Return the num_winners candidates with the highest scores
-        return nlargest(num_winners, candidates, key=scores.__getitem__)
+        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+        return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
     def __str__():

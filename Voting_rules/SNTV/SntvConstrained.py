@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from heapq import nlargest
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
+import bottleneck as bn
 
 
 class SntvConstrained(VotingRuleConstrained):
@@ -30,10 +30,10 @@ class SntvConstrained(VotingRuleConstrained):
         for voter in range(no_of_voters):
             if question_limit == 0:
                 break
-            scores[election.voters[voter].get_preference(0)] += 1
+            scores[election.voters[voter].OrdinalPreferences[0]] += 1
             question_limit -= 1
-        # Return the num_winners candidates with the highest scores
-        return nlargest(num_winners, candidates, key=scores.__getitem__)
+        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+        return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
     def __str__():

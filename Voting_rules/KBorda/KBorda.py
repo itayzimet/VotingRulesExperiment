@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
-from heapq import nlargest
-
+import bottleneck as bn
 
 class KBorda(VotingRule):
     """
@@ -33,8 +32,8 @@ class KBorda(VotingRule):
             for i, candidate in enumerate(voter.get_preferences()):
                 scores[candidate] += num_candidates - i
 
-        # Return the num_winners candidates with the highest scores
-        return nlargest(num_winners, candidates, key=scores.__getitem__)
+        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+        return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
     def __str__():

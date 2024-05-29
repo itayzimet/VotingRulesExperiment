@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from heapq import nlargest
-
-
+import numpy as np
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
+import bottleneck as bn
 
 
 class KbordaConstrained(VotingRuleConstrained):
@@ -28,17 +27,14 @@ class KbordaConstrained(VotingRuleConstrained):
         voters = election.voters
         candidates = election.candidates
         num_candidates = len(candidates)
-        scores = [0] * len(candidates)
+        scores = np.zeros(num_candidates, dtype=int)
+        rank_scores = np.arange(num_candidates, 0, -1)  # Pre-calculate the scores for each rank
         questions_per_voter = int(question_limit / len(voters))
         for voter in voters:
-            questions_answered = 0
-            for i in range(num_candidates):
-                if questions_answered >= questions_per_voter or i >= num_candidates:
-                    break
-                scores[voter.get_preference(i)] += num_candidates - i
-                questions_answered += 1
-        # Return the num_winners candidates with the highest scores
-        return nlargest(num_winners, candidates, key=scores.__getitem__)
+            voter_preferences = voter.get_preferences()[:questions_per_voter]
+            scores[voter_preferences] += rank_scores[:questions_per_voter]
+        # Return the num_winners candidates with the highest scores using bottleneck argsort
+        return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
     def __str__():

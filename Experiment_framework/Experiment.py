@@ -1,11 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import random
-from multiprocessing import Pool
-
+import numpy as np
 import pandas as pd
-from tqdm import tqdm
-
 from Experiment_framework.Election import Election
 from Experiment_framework.Voter import Voter
 from Voting_rules.VotingRule import VotingRule
@@ -122,8 +118,8 @@ class ExperimentHelper:
         # Create the voters
         voters = list()
         for i in range(number_of_voters):
-            voter_ordinal_preferences = random.sample(candidates,
-                                                      number_of_candidates)  # Randomly shuffle the candidates
+            # Shuffle the candidates using numpy.random.permutation
+            voter_ordinal_preferences = np.random.permutation(candidates).tolist()
             voter = Voter(voter_ordinal_preferences)  # Create the voter
             voters.append(voter)  # Add the voter to the list of voters
         return Election(candidates, voters)  # Return the fabricated election
@@ -156,3 +152,25 @@ class ExperimentHelper:
         df.to_excel(f"Experiments.xlsx")
 
 
+def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
+                   constrained_voting_rule, number_of_questions: list[int]) -> list[int]:
+    """
+    Run the experiment
+    :param target_committee_size: the size of the committee to be found
+    :param num_candidates: the number of candidates in the election
+    :param num_voters: the number of voters in the election
+    :param voting_rule: the voting rule to find the committee with
+    :param constrained_voting_rule: the constrained voting rule to find the committee with
+    :param number_of_questions: the number of questions all voters can answer for the constrained voting rule
+    :return: list of distances between all the committees
+    """
+    # Fabricate an election with num_candidates candidates and num_voters voters
+    election = ExperimentHelper.fabricate_election(num_candidates, num_voters)
+    # Run the experiment
+    experiment = Experiment(target_committee_size, election, voting_rule, constrained_voting_rule, number_of_questions)
+    # Return the distance between the two committees
+    return experiment.committeeDistance
+
+
+def run_experiment_wrapper(args):
+    return run_experiment(*args)
