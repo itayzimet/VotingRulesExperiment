@@ -28,7 +28,7 @@ class SNTV(VotingRule):
         # Count the votes for each candidate
         for voter in voters:
             scores[voter.get_preference(0)] += 1
-        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+        # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod

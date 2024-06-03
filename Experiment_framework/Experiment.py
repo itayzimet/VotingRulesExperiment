@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import numpy as np
-import pandas as pd
-from Experiment_framework.Election import Election
-from Experiment_framework.Voter import Voter
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
+from Experiment_framework.Experiment_helper import *
 
 
 class Experiment:
@@ -54,7 +51,7 @@ class Experiment:
             self.committees.append(self.constrainedVotingRule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
         for committee in self.committees:
-            self.committeeDistance.append(ExperimentHelper.committee_distance(self.true_committee, committee))
+            self.committeeDistance.append(committee_distance(self.true_committee, committee))
 
     def export_to_excel(self) -> 'Experiment':
         """
@@ -76,7 +73,7 @@ class Experiment:
 
     @staticmethod
     def committee_distance_wrapper(args):
-        return ExperimentHelper.committee_distance(*args)
+        return committee_distance(*args)
 
     def __str__(self):
         new_line = '\n'
@@ -90,87 +87,3 @@ class Experiment:
     committee by voting rule: {self.true_committee}
     committees by constrained voting rule: {self.committees}
     committee distance: {self.committeeDistance}"""
-
-
-class ExperimentHelper:
-    """
-    Helper class for the experiment
-
-    Methods:
-        fabricate_election(number_of_candidates, number_of_voters) -> Election:
-            Fabricates an election with the given number of candidates and voters
-        committee_distance(committee1, committee2) -> int:
-            Returns the distance between two committees
-    """
-
-    @staticmethod
-    def fabricate_election(number_of_candidates: int, number_of_voters: int) -> Election:
-        """
-        Fabricates an election with the given number of candidates and voters randomly
-        :param number_of_candidates: the number of candidates
-        :param number_of_voters: the number of voters
-        :return: the fabricated election
-        """
-        # Create the candidates
-        candidates = []
-        for i in range(number_of_candidates):
-            candidates.append(i)
-        # Create the voters
-        voters = list()
-        for i in range(number_of_voters):
-            # Shuffle the candidates using numpy.random.permutation
-            voter_ordinal_preferences = np.random.permutation(candidates).tolist()
-            voter = Voter(voter_ordinal_preferences)  # Create the voter
-            voters.append(voter)  # Add the voter to the list of voters
-        return Election(candidates, voters)  # Return the fabricated election
-
-    @staticmethod
-    def committee_distance(committee1: list[int], committee2: list[int]) -> int:
-        """
-        Returns the distance between two committees
-        :param committee1: the first committee
-        :param committee2: the second committee
-        :return: the distance between the two committees
-        """
-        # Return the size of the symmetric difference between the two committees
-        return int(len(set(committee1).symmetric_difference(set(committee2))) / 2)
-
-    @staticmethod
-    def export_to_excel(number_of_questions: list[int], distances: list[list[int]]) -> None:
-        """
-        Exports the data from the experiments to an Excel file
-        :param number_of_questions: the number of questions all voters can answer
-        :param distances: the distances between the true committee and the committees found
-        :return: None
-        """
-        # Create a Pandas DataFrame with the data from the experiments on the left the number of questions(only once) and on the right the committee distances found in each experiment for that number of questions
-        data = {'Number of questions': number_of_questions}
-        for i in range(len(distances)):
-            data[f'Committee distance {i}'] = distances[i]
-        df = pd.DataFrame(data)
-        # Write the DataFrame to an Excel file
-        df.to_excel(f"Experiments.xlsx")
-
-
-def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
-                   constrained_voting_rule, number_of_questions: list[int]) -> list[int]:
-    """
-    Run the experiment
-    :param target_committee_size: the size of the committee to be found
-    :param num_candidates: the number of candidates in the election
-    :param num_voters: the number of voters in the election
-    :param voting_rule: the voting rule to find the committee with
-    :param constrained_voting_rule: the constrained voting rule to find the committee with
-    :param number_of_questions: the number of questions all voters can answer for the constrained voting rule
-    :return: list of distances between all the committees
-    """
-    # Fabricate an election with num_candidates candidates and num_voters voters
-    election = ExperimentHelper.fabricate_election(num_candidates, num_voters)
-    # Run the experiment
-    experiment = Experiment(target_committee_size, election, voting_rule, constrained_voting_rule, number_of_questions)
-    # Return the distance between the two committees
-    return experiment.committeeDistance
-
-
-def run_experiment_wrapper(args):
-    return run_experiment(*args)

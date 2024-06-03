@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import numpy as np
+
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
 import bottleneck as bn
@@ -26,13 +28,14 @@ class KBorda(VotingRule):
         candidates = election.candidates
         num_candidates = election.numberOfCandidates
         # Initialize the scores of the candidates
-        scores = [0] * len(candidates)
-        # Sum the scores of the candidates based on the preferences of the voters
+        scores = np.zeros(num_candidates, dtype=int)
+        # Pre-calculate the scores for each rank
+        rank_scores = np.arange(num_candidates, 0, -1)
+        # Count the votes for each candidate
         for voter in voters:
-            for i, candidate in enumerate(voter.get_preferences()):
-                scores[candidate] += num_candidates - i
-
-        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+            voter_preferences = voter.get_preferences()
+            scores[voter_preferences] += rank_scores
+        # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod

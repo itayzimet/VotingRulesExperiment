@@ -27,12 +27,10 @@ class SntvConstrained(VotingRuleConstrained):
         candidates = election.candidates  # Copy the list of candidates
         scores = [0] * len(candidates)  # Initialize the scores of the candidates
         # Count the votes for each candidate until the question limit is reached
-        for voter in range(no_of_voters):
-            if question_limit == 0:
-                break
+        for voter in range(min(no_of_voters, question_limit)):
             scores[election.voters[voter].OrdinalPreferences[0]] += 1
             question_limit -= 1
-        ## Return the num_winners candidates with the highest scores using bottleneck argsort
+        # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
