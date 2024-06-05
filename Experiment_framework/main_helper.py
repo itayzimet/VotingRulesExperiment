@@ -63,7 +63,7 @@ def run_test(params: dict[str, any]) -> list[int]:
                                                   target_committee_size, num_candidates, num_voters, voting_rule,
                                                   constrained_voting_rule,
                                                   number_of_questions)
-                                                  * number_of_runs]),
+                                                  for _ in range(number_of_runs)]),
                                     total=number_of_runs, desc='Running experiments'))
     else:
         differences = []

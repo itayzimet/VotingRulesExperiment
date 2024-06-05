@@ -20,8 +20,8 @@ def main():
                             'number_of_runs': 20, 'multithreaded': True}
     kborda_test_parameters = {'target_committee_size': 5, 'num_candidates': 10, 'num_voters': 1,
                               'voting_rule': Kborda, 'constrained_voting_rule': KbordaSplit,
-                              'number_of_questions': [100],
-                              'number_of_runs': 1, 'multithreaded': False}
+                              'number_of_questions': [1000],
+                              'number_of_runs': 3, 'multithreaded': False}
     #%%
     """SNTV testing"""
     # Run the test for SNTV
