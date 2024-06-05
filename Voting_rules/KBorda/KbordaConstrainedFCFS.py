@@ -6,7 +6,7 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 import bottleneck as bn
 
 
-class KbordaConstrained(VotingRuleConstrained):
+class KbordaConstrainedFCFS(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions all voters can answer
 
@@ -29,8 +29,9 @@ class KbordaConstrained(VotingRuleConstrained):
         scores = np.zeros(num_candidates, dtype=int)
         rank_scores = np.arange(0, -num_candidates, -1)  # Pre-calculate the scores for each rank
         # rank_scores = [0, -1, -2, -3, ..., -num_candidates]
-        questions_per_voter = int(question_limit / len(voters))
+        max_questions_per_voter = min(question_limit // len(voters), num_candidates)
         for voter in voters:
+            questions_per_voter = min(max_questions_per_voter, question_limit)
             voter_preferences = voter.get_preferences()[:questions_per_voter]
             scores[voter_preferences] += rank_scores[:questions_per_voter]
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
@@ -38,4 +39,4 @@ class KbordaConstrained(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda constrained"
+        return "K-Borda Next Candidate First Come First Serve constrained"

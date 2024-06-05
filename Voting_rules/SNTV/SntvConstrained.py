@@ -14,8 +14,7 @@ class SntvConstrained(VotingRuleConstrained):
             Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
     """
 
-    @staticmethod
-    def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+    def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
         Returns a list of the winners of the election according to the Single Non-Transferable Vote rule constrained by the number of questions all voters can answer
         :param election: the election to find the winners for

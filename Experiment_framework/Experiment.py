@@ -48,7 +48,8 @@ class Experiment:
         self.committeeDistance = []
         # Find the committees with the constrained voting rule
         for i in self.numberOfQuestions:
-            self.committees.append(self.constrainedVotingRule.find_winners(self.election, self.targetCommitteeSize, i))
+            rule = constrained_voting_rule()
+            self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
         for committee in self.committees:
             self.committeeDistance.append(committee_distance(self.true_committee, committee))

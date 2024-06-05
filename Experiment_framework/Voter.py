@@ -52,12 +52,13 @@ class Voter:
         preferred_candidates = []
         not_preferred_candidates = []
         for candidate in candidates:
-            if sum([candidate < candidate2 for candidate2 in self.OrdinalPreferences]) >= len(candidates) // 2:
+            # A candidate is preferred if half or more of the candidates in the supplied list are worse than the candidate
+            if sum([self.pairwise_comparison(candidate, other_candidate) == 1 for other_candidate in
+                    candidates]) > len(candidates) / 2:
                 preferred_candidates.append(candidate)
             else:
                 not_preferred_candidates.append(candidate)
         return preferred_candidates, not_preferred_candidates
-
 
     def pairwise_comparison(self, candidate1: int, candidate2: int) -> int:
         """
@@ -66,10 +67,13 @@ class Voter:
         :param candidate2: the second candidate to compare.
         :return: 1 if the voter prefers candidate1 over candidate2, -1 if the voter prefers candidate2 over candidate1.
         """
-        if self.OrdinalPreferences.index(candidate1) < self.OrdinalPreferences.index(candidate2):
-            return 1
-        else:
-            return -1
+        i = 0
+        while i < len(self.OrdinalPreferences):
+            if self.OrdinalPreferences[i] == candidate1:
+                return 1
+            if self.OrdinalPreferences[i] == candidate2:
+                return -1
+            i += 1
 
     def __str__(self):
         return f"Voter with ordinal preferences: {self.OrdinalPreferences}"
