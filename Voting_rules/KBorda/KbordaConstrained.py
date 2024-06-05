@@ -28,7 +28,8 @@ class KbordaConstrained(VotingRuleConstrained):
         candidates = election.candidates
         num_candidates = len(candidates)
         scores = np.zeros(num_candidates, dtype=int)
-        rank_scores = np.arange(num_candidates, 0, -1)  # Pre-calculate the scores for each rank
+        rank_scores = np.arange(0, -num_candidates, -1)  # Pre-calculate the scores for each rank
+        # rank_scores = [0, -1, -2, -3, ..., -num_candidates]
         questions_per_voter = int(question_limit / len(voters))
         for voter in voters:
             voter_preferences = voter.get_preferences()[:questions_per_voter]

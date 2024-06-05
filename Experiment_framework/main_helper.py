@@ -42,6 +42,12 @@ def run_experiment_wrapper(args):
 
 
 def run_test(params: dict()) -> list[int]:
+    """
+    Run the experiment multiple times and return the average differences between the committees
+
+    :param params: the parameters of the test
+    :return: the average differences between the committees
+    """
     target_committee_size = params['target_committee_size']
     num_candidates = params['num_candidates']
     num_voters = params['num_voters']

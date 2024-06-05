@@ -42,5 +42,22 @@ class Voter:
         """
         return self.OrdinalPreferences[index]
 
+    def split_candidates(self, candidates: list[int]) -> tuple[list[int], list[int]]:
+        """
+        Split the candidates evenly into those preferred and not preferred by the voter.
+        :param candidates: the list of candidates to split.
+        :return: a tuple containing the preferred and not preferred candidates.
+        """
+        # Every candidate is in the voter's preferences so the criteria is if half or more of the candidates are worse than the candidate in question, the candidate is preferred
+        preferred_candidates = []
+        not_preferred_candidates = []
+        for candidate in candidates:
+            if sum([candidate < candidate2 for candidate2 in self.OrdinalPreferences]) >= len(candidates) // 2:
+                preferred_candidates.append(candidate)
+            else:
+                not_preferred_candidates.append(candidate)
+        return preferred_candidates, not_preferred_candidates
+
+
     def __str__(self):
         return f"Voter with ordinal preferences: {self.OrdinalPreferences}"
