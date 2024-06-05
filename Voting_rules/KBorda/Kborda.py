@@ -26,7 +26,6 @@ class Kborda(VotingRule):
         """
         # Get the voters, candidates and the number of candidates
         voters = election.voters
-        candidates = election.candidates
         num_candidates = election.numberOfCandidates
         # Initialize the scores of the candidates
         scores = np.zeros(num_candidates, dtype=int)

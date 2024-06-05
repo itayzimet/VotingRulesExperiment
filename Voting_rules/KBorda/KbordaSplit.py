@@ -8,11 +8,11 @@ import bottleneck as bn
 
 class KbordaSplit(VotingRuleConstrained):
     """
-    Class for K-Borda voting rule constrained by the number of questions in the form of a split between preferred and not preferred candidates by the voter.
+    Class for K-Borda voting rule constrained by the number of questions in the form of a split between preferred and
+    not preferred candidates by the voter.
 
-    Methods:
-        find_winners(election, num_winners) -> list[int]:
-            Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions all voters can answer
+    Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
+    according to the K-Borda rule constrained by the number of questions all voters can answer
     """
 
     @staticmethod

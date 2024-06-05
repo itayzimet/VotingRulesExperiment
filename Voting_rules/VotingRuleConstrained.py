@@ -4,7 +4,7 @@
 from Experiment_framework.Election import Election
 
 
-class VotingRuleConstrained():
+class VotingRuleConstrained:
     """
     Abstract class for voting rules with constraints
 

@@ -10,9 +10,8 @@ class KbordaConstrained(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions all voters can answer
 
-    Methods:
-        find_winners(election, num_winners) -> list[int]:
-            Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions all voters can answer
+    Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
+    according to the K-Borda rule constrained by the number of questions all voters can answer
     """
 
     @staticmethod

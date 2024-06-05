@@ -6,6 +6,7 @@ from Voting_rules.KBorda.KbordaSplit import KbordaSplit
 from Voting_rules.SNTV.SNTV import SNTV
 from Voting_rules.SNTV.SntvConstrained import SntvConstrained
 
+
 #%%
 def main():
     """
@@ -13,27 +14,27 @@ def main():
     :return: None
     """
     #%%
-    SNTV_TEST_PARAMETERS = {'target_committee_size': 500, 'num_candidates': 1000, 'num_voters': 1000,
+    sntv_test_parameters = {'target_committee_size': 500, 'num_candidates': 1000, 'num_voters': 1000,
                             'voting_rule': SNTV, 'constrained_voting_rule': SntvConstrained,
                             'number_of_questions': list(range(1, 1001, 100)),
                             'number_of_runs': 20, 'multithreaded': True}
-    KBORDA_TEST_PARAMETERS = {'target_committee_size': 5, 'num_candidates': 10, 'num_voters': 1,
+    kborda_test_parameters = {'target_committee_size': 5, 'num_candidates': 10, 'num_voters': 1,
                               'voting_rule': Kborda, 'constrained_voting_rule': KbordaSplit,
                               'number_of_questions': [100],
                               'number_of_runs': 1, 'multithreaded': False}
     #%%
     """SNTV testing"""
     # Run the test for SNTV
-    average_differences = run_test(SNTV_TEST_PARAMETERS)
+    average_differences = run_test(sntv_test_parameters)
 
     # Plot the graph for SNTV
-    plot_graph(SNTV_TEST_PARAMETERS, average_differences)
+    plot_graph(sntv_test_parameters, average_differences)
     #%%
     """KBorda testing"""
     # Run the test for KBorda
-    average_differences = run_test(KBORDA_TEST_PARAMETERS)
+    average_differences = run_test(kborda_test_parameters)
     # Plot the graph for KBorda
-    plot_graph(KBORDA_TEST_PARAMETERS, average_differences)
+    plot_graph(kborda_test_parameters, average_differences)
     print(average_differences)
 
 

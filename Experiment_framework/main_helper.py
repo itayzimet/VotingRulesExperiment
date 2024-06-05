@@ -63,11 +63,11 @@ def run_test(params: dict[str, any]) -> list[int]:
                                                   target_committee_size, num_candidates, num_voters, voting_rule,
                                                   constrained_voting_rule,
                                                   number_of_questions)
-                                                  for i in range(number_of_runs)]),
+                                                  * number_of_runs]),
                                     total=number_of_runs, desc='Running experiments'))
     else:
         differences = []
-        for i in tqdm(range(number_of_runs), desc='Running experiments', total=number_of_runs):
+        for _ in tqdm(range(number_of_runs), desc='Running experiments', total=number_of_runs):
             differences.append(
                 run_experiment(target_committee_size, num_candidates, num_voters, voting_rule, constrained_voting_rule,
                                number_of_questions))
