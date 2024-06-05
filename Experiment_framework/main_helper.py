@@ -41,7 +41,7 @@ def run_experiment_wrapper(args):
     return run_experiment(*args)
 
 
-def run_test(params: dict()) -> list[int]:
+def run_test(params: dict[str, any]) -> list[int]:
     """
     Run the experiment multiple times and return the average differences between the committees
 
@@ -55,8 +55,8 @@ def run_test(params: dict()) -> list[int]:
     constrained_voting_rule = params['constrained_voting_rule']
     number_of_questions = params['number_of_questions']
     number_of_runs = params['number_of_runs']
-    multithreded = params['multithreded']
-    if multithreded:
+    multithreaded = params['multithreaded']
+    if multithreaded:
         with Pool() as pool:
             differences = list(tqdm(pool.imap(run_experiment_wrapper,
                                               [(

@@ -59,5 +59,17 @@ class Voter:
         return preferred_candidates, not_preferred_candidates
 
 
+    def pairwise_comparison(self, candidate1: int, candidate2: int) -> int:
+        """
+        Returns 1 if the voter prefers candidate1 over candidate2 and -1 if the voter prefers candidate2 over candidate1.
+        :param candidate1: the first candidate to compare.
+        :param candidate2: the second candidate to compare.
+        :return: 1 if the voter prefers candidate1 over candidate2, -1 if the voter prefers candidate2 over candidate1.
+        """
+        if self.OrdinalPreferences.index(candidate1) < self.OrdinalPreferences.index(candidate2):
+            return 1
+        else:
+            return -1
+
     def __str__(self):
         return f"Voter with ordinal preferences: {self.OrdinalPreferences}"
