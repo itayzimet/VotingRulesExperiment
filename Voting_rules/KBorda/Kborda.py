@@ -6,7 +6,8 @@ from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
 import bottleneck as bn
 
-class KBorda(VotingRule):
+
+class Kborda(VotingRule):
     """
     Class for K-Borda voting rule
 
