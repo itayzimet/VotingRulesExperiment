@@ -14,6 +14,8 @@ class Kborda(VotingRule):
     Methods:
         find_winners(election, num_winners) -> list[int]:
             Returns a list of the winners of the election according to the K-Borda rule
+        __str__() -> str:
+            Returns the name of the voting rule
     """
 
     @staticmethod
@@ -40,4 +42,8 @@ class Kborda(VotingRule):
 
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "K-Borda"

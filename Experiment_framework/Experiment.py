@@ -21,14 +21,20 @@ class Experiment:
         numberOfQuestions : int
             The number of questions all voters can answer
     Methods:
-        experiment() -> int:
-            Runs the experiment and returns the distance between the two committees
+        __init__(target_committee_size: int, election: Election, voting_rule: VotingRule,
+                    constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int])
+                Constructor of the Experiment class. it sets the attributes and finds the committees
+        export_to_excel()
+            Exports the data to an Excel file
+        __str__()
+            Returns a string representation of the Experiment
     """
 
     def __init__(self, target_committee_size: int, election: Election, voting_rule: VotingRule,
                  constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int]):
         """
         Constructor of the Experiment class
+        :type constrained_voting_rule: VotingRuleConstrained
         :param target_committee_size: the size of the committee to be found
         :param election: the election to find the committee for
         :param voting_rule: the voting rule to find the committee with
@@ -68,13 +74,6 @@ class Experiment:
         # Write the DataFrame to an Excel file
         df.to_excel(f"{self.votingRule.__str__()}_{self.constrainedVotingRule.__str__()}.xlsx")
         return self
-
-    def find_winners_wrapper(self, args):
-        return self.constrainedVotingRule.find_winners(*args)
-
-    @staticmethod
-    def committee_distance_wrapper(args):
-        return committee_distance(*args)
 
     def __str__(self):
         new_line = '\n'

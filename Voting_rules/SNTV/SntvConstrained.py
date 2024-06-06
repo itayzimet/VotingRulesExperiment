@@ -16,11 +16,13 @@ class SntvConstrained(VotingRuleConstrained):
 
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the Single Non-Transferable Vote rule constrained by the number of questions all voters can answer
-        :param election: the election to find the winners for
+        Returns a list of the winners of the election according to the Single Non-Transferable Vote rule constrained
+        by the number of questions all voters can answer :param election: the election to find the winners for
         :param num_winners: the number of winners to find
-        :param question_limit: the number of questions all voters can answer
-        :return: the list of winners according to the Single Non-Transferable Vote rule
+        :param question_limit: the number of questions all voters can
+        answer
+        :return: the list of winners according to the Single Non-Transferable Vote rule constrained by the
+        number of questions all voters can answer
         """
         no_of_voters = election.numberOfVoters
         candidates = election.candidates  # Copy the list of candidates
@@ -34,4 +36,8 @@ class SntvConstrained(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "SNTV next questions distributed first come first serve"

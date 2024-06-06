@@ -17,20 +17,25 @@ class Node:
 class KbordaSplitFCFS(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions in the form of a split between preferred and
-    not preferred candidates by the voter.
+    not preferred candidates by the voter distributed First Come First Serve among voters.
 
     Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
-    according to the K-Borda rule constrained by the number of questions all voters can answer
+    according to the K-Borda rule constrained by the number of questions in the form of a split between preferred and
+    not preferred candidates by the voter distributed First Come First Serve among voters.
     """
     questions_limit: int = 0
 
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions in the form of a split between preferred and not preferred candidates by the voter.
+        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of
+        questions in the form of a split between preferred and not preferred candidates by the voter distributed First
+        Come First Serve among voters.
         :param election: the election to find the winners for
         :param num_winners: the number of winners to find
         :param question_limit: the number of questions all voters can answer
-        :return: the list of winners according to the K-Borda rule constrained by the number of questions all voters can answer
+        :return: the list of winners according to the K-Borda rule constrained by the number of questions
+        in the form of a split between preferred and not preferred candidates by the voter distributed First Come
+        First Serve among voters.
         """
         voters = election.voters
         candidates = election.candidates
@@ -55,12 +60,23 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 
     @staticmethod
     def __get_preferences(node: Node):
+        """
+        Recursively concatenate the leaves of the binary tree from left to right to get the preferences of the voter
+        :param node: the node to get the preferences from
+        :return: the preferences of the voter
+        """
         if node.left is None and node.right is None:
             return node.value
         else:
             return KbordaSplitFCFS.__get_preferences(node.left) + KbordaSplitFCFS.__get_preferences(node.right)
 
     def __split_preferences(self, voter: Voter, current_node: Node):
+        """
+        Recursively create a binary tree to split the preferences of the voter
+        :param voter: the voter to split the preferences for
+        :param current_node: the current node of the binary tree
+        :return: None
+        """
         # Recursively create a binary tree to split the preferences of the voter
         if self.questions_limit == 0 or len(current_node.value) == 1:
             return
@@ -73,4 +89,8 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
+        """
+        Return the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "K-Borda split questions distributed First Come First Serve"

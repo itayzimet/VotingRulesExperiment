@@ -53,7 +53,8 @@ def export_to_excel(number_of_questions: list[int], distances: list[list[int]]) 
     :param distances: the distances between the true committee and the committees found
     :return: None
     """
-    # Create a Pandas DataFrame with the data from the experiments on the left the number of questions(only once) and on the right the committee distances found in each experiment for that number of questions
+    # Create a Pandas DataFrame with the data from the experiments on the left the number of questions(only once) and
+    # on the right the committee distances found in each experiment for that number of questions
     data = {'Number of questions': number_of_questions}
     for i in range(len(distances)):
         data[f'Committee distance {i}'] = distances[i]

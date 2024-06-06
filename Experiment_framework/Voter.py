@@ -10,14 +10,16 @@ class Voter:
             List of integers representing the ordinal preferences of the voter.
 
     Methods:
-        get_preferences() -> list[int]:
-            Returns the ordinal preferences of the voter.
-        get_preference(index: int) -> int:
-            Returns the candidate at the given index in the voter's ordinal preferences.
-        __init__(preferences: list[int]) -> None:
-            Initializes the voter with ordinal preferences.
-        __str__() -> str:
-            Returns a string representation of the voter.
+        get_preferences()
+            Get the ordinal preferences of the voter.
+        get_preference(index: int)
+            Get the candidate at the given index in the voter's ordinal preferences.
+        split_candidates(candidates: list[int])
+            Split the candidates evenly into those preferred and not preferred by the voter.
+        pairwise_comparison(candidate1: int, candidate2: int)
+            Returns 1 if the voter prefers candidate1 over candidate2 and -1 if the voter prefers candidate2 over candidate1.
+        __str__()
+            Return a string representation of the voter.
     """
 
     def __init__(self, preferences: list[int]) -> None:
@@ -48,11 +50,13 @@ class Voter:
         :param candidates: the list of candidates to split.
         :return: a tuple containing the preferred and not preferred candidates.
         """
-        # Every candidate is in the voter's preferences so the criteria is if half or more of the candidates are worse than the candidate in question, the candidate is preferred
+        # Every candidate is in the voter's preferences so the criteria is if half or more of the candidates are
+        # worse than the candidate in question, the candidate is preferred
         preferred_candidates = []
         not_preferred_candidates = []
         for candidate in candidates:
-            # A candidate is preferred if half or more of the candidates in the supplied list are worse than the candidate
+            # A candidate is preferred if half or more of the candidates in the supplied list are worse than the
+            # candidate
             if sum([self.pairwise_comparison(candidate, other_candidate) == 1 for other_candidate in
                     candidates]) > len(candidates) / 2:
                 preferred_candidates.append(candidate)
@@ -76,4 +80,8 @@ class Voter:
             i += 1
 
     def __str__(self):
+        """
+        Return a string representation of the voter.
+        :return: a string representation of the voter.
+        """
         return f"Voter with ordinal preferences: {self.OrdinalPreferences}"

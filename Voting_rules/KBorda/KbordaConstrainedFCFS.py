@@ -11,17 +11,19 @@ class KbordaConstrainedFCFS(VotingRuleConstrained):
     Class for K-Borda voting rule constrained by the number of questions all voters can answer
 
     Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
-    according to the K-Borda rule constrained by the number of questions all voters can answer
+    according to the K-Borda rule with the next question distributed first come first serve
     """
 
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions all voters can answer
+        Returns a list of the winners of the election according to the K-Borda rule with the next question distributed
+        first come first serve
         :param election: the election to find the winners for
         :param num_winners: the number of winners to find
         :param question_limit: the number of questions all voters can answer
-        :return: the list of winners according to the K-Borda rule constrained by the number of questions all voters can answer
+        :return: a list of the winners of the election according to the K-Borda rule with the next question distributed
+        first come first serve
         """
         voters = election.voters
         candidates = election.candidates
@@ -39,4 +41,8 @@ class KbordaConstrainedFCFS(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "K-Borda Next Questions distributed first come first serve"

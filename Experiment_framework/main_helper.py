@@ -7,13 +7,11 @@ It contains the following functions:
 """
 from multiprocessing import Pool
 from typing import Any
-
-import matplotlib
-import matplotlib.pyplot as plt
 from tqdm import tqdm
-
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
+import matplotlib
+import matplotlib.pyplot as plt
 
 
 def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
@@ -38,6 +36,11 @@ def run_experiment(target_committee_size: int, num_candidates: int, num_voters: 
 
 
 def run_experiment_wrapper(args):
+    """
+    Wrapper function for the run_experiment function to allow for the use of the Pool class
+    :param args: the arguments for the run_experiment function
+    :return: the result of the run_experiment function
+    """
     return run_experiment(*args)
 
 

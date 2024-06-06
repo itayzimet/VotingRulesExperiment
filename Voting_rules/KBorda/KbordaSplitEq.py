@@ -9,6 +9,10 @@ import bottleneck as bn
 
 class Node:
     def __init__(self, value):
+        """
+        Constructor for the Node class
+        :param value: the value of the node
+        """
         self.value = value
         self.left = None
         self.right = None
@@ -17,20 +21,23 @@ class Node:
 class KbordaSplitEq(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions in the form of a split between preferred and
-    not preferred candidates by the voter.
+    not preferred candidates by the voter distributed equally among voters.
 
     Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
-    according to the K-Borda rule constrained by the number of questions all voters can answer
+    according to the K-Borda rule constrained by the number of questions in the form of a split between preferred and
+    not preferred candidates by the voter distributed equally among voters.
     """
     questions_limit = []
 
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions in the form of a split between preferred and not preferred candidates by the voter.
+        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of
+        questions in the form of a split between preferred and not preferred candidates by the voter.
         :param election: the election to find the winners for
         :param num_winners: the number of winners to find
         :param question_limit: the number of questions all voters can answer
-        :return: the list of winners according to the K-Borda rule constrained by the number of questions all voters can answer
+        :return: the list of winners according to the K-Borda rule constrained by the number of questions
+        in the form of a split between preferred and not preferred candidates by the voter.
         """
         voters = election.voters
         candidates = election.candidates
@@ -55,12 +62,24 @@ class KbordaSplitEq(VotingRuleConstrained):
 
     @staticmethod
     def __get_preferences(node: Node):
+        """
+        Get the preferences of the voter from the binary tree
+        :param node: the root node of the binary tree
+        :return: the preferences of the voter
+        """
         if node.left is None and node.right is None:
             return node.value
         else:
             return KbordaSplitEq.__get_preferences(node.left) + KbordaSplitEq.__get_preferences(node.right)
 
     def __split_preferences(self, voter_index: int, voter: Voter, current_node: Node):
+        """
+        Recursively create a binary tree to split the preferences of the voter
+        :param voter_index: the index of the voter
+        :param voter: the voter
+        :param current_node: the current node of the binary tree
+        :return: None
+        """
         # Recursively create a binary tree to split the preferences of the voter
         if self.questions_limit[voter_index] == 0 or len(current_node.value) == 1:
             return
@@ -73,4 +92,8 @@ class KbordaSplitEq(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "K-Borda split questions distributed equally among voters"

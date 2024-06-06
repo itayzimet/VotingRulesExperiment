@@ -8,20 +8,22 @@ import bottleneck as bn
 
 class KbordaConstrainedEq(VotingRuleConstrained):
     """
-    Class for K-Borda voting rule constrained by the number of questions all voters can answer
+    Class for K-Borda voting rule with the next question with budget distributed equally among voters
 
-    Methods: find_winners(election, num_winners) -> list[int]: Returns a list of the winners of the election
-    according to the K-Borda rule constrained by the number of questions all voters can answer
+    Methods: find_winners(election, num_winners) -> list[int]: returns the winners of the election according to the
+    K-Borda rule with the next question with budget distributed equally among voters
     """
 
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the K-Borda rule constrained by the number of questions all voters can answer
+        Returns a list of the winners of the election according to the K-Borda rule with the next question with
+        budget distributed equally among voters
         :param election: the election to find the winners for
         :param num_winners: the number of winners to find
         :param question_limit: the number of questions all voters can answer
-        :return: the list of winners according to the K-Borda rule constrained by the number of questions all voters can answer
+        :return: the list of winners according to the K-Borda rule constrained by the number of questions all
+        voters can answer
         """
         voters = election.voters
         candidates = election.candidates
@@ -38,4 +40,8 @@ class KbordaConstrainedEq(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "K-Borda Next Questions distributed equally among voters"
