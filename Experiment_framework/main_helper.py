@@ -84,7 +84,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
     return averages
 
 
-def plot_graph(test_params: dict[str, any], averages: dict[list[int]]) -> None:
+def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> None:
     """
     Plots the graph for the experiment
     :param test_params: the parameters of the test

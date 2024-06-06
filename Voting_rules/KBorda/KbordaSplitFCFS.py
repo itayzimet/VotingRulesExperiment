@@ -14,7 +14,7 @@ class Node:
         self.right = None
 
 
-class KbordaSplit(VotingRuleConstrained):
+class KbordaSplitFCFS(VotingRuleConstrained):
     """
     Class for K-Borda voting rule constrained by the number of questions in the form of a split between preferred and
     not preferred candidates by the voter.
@@ -58,7 +58,7 @@ class KbordaSplit(VotingRuleConstrained):
         if node.left is None and node.right is None:
             return node.value
         else:
-            return KbordaSplit.__get_preferences(node.left) + KbordaSplit.__get_preferences(node.right)
+            return KbordaSplitFCFS.__get_preferences(node.left) + KbordaSplitFCFS.__get_preferences(node.right)
 
     def __split_preferences(self, voter: Voter, current_node: Node):
         # Recursively create a binary tree to split the preferences of the voter
@@ -73,4 +73,4 @@ class KbordaSplit(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda split"
+        return "K-Borda split question distribution First Come First Serve"
