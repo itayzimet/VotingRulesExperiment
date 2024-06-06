@@ -38,4 +38,4 @@ class KbordaConstrainedEq(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda Next Candidate Equal questions per voter"
+        return "K-Borda Next Questions distributed equally among voters"

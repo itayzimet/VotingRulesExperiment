@@ -39,4 +39,4 @@ class KbordaConstrainedFCFS(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda Next Candidate First Come First Serve constrained"
+        return "K-Borda Next Questions distributed first come first serve"

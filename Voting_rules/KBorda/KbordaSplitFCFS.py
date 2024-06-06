@@ -73,4 +73,4 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda split question distribution First Come First Serve"
+        return "K-Borda split questions distributed First Come First Serve"

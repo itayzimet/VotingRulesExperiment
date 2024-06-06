@@ -34,4 +34,4 @@ class SntvConstrained(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "SNTV constrained"
+        return "SNTV next questions distributed first come first serve"
