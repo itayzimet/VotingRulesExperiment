@@ -22,13 +22,13 @@ def main():
     :return: None
     """
     # %%
-    sntv_test_parameters = dict(target_committee_size=500, num_candidates=1000, num_voters=1000, voting_rule=SNTV,
+    sntv_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=SNTV,
                                 constrained_voting_rule=[SntvConstrained],
-                                number_of_questions=list(range(1, 1001, 100)), number_of_runs=20, multithreaded=True)
+                                number_of_questions=list(range(1, 1000, 10)), number_of_runs=50, multithreaded=False)
     kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=10, voting_rule=Kborda,
                                   constrained_voting_rule=[KbordaSplitFCFS, KbordaSplitEq, KbordaConstrainedEq,
                                                            KbordaConstrainedFCFS],
-                                  number_of_questions=range(1, 1000, 10), number_of_runs=20, multithreaded=True)
+                                  number_of_questions=range(1, 1000, 10), number_of_runs=50, multithreaded=False)
     #%%
     """SNTV testing"""
     # Run the test for SNTV

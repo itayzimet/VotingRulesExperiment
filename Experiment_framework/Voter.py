@@ -52,17 +52,18 @@ class Voter:
         """
         # Every candidate is in the voter's preferences so the criteria is if half or more of the candidates are
         # worse than the candidate in question, the candidate is preferred
-        preferred_candidates = []
-        not_preferred_candidates = []
-        for candidate in candidates:
-            # A candidate is preferred if half or more of the candidates in the supplied list are worse than the
-            # candidate
-            if sum([self.pairwise_comparison(candidate, other_candidate) == 1 for other_candidate in
-                    candidates]) > len(candidates) / 2:
-                preferred_candidates.append(candidate)
-            else:
-                not_preferred_candidates.append(candidate)
-        return preferred_candidates, not_preferred_candidates
+        need_to_find = len(candidates) // 2
+        candidates = set(candidates)
+        preferred_candidate = []
+        for candidate in self.OrdinalPreferences:
+            if need_to_find == 0:
+                return preferred_candidate, list(candidates)
+            if candidate in candidates:
+                preferred_candidate.append(candidate)
+                candidates.discard(candidate)
+                need_to_find -= 1
+
+
 
     def pairwise_comparison(self, candidate1: int, candidate2: int) -> int:
         """

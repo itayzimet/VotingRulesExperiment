@@ -46,8 +46,8 @@ class KbordaSplitFCFS(VotingRuleConstrained):
             # Carefully split the preferences of the voter into preferred and not preferred candidates multiple times
             # to get the voters preferences. Don't use get_preferences() or directly use the preferences of the voter
             # as it is disallowed in the constraints. Get the preferences using a binary tree
-            if question_limit == 0:
-                continue
+            if self.questions_limit == 0:
+                break
             # Create a binary tree to split the preferences of the voter
             root_node = Node(candidates)
             self.__split_preferences(voter, root_node)
@@ -78,7 +78,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
         :return: None
         """
         # Recursively create a binary tree to split the preferences of the voter
-        if self.questions_limit == 0 or len(current_node.value) == 1:
+        if self.questions_limit == 0 or len(current_node.value) <= 1:
             return
         temp = voter.split_candidates(current_node.value)
         current_node.left = Node(temp[0])

@@ -29,13 +29,15 @@ class KbordaConstrainedFCFS(VotingRuleConstrained):
         candidates = election.candidates
         num_candidates = len(candidates)
         scores = np.zeros(num_candidates, dtype=int)
-        rank_scores = np.arange(0, -num_candidates, -1)  # Pre-calculate the scores for each rank
+        rank_scores = np.arange(num_candidates, 0, -1)  # Pre-calculate the scores for each rank
         # rank_scores = [0, -1, -2, -3, ..., -num_candidates]
         max_questions_per_voter = min(question_limit // len(voters), num_candidates)
         for voter in voters:
             questions_per_voter = min(max_questions_per_voter, question_limit)
             voter_preferences = voter.get_preferences()[:questions_per_voter]
             scores[voter_preferences] += rank_scores[:questions_per_voter]
+            scores[voter.get_preferences()[questions_per_voter:]] += (
+                    sum(rank_scores[questions_per_voter:])//(num_candidates - questions_per_voter))
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
