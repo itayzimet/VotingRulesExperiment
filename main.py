@@ -1,4 +1,4 @@
-# %%
+#%%
 
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
@@ -8,6 +8,7 @@ from Voting_rules.KBorda.KbordaSplitEq import KbordaSplitEq
 from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
 from Voting_rules.SNTV.SNTV import SNTV
 from Voting_rules.SNTV.SntvConstrained import SntvConstrained
+from Voting_rules.VotingRuleRandom import VotingRuleRandom
 
 """
 This file is the main file to run the experiment. It contains the main function that runs the experiment and plots the
@@ -15,20 +16,20 @@ graph for the experiment.
 """
 
 
-# %%
+#%%
 def main():
     """
     Main function to run the experiment
     :return: None
     """
-    # %%
+    #%%
     sntv_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=SNTV,
-                                constrained_voting_rule=[SntvConstrained],
-                                number_of_questions=list(range(1, 1000, 10)), number_of_runs=50, multithreaded=False)
+                                constrained_voting_rule=[SntvConstrained, VotingRuleRandom],
+                                number_of_questions=list(range(1, 1000, 10)), number_of_runs=1000, multithreaded=True)
     kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=10, voting_rule=Kborda,
                                   constrained_voting_rule=[KbordaSplitFCFS, KbordaSplitEq, KbordaConstrainedEq,
-                                                           KbordaConstrainedFCFS],
-                                  number_of_questions=range(1, 1000, 10), number_of_runs=50, multithreaded=False)
+                                                           KbordaConstrainedFCFS, VotingRuleRandom],
+                                  number_of_questions=range(1, 1000, 1), number_of_runs=100, multithreaded=True)
     #%%
     """SNTV testing"""
     # Run the test for SNTV

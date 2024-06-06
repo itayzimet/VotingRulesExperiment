@@ -49,28 +49,31 @@ class KbordaSplitEq(VotingRuleConstrained):
             # to get the voters preferences. Don't use get_preferences() or directly use the preferences of the voter
             # as it is disallowed in the constraints. Get the preferences using a binary tree
             if self.questions_limit[i] == 0:
-                continue
+                break
             # Create a binary tree to split the preferences of the voter
             root_node = Node(candidates)
             self.__split_preferences(i, voter, root_node)
             # Score the candidates based on the tree created
-            # Concatenate the leaves of the whole tree from left to right to get the preferences of the voter
-            preferences = self.__get_preferences(root_node)
-            scores[preferences] += np.arange(num_candidates, 0, -1)
+            # score them all based on the position in the leaf regardless of the order in the leaf
+            rank = num_candidates
+            self.__score_candidates(root_node, scores, rank)
+
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
-    @staticmethod
-    def __get_preferences(node: Node):
+    def __score_candidates(self, current_node: Node, scores: np.ndarray, rank: int):
         """
-        Get the preferences of the voter from the binary tree
-        :param node: the root node of the binary tree
-        :return: the preferences of the voter
+        Recursively score the candidates based on the tree created
+        :param current_node: the current node of the binary tree
+        :param scores: the scores of the candidates
+        :param rank: the rank of the candidate
+        :return: None
         """
-        if node.left is None and node.right is None:
-            return node.value
-        else:
-            return KbordaSplitEq.__get_preferences(node.left) + KbordaSplitEq.__get_preferences(node.right)
+        if current_node.left is None and current_node.right is None:
+            scores[current_node.value] += rank - len(current_node.value)//2
+            return
+        self.__score_candidates(current_node.left, scores, rank)
+        self.__score_candidates(current_node.right, scores, rank - len(current_node.left.value))
 
     def __split_preferences(self, voter_index: int, voter: Voter, current_node: Node):
         """

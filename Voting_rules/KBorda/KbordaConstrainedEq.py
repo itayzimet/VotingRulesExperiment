@@ -35,7 +35,7 @@ class KbordaConstrainedEq(VotingRuleConstrained):
         for voter in voters:
             voter_preferences = voter.get_preferences()[:questions_per_voter]
             scores[voter_preferences] += rank_scores[:questions_per_voter]
-            scores[voter.get_preferences()[questions_per_voter:]] += (
+            scores[voter.get_preferences()[questions_per_voter+1:]] += (
                     sum(rank_scores[questions_per_voter:])//(num_candidates - questions_per_voter))
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]
