@@ -58,7 +58,7 @@ install the requirements with `pip install -r requirements.txt` and run main.py 
 - The only metric currently implemented is the size of the symmetric difference between the approximation and the committee
 
 ## todo
--[ ] Implement more voting systems
--[ ] Implement more approximation methods 
--[ ] Implement more distance metrics
--[ ] Implement more question types 
+- [ ] Implement more voting systems
+- [ ] Implement more approximation methods 
+- [ ] Implement more distance metrics
+- [ ] Implement more question types 
