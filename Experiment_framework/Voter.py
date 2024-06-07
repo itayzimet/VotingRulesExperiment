@@ -63,23 +63,6 @@ class Voter:
                 candidates.discard(candidate)
                 need_to_find -= 1
 
-
-
-    def pairwise_comparison(self, candidate1: int, candidate2: int) -> int:
-        """
-        Returns 1 if the voter prefers candidate1 over candidate2 and -1 if the voter prefers candidate2 over candidate1.
-        :param candidate1: the first candidate to compare.
-        :param candidate2: the second candidate to compare.
-        :return: 1 if the voter prefers candidate1 over candidate2, -1 if the voter prefers candidate2 over candidate1.
-        """
-        i = 0
-        while i < len(self.OrdinalPreferences):
-            if self.OrdinalPreferences[i] == candidate1:
-                return 1
-            if self.OrdinalPreferences[i] == candidate2:
-                return -1
-            i += 1
-
     def __str__(self):
         """
         Return a string representation of the voter.
