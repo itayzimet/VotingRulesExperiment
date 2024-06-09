@@ -33,13 +33,13 @@ def main():
     kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=Kborda,
                                   constrained_voting_rule=[KbordaSplitFCFS, KbordaSplitEq, KbordaNextEq,
                                                            KbordaNextFCFS, KbordaLastEq, KbordaLastFCFS, KbordaNextLastEQ, KbordaNextLastFCFS, VotingRuleRandom],
-                                  number_of_questions=range(1, 11000, 100), number_of_runs=1000, multithreaded=True)
+                                  number_of_questions=range(1, 11000, 100), number_of_runs=20, multithreaded=True)
     #%%
-    """SNTV testing"""
-    # Run the test for SNTV
-    averages = run_test(sntv_test_parameters)
-    # Plot the graph for SNTV
-    plot_graph(sntv_test_parameters, averages)
+    # """SNTV testing"""
+    # # Run the test for SNTV
+    # averages = run_test(sntv_test_parameters)
+    # # Plot the graph for SNTV
+    # plot_graph(sntv_test_parameters, averages)
     #%%
     """KBorda testing"""
     # Run the test for KBorda

@@ -99,7 +99,7 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
     fig = px.scatter()
     for rule, average in averages.items():
         fig.add_scatter(x=list(test_params['number_of_questions']), y=average, mode='markers', name=rule.__str__())
-    fig.update_layout(title=f"{test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
+    fig.update_layout(title=f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
                       xaxis_title='Number of questions',
                       yaxis_title='Distance between the committees')
 
