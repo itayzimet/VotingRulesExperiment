@@ -12,6 +12,7 @@ from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
 import matplotlib
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 
 def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
@@ -94,14 +95,12 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
     :param averages: the average differences between the committees for the different constrained voting rules
     :return: None
     """
-    matplotlib.use('TkAgg')
-    # Plot the graph for the experiment
+    # make it a scatter plot
+    fig = px.scatter()
     for rule, average in averages.items():
-        plt.plot(test_params['number_of_questions'], average, label=rule.__str__(), ls='', marker='o')
-    plt.legend()
-    plt.xlabel('Number of questions')
-    plt.ylabel('Distance between the committees')
-    plt.suptitle(test_params['voting_rule'].__str__())
-    plt.title(
-        f"{test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs")
-    plt.show()
+        fig.add_scatter(x=list(test_params['number_of_questions']), y=average, mode='markers', name=rule.__str__())
+    fig.update_layout(title=f"{test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
+                      xaxis_title='Number of questions',
+                      yaxis_title='Distance between the committees')
+
+    fig.show()

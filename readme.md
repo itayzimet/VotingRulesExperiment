@@ -65,16 +65,19 @@ python main.py
 
 ### Voting systems
 - Kborda: Select the top k candidates with the highest borda score
-  - KbordaConstrainedEq: use the (next) question to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters
-  - KbordaConstrainedFCFS: same as KbordaConstrainedEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
+  - KbordaNextEq: use the (next) question to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters
+  - KbordaNextFCFS: same as KbordaNextEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
   - KbordaSplitEq: use the (split) question to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters. works by recursively splitting the set of candidates in half for each voter to get an approximation of his ordinal preferences.
   - KbordaSplitFCFS: same as KbordaSplitEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
+  - KbordaNextLastEq: use the (next) and (last) questions to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters
+  - KbordaNextLastFCFS: same as KbordaNextLastEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
 - SNTV: Select the top k candidates with the highest number of votes
   - SNTVConstrained: use the (next) question to select the top k candidates with the highest number of votes under a question number constraint, while using the question on a first-come-first-serve basis.
 - Random: Select k candidates at random
 
 ### Question types
 - Next: Ask the voter for the next best candidate in his preference list
+- Last: Ask the voter for the next worst candidate in his preference list
 - Split: Ask the voter to halve the set of candidates provided into two sets, the first set containing the candidates he prefers over the second set
 
 ### Distance metric

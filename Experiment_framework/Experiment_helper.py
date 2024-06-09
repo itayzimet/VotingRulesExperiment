@@ -43,7 +43,7 @@ def committee_distance(committee1: list[int], committee2: list[int]) -> int:
     :return: the distance between the two committees
     """
     # Return the size of the symmetric difference between the two committees
-    return int(len(set(committee1).symmetric_difference(set(committee2))) / 2)
+    return int(len(set(committee1).symmetric_difference(set(committee2))))
 
 
 def export_to_excel(number_of_questions: list[int], distances: list[list[int]]) -> None:
