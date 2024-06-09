@@ -2,14 +2,37 @@
 
 This is a simple voting experiment to test different voting system.
 
-## Installation
+## Table of contents
+- [Installation and usage](#installation-and-usage)
+- [Experimental protocol](#experimental-protocol)
+  - [Experiment control parameters](#experiment-control-parameters)
+  - [Data fabrication](#data-fabrication)
+  - [Experiment procedure](#experiment-procedure)
+  - [Voting systems](#voting-systems)
+  - [Question types](#question-types)
+  - [Distance metric](#distance-metric)
+- [todo](#todo)
 
-clone the repository and change main.py to your liking.
+## Installation and usage
 
-## Usage
+clone the repository and change main.py to your liking. Then run the following commands to create a virtual environment and install the required packages.
 
-install the requirements with `pip install -r requirements.txt` and run main.py (may take a long time depending on the number of voters and candidates).
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+or if you are using windows
+```bash
+python -m venv venv
+venv\Scripts\activate.ps1
+pip install -r requirements.txt
+```
 
+Then run the following command to run the experiment
+```bash
+python main.py
+```
 ## Experimental protocol
 ### Experiment control parameters
 - Number of voters: 10
