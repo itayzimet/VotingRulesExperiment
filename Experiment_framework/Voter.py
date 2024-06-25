@@ -16,8 +16,8 @@ class Voter:
             Get the candidate at the given index in the voter's ordinal preferences.
         split_candidates(candidates: list[int])
             Split the candidates evenly into those preferred and not preferred by the voter.
-        pairwise_comparison(candidate1: int, candidate2: int)
-            Returns 1 if the voter prefers candidate1 over candidate2 and -1 if the voter prefers candidate2 over candidate1.
+        general_bucket_question(candidates: list[int], question: list[int])
+            Split the candidates into buckets based on the voter's answers to the general bucket question.
         __str__()
             Return a string representation of the voter.
     """
@@ -62,6 +62,30 @@ class Voter:
                 preferred_candidate.append(candidate)
                 candidates.discard(candidate)
                 need_to_find -= 1
+
+    def general_bucket_question(self, candidates: list[int], question: list[int]) -> list[list[int]]:
+        """
+        Split the candidates into buckets based on the voter's answers to the general bucket question.
+        :param candidates: the list of candidates to split.
+        :param question: the bucket sizes for the question.
+        :return: a list of candidates in each bucket where the first bucket is the most preferred and
+        the last is the least preferred.
+        """
+        buckets = [[] for _ in question]
+        candidates = set(candidates)
+        left_to_fill = question[0]
+        current_bucket = 0
+        for candidate in self.OrdinalPreferences:
+            if candidate in candidates:
+                buckets[current_bucket].append(candidate)
+                candidates.discard(candidate)
+                left_to_fill -= 1
+                if left_to_fill == 0:
+                    current_bucket += 1
+                    if current_bucket == len(question):
+                        break
+                    left_to_fill = question[current_bucket]
+        return buckets
 
     def __str__(self):
         """

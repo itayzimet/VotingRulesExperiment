@@ -41,7 +41,7 @@ class KbordaSplitEq(VotingRuleConstrained):
         """
         voters = election.voters
         candidates = election.candidates
-        num_candidates = len(candidates)
+        num_candidates = election.numberOfCandidates
         scores = np.zeros(num_candidates, dtype=int)
         self.questions_limit = [question_limit // len(voters)] * len(voters)
         for i, voter in enumerate(voters):
@@ -57,7 +57,6 @@ class KbordaSplitEq(VotingRuleConstrained):
             # score them all based on the position in the leaf regardless of the order in the leaf
             rank = num_candidates
             self.__score_candidates(root_node, scores, rank)
-
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]
 

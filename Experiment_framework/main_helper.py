@@ -10,8 +10,6 @@ from typing import Any
 from tqdm import tqdm
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
-import matplotlib
-import matplotlib.pyplot as plt
 import plotly.express as px
 
 
