@@ -32,8 +32,10 @@ def main():
                                 constrained_voting_rule=[SntvConstrained, VotingRuleRandom],
                                 number_of_questions=list(range(1, 1000, 1)), number_of_runs=20, multithreaded=False)
     kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=Kborda,
-                                  constrained_voting_rule=[KbordaSplitEq, KbordaBucketGeneral, VotingRuleRandom],
-                                  number_of_questions=range(1, 12000, 100), number_of_runs=100, multithreaded=True)
+                                constrained_voting_rule=[KbordaSplitEq, KbordaSplitFCFS, KbordaNextEq, KbordaNextFCFS,
+                                KbordaLastEq, KbordaLastFCFS, KbordaNextLastEQ, KbordaNextLastFCFS,
+                                KbordaBucketGeneral, VotingRuleRandom],
+                                number_of_questions=range(1, 12000, 100), number_of_runs=100, multithreaded=True)
     #%%
     # """SNTV testing"""
     # # Run the test for SNTV

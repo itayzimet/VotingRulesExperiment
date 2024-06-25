@@ -39,18 +39,20 @@ class KbordaBucketGeneral(VotingRuleConstrained):
 
         for bucket in buckets:
             node.sons.append(Node([], bucket))
-            next_question_type = [len(bucket) - len(bucket) // 2, len(bucket) // 2]
+            next_question_type = [len(bucket) // 2, len(bucket) - len(bucket) // 2]
             self.__fill_tree(voter_index, voter, node.sons[-1], next_question_type)
 
     def __score_candidates(self, node: Node, scores: np.ndarray, rank: int) -> None:
         if len(node.sons) == 0:  # node is a leaf
             # score them all based on the position of the leaf regardless of the order in the leaf
-            for candidate in node.value:
-                scores[candidate] += rank - (len(node.value) // 2)
+            scores[node.value] += rank - len(node.value)//2
             return
         for i, son in enumerate(node.sons):
-            self.__score_candidates(son, scores, rank - (len(node.sons[i - 1].value) // 2))
-            rank -= len(son.value)
+            if i == 0:
+                self.__score_candidates(son, scores, rank)
+            else:
+                rank -= len(node.sons[i-1].value)
+                self.__score_candidates(son, scores, rank)
 
     @staticmethod
     def __str__():
