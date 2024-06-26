@@ -3,6 +3,7 @@
 import numpy as np
 from Experiment_framework.Election import Election
 from Experiment_framework.Voter import Voter
+from Voting_rules import questionPrice
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 import bottleneck as bn
 
@@ -81,12 +82,12 @@ class KbordaSplitFCFS(VotingRuleConstrained):
         :return: None
         """
         # Recursively create a binary tree to split the preferences of the voter
-        if self.questions_limit == 0 or len(current_node.value) <= 1:
+        if self.questions_limit <= 0 or len(current_node.value) <= 1:
             return
         temp = voter.split_candidates(current_node.value)
         current_node.left = Node(temp[0])
         current_node.right = Node(temp[1])
-        self.questions_limit -= 1
+        self.questions_limit -= questionPrice.get_price(current_node.value, [0.5, 0.5])
         self.__split_preferences(voter, current_node.left)
         self.__split_preferences(voter, current_node.right)
 

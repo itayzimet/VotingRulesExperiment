@@ -23,19 +23,26 @@ graph for the experiment.
 
 
 #%%
-def main():
+def main ():
     """
     Main function to run the experiment
     :return: None
     """
     #%%
-    sntv_test_parameters = dict(target_committee_size=10, num_candidates=100, num_voters=10, voting_rule=SNTV,
-                                constrained_voting_rule=[SntvConstrained, VotingRuleRandom],
-                                number_of_questions=list(range(1, 1000, 1)), number_of_runs=20, multithreaded=False)
-    kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=Kborda,
-                                  constrained_voting_rule=[KbordaSplitEq,
-                                                           KbordaBucketGeneral, VotingRuleRandom],
-                                  number_of_questions=range(1, 120000, 1000), number_of_runs=20, multithreaded=True)
+    sntv_test_parameters = dict(target_committee_size = 10, num_candidates = 100, num_voters = 10, voting_rule = SNTV,
+                                constrained_voting_rule = [SntvConstrained, VotingRuleRandom],
+                                number_of_questions = list(range(1, 1000, 1)), number_of_runs = 20,
+                                multithreaded = False)
+    kborda_test_parameters = dict(
+        target_committee_size = 50, num_candidates = 100, num_voters = 100,
+        voting_rule = Kborda,
+        constrained_voting_rule =
+        [
+            KbordaSplitEq, KbordaSplitFCFS,
+            KbordaNextEq, KbordaNextFCFS,
+            KbordaBucketGeneral, VotingRuleRandom],
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 5,
+        multithreaded = True)
     #%%
     # """SNTV testing"""
     # # Run the test for SNTV
