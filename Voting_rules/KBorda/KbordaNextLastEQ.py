@@ -35,13 +35,13 @@ class KbordaNextLastEQ(VotingRuleConstrained):
             if questions_per_voter == 0:
                 return bn.argpartition(scores, num_winners)[-num_winners:]
             if 2*questions_per_voter >= num_candidates:
-                scores[voter.get_preferences()] += rank_scores
+                scores[voter.OrdinalPreferences] += rank_scores
                 continue
-            voter_first_truncated_preferences = voter.get_preferences()[:questions_per_voter]
+            voter_first_truncated_preferences = voter.OrdinalPreferences[:questions_per_voter]
             scores[voter_first_truncated_preferences] += rank_scores[:questions_per_voter]
-            voter_last_truncated_preferences = voter.get_preferences()[-questions_per_voter:]
+            voter_last_truncated_preferences = voter.OrdinalPreferences[-questions_per_voter:]
             scores[voter_last_truncated_preferences] += rank_scores[-questions_per_voter:]
-            scores[voter.get_preferences()[questions_per_voter:-questions_per_voter]] += (
+            scores[voter.OrdinalPreferences[questions_per_voter:-questions_per_voter]] += (
                     sum(rank_scores[questions_per_voter:-questions_per_voter]) // (
                         num_candidates - 2*questions_per_voter))
         return bn.argpartition(scores, num_winners)[-num_winners:]

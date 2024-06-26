@@ -1,16 +1,17 @@
 #%%
 import numpy as np
+
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
-from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
-from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
-from Voting_rules.KBorda.KbordaSplitEq import KbordaSplitEq
-from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
+from Voting_rules.KBorda.KbordaBucketGeneral import KbordaBucketGeneral
 from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
 from Voting_rules.KBorda.KbordaLastFCFS import KbordaLastFCFS
+from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
+from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
 from Voting_rules.KBorda.KbordaNextLastEQ import KbordaNextLastEQ
 from Voting_rules.KBorda.KbordaNextLastFCFS import KbordaNextLastFCFS
-from Voting_rules.KBorda.KbordaBucketGeneral import KbordaBucketGeneral
+from Voting_rules.KBorda.KbordaSplitEq import KbordaSplitEq
+from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
 from Voting_rules.SNTV.SNTV import SNTV
 from Voting_rules.SNTV.SntvConstrained import SntvConstrained
 from Voting_rules.VotingRuleRandom import VotingRuleRandom
@@ -32,10 +33,9 @@ def main():
                                 constrained_voting_rule=[SntvConstrained, VotingRuleRandom],
                                 number_of_questions=list(range(1, 1000, 1)), number_of_runs=20, multithreaded=False)
     kborda_test_parameters = dict(target_committee_size=50, num_candidates=100, num_voters=100, voting_rule=Kborda,
-                                constrained_voting_rule=[KbordaSplitEq, KbordaSplitFCFS, KbordaNextEq, KbordaNextFCFS,
-                                KbordaLastEq, KbordaLastFCFS, KbordaNextLastEQ, KbordaNextLastFCFS,
-                                KbordaBucketGeneral, VotingRuleRandom],
-                                number_of_questions=range(1, 12000, 100), number_of_runs=100, multithreaded=True)
+                                  constrained_voting_rule=[KbordaSplitEq,
+                                                           KbordaBucketGeneral, VotingRuleRandom],
+                                  number_of_questions=range(1, 120000, 1000), number_of_runs=20, multithreaded=True)
     #%%
     # """SNTV testing"""
     # # Run the test for SNTV
@@ -49,7 +49,8 @@ def main():
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
     for key in averages:
-        total_averages[key] = np.mean(averages[key])
+        total_averages[key] = float(np.mean(averages[key]))
+    #%%
     # Print the average Accuracy for each voting rule
     print(total_averages)
     # Plot the graph for KBorda

@@ -34,10 +34,10 @@ class KbordaLastEq(VotingRuleConstrained):
         if questions_per_voter == 0:
             return bn.argpartition(scores, num_winners)[-num_winners:]
         for voter in voters:
-            voter_preferences = voter.get_preferences()[-questions_per_voter:]
+            voter_preferences = voter.OrdinalPreferences[-questions_per_voter:]
             scores[voter_preferences] += rank_scores[-questions_per_voter:]
             if questions_per_voter < num_candidates:
-                scores[voter.get_preferences()[:-questions_per_voter]] += (
+                scores[voter.OrdinalPreferences[:-questions_per_voter]] += (
                         sum(rank_scores[:-questions_per_voter]) // (num_candidates - questions_per_voter))
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]

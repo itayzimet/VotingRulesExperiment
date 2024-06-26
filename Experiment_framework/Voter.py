@@ -29,50 +29,30 @@ class Voter:
         """
         self.OrdinalPreferences = preferences
 
-    def get_preferences(self, ) -> list[int]:
-        """
-        Get the ordinal preferences of the voter.
-        :return: the ordinal preferences of the voter.
-        """
-        return self.OrdinalPreferences
-
-    def get_preference(self, index: int) -> int:
-        """
-        Get the candidate at the given index in the voter's ordinal preferences.
-        :param index: the index of the preference to get.
-        :return: the ordinal preference of the voter at the given index.
-        """
-        return self.OrdinalPreferences[index]
-
-    def split_candidates(self, candidates: list[int]) -> tuple[list[int], list[int]]:
+    def split_candidates(self, candidates: list[int]) -> list[list[int]]:
         """
         Split the candidates evenly into those preferred and not preferred by the voter.
         :param candidates: the list of candidates to split.
         :return: a tuple containing the preferred and not preferred candidates.
         """
-        # Every candidate is in the voter's preferences so the criteria is if half or more of the candidates are
-        # worse than the candidate in question, the candidate is preferred
-        need_to_find = len(candidates) // 2
-        candidates = set(candidates)
-        preferred_candidate = []
-        for candidate in self.OrdinalPreferences:
-            if need_to_find == 0:
-                return preferred_candidate, list(candidates)
-            if candidate in candidates:
-                preferred_candidate.append(candidate)
-                candidates.discard(candidate)
-                need_to_find -= 1
+        return self.general_bucket_question(candidates, [0.5, 0.5])
 
-    def general_bucket_question(self, candidates: list[int], question: list[int]) -> list[list[int]]:
+    def general_bucket_question(self, candidates: list[int], question: list[float]) -> list[list[int]]:
         """
-        Split the candidates into buckets based on the voter's answers to the general bucket question.
+        Split the given candidates into buckets based on the voter's preferences.
         :param candidates: the list of candidates to split.
-        :param question: the bucket sizes for the question.
+        :param question: the bucket ratios for the question.
         :return: a list of candidates in each bucket where the first bucket is the most preferred and
         the last is the least preferred.
         """
         buckets = [[] for _ in question]
         candidates = set(candidates)
+        temp = len(candidates)
+        for i, bucket in enumerate(question):
+            bucket = int(bucket*len(candidates))
+            temp -= bucket
+            question[i] = bucket
+        question[-1] += temp
         left_to_fill = question[0]
         current_bucket = 0
         for candidate in self.OrdinalPreferences:

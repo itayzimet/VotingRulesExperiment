@@ -35,7 +35,7 @@ class Kborda(VotingRule):
         rank_scores = np.arange(num_candidates, 0, -1)
         # Count the votes for each candidate
         for voter in voters:
-            voter_preferences = voter.get_preferences()
+            voter_preferences = voter.OrdinalPreferences
             scores[voter_preferences] += rank_scores
         # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]

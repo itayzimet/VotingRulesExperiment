@@ -1,11 +1,21 @@
-def get_price(question: list[int]):
+#%%
+def get_price (candidates: list[int], buckets: list[float]) -> float:
     """
     Get the price of the question.
-    :param question: the question to get the price of.
-    :return: the price of the question.
+    :param candidates: list of candidates
+    :param buckets: list of bucket ratios
+    :return: the price of the question
     """
-    return 1
-    # for example, if the question is [1,19] the price will be (1)*1 = 1
-    # if the question is [10,10] the price will be (10)*1 = 10
-    # if the question is [10,10,10] the price will be (10+10)*2 = 40
-    # if the question is [20,10,20] the price will be (20+10)*2 = 60
+    return len(candidates) * (1 - get_variance(buckets))
+
+
+def get_variance (buckets: list[float]) -> float:
+    """
+    Get the variance of the buckets
+    :param buckets: list of bucket ratios
+    :return: the variance of the buckets
+    """
+    temp = 0
+    for bucket in buckets:
+        temp += (bucket - (1 / len(buckets))) ** 2
+    return temp / len(buckets)

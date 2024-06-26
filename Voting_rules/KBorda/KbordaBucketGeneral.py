@@ -26,21 +26,20 @@ class KbordaBucketGeneral(VotingRuleConstrained):
             if self.questions[i] == 0:
                 break
             root_node = Node([], candidates)
-            self.__fill_tree(i, voter, root_node, [num_candidates // 2] * 2)
+            self.__fill_tree(i, voter, root_node, [0.5, 0.5])
             rank = num_candidates
             self.__score_candidates(root_node, scores, rank)
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
-    def __fill_tree(self, voter_index: int, voter: Voter, node: Node, question_type: list[int]) -> None:
+    def __fill_tree(self, voter_index: int, voter: Voter, node: Node, question_type: list[float]) -> None:
         if self.questions[voter_index] <= 0 or len(node.value) == 1:
             return
-        self.questions[voter_index] -= 1
-        buckets = voter.general_bucket_question(node.value, question_type)
+        self.questions[voter_index] -= questionPrice.get_price(node.value, question_type)
+        buckets = voter.general_bucket_question(node.value, [0.5, 0.5])
 
         for bucket in buckets:
             node.sons.append(Node([], bucket))
-            next_question_type = [len(bucket) // 2, len(bucket) - len(bucket) // 2]
-            self.__fill_tree(voter_index, voter, node.sons[-1], next_question_type)
+            self.__fill_tree(voter_index, voter, node.sons[-1], question_type.copy())
 
     def __score_candidates(self, node: Node, scores: np.ndarray, rank: int) -> None:
         if len(node.sons) == 0:  # node is a leaf
