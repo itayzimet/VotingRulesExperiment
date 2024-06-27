@@ -1,4 +1,5 @@
 from Experiment_framework.Election import Election
+from Voting_rules import questionPrice
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 import numpy as np
 import bottleneck as bn
@@ -30,9 +31,17 @@ class KbordaNextLastEQ(VotingRuleConstrained):
         rank_scores = np.arange(num_candidates, 0, -1)
         # Pre-calculate the scores for each rank
         # rank_scores = [0, -1, -2, -3, ..., -num_candidates]
-        questions_per_voter = min((question_limit // len(voters)) // 2, num_candidates)
+        questions_per_voter = (question_limit // len(voters)) // 2
+        temp = questions_per_voter
+        temp_candidates = candidates.copy()
+        counter = 0
+        while temp > 0 and len(temp_candidates) > 0:
+            temp -= questionPrice.get_price(temp_candidates, [1/len(temp_candidates), 1 - 2/len(temp_candidates), 1/len(temp_candidates)])
+            temp_candidates = temp_candidates[1:]
+            counter += 1
+        questions_per_voter = counter
         for voter in voters:
-            if questions_per_voter == 0:
+            if questions_per_voter <= 0:
                 return bn.argpartition(scores, num_winners)[-num_winners:]
             if 2*questions_per_voter >= num_candidates:
                 scores[voter.OrdinalPreferences] += rank_scores
