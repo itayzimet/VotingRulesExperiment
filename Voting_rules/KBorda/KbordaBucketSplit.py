@@ -13,7 +13,7 @@ class Node:
         self.value = value
 
 
-class KbordaBucketGeneral(VotingRuleConstrained):
+class KbordaBucketSplit(VotingRuleConstrained):
     questions = []
 
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:

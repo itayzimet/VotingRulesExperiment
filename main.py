@@ -6,7 +6,7 @@ import numpy as np
 
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
-from Voting_rules.KBorda.KbordaBucketGeneral import KbordaBucketGeneral
+from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
 from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
 from Voting_rules.KBorda.KbordaLastFCFS import KbordaLastFCFS
 from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
@@ -45,7 +45,7 @@ def main ():
             KbordaNextEq, KbordaNextFCFS,
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
-            KbordaBucketGeneral, VotingRuleRandom],
+            KbordaBucketSplit, VotingRuleRandom],
         number_of_questions = range(1, 150000, 1000), number_of_runs = 5,
         multithreaded = True)
     #%%
