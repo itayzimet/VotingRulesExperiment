@@ -1,4 +1,7 @@
 #%%
+import os
+import pickle
+
 import numpy as np
 
 from Experiment_framework.main_helper import *
@@ -40,6 +43,8 @@ def main ():
         [
             KbordaSplitEq, KbordaSplitFCFS,
             KbordaNextEq, KbordaNextFCFS,
+            KbordaLastEq, KbordaLastFCFS,
+            KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketGeneral, VotingRuleRandom],
         number_of_questions = range(1, 150000, 1000), number_of_runs = 5,
         multithreaded = True)
@@ -51,8 +56,34 @@ def main ():
     # plot_graph(sntv_test_parameters, averages)
     #%%
     """KBorda testing"""
+    #%%
+    # load averages from pickle file
+    saved_averages = {}
+    try:
+        with open('averages.pickle', 'rb') as f:
+            saved_averages = pickle.load(f)
+            no_of_saved_runs = int(saved_averages[1])
+            saved_averages = saved_averages[0]
+    except:
+        pass
+    #%%
     # Run the test for KBorda
     averages = run_test(kborda_test_parameters)
+    # Average the saved averages and the new averages
+    if saved_averages != {}:
+        for key in averages:
+            if key in saved_averages:
+                for i, average in enumerate(averages[key]):
+                    averages[key][i] = (((averages[key][i] * kborda_test_parameters['number_of_runs'] +
+                                        saved_averages[key][i] * no_of_saved_runs)) /
+                                        (kborda_test_parameters['number_of_runs'] + no_of_saved_runs))
+                kborda_test_parameters['number_of_runs'] = int(no_of_saved_runs) + int(kborda_test_parameters['number_of_runs'])
+    # add averages to pickle file
+    if os.path.exists('averages.pickle'):
+        os.remove('averages.pickle')
+    with open('averages.pickle', 'wb') as f:
+        # add the averages to a new pickle file
+        pickle.dump([averages, int(kborda_test_parameters['number_of_runs'])], f)
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
     for key in averages:
