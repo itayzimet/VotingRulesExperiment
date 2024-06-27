@@ -74,16 +74,19 @@ def main ():
         for key in averages:
             if key in saved_averages:
                 for i, average in enumerate(averages[key]):
-                    averages[key][i] = (((averages[key][i] * kborda_test_parameters['number_of_runs'] +
-                                        saved_averages[key][i] * no_of_saved_runs)) /
-                                        (kborda_test_parameters['number_of_runs'] + no_of_saved_runs))
-                kborda_test_parameters['number_of_runs'] = int(no_of_saved_runs) + int(kborda_test_parameters['number_of_runs'])
+                    averages[key][i] = (((
+                        averages[key][i] * kborda_test_parameters['number_of_runs'] +
+                        saved_averages[key][i] * no_of_saved_runs)) /
+                        (kborda_test_parameters['number_of_runs'] + no_of_saved_runs))
+        no_runs = int(no_of_saved_runs) + int(kborda_test_parameters['number_of_runs'])
+        kborda_test_parameters['number_of_runs'] = no_runs
     # add averages to pickle file
     if os.path.exists('averages.pickle'):
         os.remove('averages.pickle')
     with open('averages.pickle', 'wb') as f:
         # add the averages to a new pickle file
-        pickle.dump([averages, int(kborda_test_parameters['number_of_runs'])], f)
+        data = [averages, int(kborda_test_parameters['number_of_runs'])]
+        pickle.dump(data, f)
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
     for key in averages:
@@ -95,5 +98,6 @@ def main ():
     plot_graph(kborda_test_parameters, averages)
 
 
+#%%
 if __name__ == '__main__':
     main()
