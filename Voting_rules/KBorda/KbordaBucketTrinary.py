@@ -13,7 +13,7 @@ class Node:
         self.value = value
 
 
-class KbordaBucketSplit(VotingRuleConstrained):
+class KbordaBucketTrinary(VotingRuleConstrained):
     questions = []
 
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
@@ -26,7 +26,7 @@ class KbordaBucketSplit(VotingRuleConstrained):
             if self.questions[i] <= 0:
                 break
             root_node = Node([], candidates)
-            self.__fill_tree(i, voter, root_node, [0.5, 0.5])
+            self.__fill_tree(i, voter, root_node, [1/3, 1/3, 1/3])
             rank = num_candidates
             self.__score_candidates(root_node, scores, rank)
         return bn.argpartition(scores, num_winners)[-num_winners:]
@@ -54,4 +54,4 @@ class KbordaBucketSplit(VotingRuleConstrained):
 
     @staticmethod
     def __str__():
-        return "K-Borda Bucket Split"
+        return "K-Borda Bucket trinary"

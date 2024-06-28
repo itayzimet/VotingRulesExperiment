@@ -7,6 +7,7 @@ import numpy as np
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
+from Voting_rules.KBorda.KbordaBucketTrinary import KbordaBucketTrinary
 from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
 from Voting_rules.KBorda.KbordaLastFCFS import KbordaLastFCFS
 from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
@@ -26,7 +27,7 @@ graph for the experiment.
 
 
 #%%
-def main ():
+def main():
     """
     Main function to run the experiment
     :return: None
@@ -36,7 +37,7 @@ def main ():
                                 constrained_voting_rule = [SntvConstrained, VotingRuleRandom],
                                 number_of_questions = list(range(1, 1000, 1)), number_of_runs = 20,
                                 multithreaded = False)
-    kborda_test_parameters = dict(
+    test_parameters = dict(
         target_committee_size = 50, num_candidates = 100, num_voters = 100,
         voting_rule = Kborda,
         constrained_voting_rule =
@@ -45,8 +46,9 @@ def main ():
             KbordaNextEq, KbordaNextFCFS,
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
-            KbordaBucketSplit, VotingRuleRandom],
-        number_of_questions = range(1, 150000, 1000), number_of_runs = 5,
+            KbordaBucketSplit, KbordaBucketTrinary,
+            VotingRuleRandom],
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 1,
         multithreaded = True)
     #%%
     # """SNTV testing"""
@@ -68,24 +70,25 @@ def main ():
         pass
     #%%
     # Run the test for KBorda
-    averages = run_test(kborda_test_parameters)
+    averages = run_test(test_parameters)
+    #%%
     # Average the saved averages and the new averages
     if saved_averages != {}:
         for key in averages:
             if key in saved_averages:
                 for i, average in enumerate(averages[key]):
                     averages[key][i] = (((
-                        averages[key][i] * kborda_test_parameters['number_of_runs'] +
+                        averages[key][i] * test_parameters['number_of_runs'] +
                         saved_averages[key][i] * no_of_saved_runs)) /
-                        (kborda_test_parameters['number_of_runs'] + no_of_saved_runs))
-        no_runs = int(no_of_saved_runs) + int(kborda_test_parameters['number_of_runs'])
-        kborda_test_parameters['number_of_runs'] = no_runs
+                        (test_parameters['number_of_runs'] + no_of_saved_runs))
+        no_runs = int(no_of_saved_runs) + int(test_parameters['number_of_runs'])
+        test_parameters['number_of_runs'] = no_runs
     # add averages to pickle file
     if os.path.exists('averages.pickle'):
         os.remove('averages.pickle')
     with open('averages.pickle', 'wb') as f:
         # add the averages to a new pickle file
-        data = [averages, int(kborda_test_parameters['number_of_runs'])]
+        data = [averages, int(test_parameters['number_of_runs'])]
         pickle.dump(data, f)
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
@@ -95,7 +98,7 @@ def main ():
     # Print the average Accuracy for each voting rule
     print(total_averages)
     # Plot the graph for KBorda
-    plot_graph(kborda_test_parameters, averages)
+    plot_graph(test_parameters, averages)
 
 
 #%%
