@@ -29,7 +29,7 @@ class Experiment:
         __str__()
             Returns a string representation of the Experiment
     """
-
+    
     def __init__(self, target_committee_size: int, election: Election, voting_rule: VotingRule,
                  constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int]):
         """
@@ -47,7 +47,7 @@ class Experiment:
         self.votingRule = voting_rule
         self.constrainedVotingRule = constrained_voting_rule
         self.numberOfQuestions = number_of_questions
-
+        
         # Find the committees
         self.true_committee = self.votingRule.find_winners(self.election, self.targetCommitteeSize)
         self.committees = []
@@ -59,7 +59,7 @@ class Experiment:
         # find the distance between the true committee and the committees
         for committee in self.committees:
             self.committeeDistance.append(committee_distance(self.true_committee, committee))
-
+    
     def export_to_excel(self) -> 'Experiment':
         """
         Exports the data to an Excel file
@@ -74,7 +74,7 @@ class Experiment:
         # Write the DataFrame to an Excel file
         df.to_excel(f"{self.votingRule.__str__()}_{self.constrainedVotingRule.__str__()}.xlsx")
         return self
-
+    
     def __str__(self):
         new_line = '\n'
         return f"""Experiment with candidates: {self.election.candidates}

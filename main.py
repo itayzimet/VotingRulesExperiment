@@ -12,7 +12,6 @@ from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
 from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
 from Voting_rules.KBorda.KbordaNextLastEQ import KbordaNextLastEQ
 from Voting_rules.KBorda.KbordaNextLastFCFS import KbordaNextLastFCFS
-from Voting_rules.KBorda.KbordaSplitEq import KbordaSplitEq
 from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
 from Voting_rules.SNTV.SNTV import SNTV
 from Voting_rules.SNTV.SntvConstrained import SntvConstrained
@@ -31,16 +30,12 @@ def main():
     :return: None
     """
     #%%
-    sntv_test_parameters = dict(target_committee_size = 10, num_candidates = 100, num_voters = 10, voting_rule = SNTV,
-                                constrained_voting_rule = [SntvConstrained, VotingRuleRandom],
-                                number_of_questions = list(range(1, 1000, 1)), number_of_runs = 20,
-                                multithreaded = False)
     test_parameters = dict(
         target_committee_size = 50, num_candidates = 100, num_voters = 100,
         voting_rule = Kborda,
         constrained_voting_rule =
         [
-            KbordaSplitEq, KbordaSplitFCFS,
+            KbordaSplitFCFS,
             KbordaNextEq, KbordaNextFCFS,
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
@@ -48,12 +43,6 @@ def main():
             VotingRuleRandom],
         number_of_questions = range(1, 150000, 1000), number_of_runs = 20,
         multithreaded = True)
-    #%%
-    # """SNTV testing"""
-    # # Run the test for SNTV
-    # averages = run_test(sntv_test_parameters)
-    # # Plot the graph for SNTV
-    # plot_graph(sntv_test_parameters, averages)
     #%%
     """KBorda testing"""
     #%%

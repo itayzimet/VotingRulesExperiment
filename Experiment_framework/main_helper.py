@@ -72,10 +72,10 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                                       rule,
                                                       number_of_questions)
                                                       for _ in range(number_of_runs)]),
-                                        total=number_of_runs, desc='Running experiments'))
+                                        total = number_of_runs, desc = 'Running experiments'))
         else:
             differences = []
-            for _ in tqdm(range(number_of_runs), desc='Running experiments', total=number_of_runs):
+            for _ in tqdm(range(number_of_runs), desc = 'Running experiments', total = number_of_runs):
                 differences.append(
                     run_experiment(target_committee_size, num_candidates, num_voters, voting_rule, rule,
                                    number_of_questions))
@@ -100,15 +100,17 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
     # make it a scatter plot
     fig = px.scatter()
     for rule, average in averages.items():
-        fig.add_scatter(x=list(test_params['number_of_questions']), y=average, mode='markers', name=rule.__str__())
-    fig.update_layout(title=f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
-                      xaxis_title='Number of questions',
-                      yaxis_title='Distance between the committees')
-
+        fig.add_scatter(x = list(test_params['number_of_questions']), y = average, mode = 'markers',
+                        name = rule.__str__())
+    fig.update_layout(
+        title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
+        xaxis_title = 'Number of questions',
+        yaxis_title = 'Distance between the committees')
+    
     fig.show()
 
 
-def write_averages_to_file (averages, test_parameters):
+def write_averages_to_file(averages, test_parameters):
     if os.path.exists('averages.pickle'):
         os.remove('averages.pickle')
     with open('averages.pickle', 'wb') as f:
@@ -130,16 +132,16 @@ def combine_saved_current(averages: dict[Any, list[int]], no_of_saved_runs: int,
         no_runs = int(no_of_saved_runs) + int(test_parameters['number_of_runs'])
         test_parameters['number_of_runs'] = no_runs
         return averages, test_parameters
+    return averages, test_parameters
 
 
-def extract_saved_averages (file: str = 'averages.pickle') -> Tuple[int, Dict]:
+def extract_saved_averages(file: str = 'averages.pickle') -> Tuple[int, Dict]:
     saved_averages = {}
     try:
         with open(file, 'rb') as f:
             saved_averages = pickle.load(f)
             no_of_saved_runs = int(saved_averages[1])
             saved_averages = saved_averages[0]
+            return no_of_saved_runs, saved_averages
     except:
-        pass
-    return no_of_saved_runs, saved_averages
-
+        return 0, saved_averages

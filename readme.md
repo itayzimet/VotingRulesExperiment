@@ -35,14 +35,14 @@ python main.py
 ```
 ## Experimental protocol
 ### Experiment control parameters
-- Number of voters: 10
+- Number of voters: 100
 - Number of candidates: 100
 - Target committee size: 50
-- Number of questions: 1-1000 (increment by 1)
+- Question budgets: 1 - 150000 (jumps of 1000)
 - Number of runs: 20
-- Voting system: Kborda, SNTV
-- Question type: Next best candidate (Next), halve set of candidates (Split)
-- Voting system parameters: None
+- Voting system: Kborda
+- Question type: Next, Last, Split, SplitTrinary - all using the refinement query syntax
+- Distance metric: size of the symmetric difference between the approximation and the committee
 
 ### Data fabrication
 - Generate candidates labeled 0-number of candidates - 1
@@ -65,26 +65,26 @@ python main.py
 
 ### Voting systems
 - Kborda: Select the top k candidates with the highest borda score
-  - KbordaNextEq: use the (next) question to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters
-  - KbordaNextFCFS: same as KbordaNextEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
-  - KbordaSplitEq: use the (split) question to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters. works by recursively splitting the set of candidates in half for each voter to get an approximation of his ordinal preferences.
-  - KbordaSplitFCFS: same as KbordaSplitEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
-  - KbordaNextLastEq: use the (next) and (last) questions to select the top k candidates with the highest borda score under a question number constraint while maintaining the same number of questions for all voters
-  - KbordaNextLastFCFS: same as KbordaNextLastEq but instead of maintaining the same number of questions for all voters, first use all questions you can for the first voter, then use all questions you can for the second voter, and so on
-- SNTV: Select the top k candidates with the highest number of votes
-  - SNTVConstrained: use the (next) question to select the top k candidates with the highest number of votes under a question number constraint, while using the question on a first-come-first-serve basis.
+  - KbordaBucketSplit: approximate the voters preferences by asking the voter to split the candidates into two sets, the first set containing the candidates he prefers over the second set. Then select the top k candidates with the highest borda score. Budget is distributed evenly between the voters.
+  - KbordaBucketTrinary: same as KbordaBucketSplit but the voter is asked to split the candidates into three sets instead of two
+  - KbordaNextEq: approximate the voters preferences by asking the voter for the next best candidate in his preference list. Then select the top k candidates with the highest borda score. Budget is distributed evenly between the voters.
+  - KbordaLastEq: same as KbordaNextEq but the voter is asked for the next worst candidate in his preference list
+  - KbordaNextLastEq: same as KbordaNextEq but the voter is asked for the next best and worst candidate in his preference list
+  - KbordaNextFCFS: same as KbordaNextEq but the budget is distributed first come first serve
+  - KbordaLastFCFS: same as KbordaLastEq but the budget is distributed first come first serve
+  - KbordaNextLastFCFS: same as KbordaNextLastEq but the budget is distributed first come first serve
 - Random: Select k candidates at random
 
 ### Question types
 - Next: Ask the voter for the next best candidate in his preference list
 - Last: Ask the voter for the next worst candidate in his preference list
 - Split: Ask the voter to halve the set of candidates provided into two sets, the first set containing the candidates he prefers over the second set
+- SplitTrinary: Ask the voter to split the set of candidates provided into three sets, the first set containing the candidates he prefers over the second set, and the second set containing the candidates he prefers over the third set
+- All question types use the refinement query syntax described in the latex document
 
 ### Distance metric
 - The only metric currently implemented is the size of the symmetric difference between the approximation and the committee
 
 ## todo
-- [ ] Implement more voting systems
-- [ ] Implement more approximation methods 
-- [ ] Implement more distance metrics
-- [ ] Implement more question types 
+- Make faster
+- Make AI
