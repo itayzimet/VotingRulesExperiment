@@ -1,6 +1,4 @@
 #%%
-import os
-import pickle
 
 import numpy as np
 
@@ -48,7 +46,7 @@ def main():
             KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketSplit, KbordaBucketTrinary,
             VotingRuleRandom],
-        number_of_questions = range(1, 150000, 1000), number_of_runs = 1,
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 20,
         multithreaded = True)
     #%%
     # """SNTV testing"""
@@ -60,36 +58,15 @@ def main():
     """KBorda testing"""
     #%%
     # load averages from pickle file
-    saved_averages = {}
-    try:
-        with open('averages.pickle', 'rb') as f:
-            saved_averages = pickle.load(f)
-            no_of_saved_runs = int(saved_averages[1])
-            saved_averages = saved_averages[0]
-    except:
-        pass
+    no_of_saved_runs, saved_averages = extract_saved_averages()
     #%%
     # Run the test for KBorda
     averages = run_test(test_parameters)
     #%%
     # Average the saved averages and the new averages
-    if saved_averages != {}:
-        for key in averages:
-            if key in saved_averages:
-                for i, average in enumerate(averages[key]):
-                    averages[key][i] = (((
-                        averages[key][i] * test_parameters['number_of_runs'] +
-                        saved_averages[key][i] * no_of_saved_runs)) /
-                        (test_parameters['number_of_runs'] + no_of_saved_runs))
-        no_runs = int(no_of_saved_runs) + int(test_parameters['number_of_runs'])
-        test_parameters['number_of_runs'] = no_runs
+    averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages, test_parameters)
     # add averages to pickle file
-    if os.path.exists('averages.pickle'):
-        os.remove('averages.pickle')
-    with open('averages.pickle', 'wb') as f:
-        # add the averages to a new pickle file
-        data = [averages, int(test_parameters['number_of_runs'])]
-        pickle.dump(data, f)
+    write_averages_to_file(averages, test_parameters)
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
     for key in averages:

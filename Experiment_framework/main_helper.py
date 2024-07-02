@@ -6,11 +6,15 @@ It contains the following functions:
     - run_experiment_wrapper(args) -> list[int]
 """
 from multiprocessing import Pool
-from typing import Any
+import os
+import pickle
+from typing import Any, Tuple, Dict
+
+import plotly.express as px
 from tqdm import tqdm
+
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
-import plotly.express as px
 
 
 def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
@@ -102,3 +106,40 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
                       yaxis_title='Distance between the committees')
 
     fig.show()
+
+
+def write_averages_to_file (averages, test_parameters):
+    if os.path.exists('averages.pickle'):
+        os.remove('averages.pickle')
+    with open('averages.pickle', 'wb') as f:
+        # add the averages to a new pickle file
+        data = [averages, int(test_parameters['number_of_runs'])]
+        pickle.dump(data, f)
+
+
+def combine_saved_current(averages: dict[Any, list[int]], no_of_saved_runs: int, saved_averages: dict,
+                          test_parameters: dict) -> Tuple[dict, dict]:
+    if saved_averages != {}:
+        for key in averages:
+            if key in saved_averages:
+                for i, average in enumerate(averages[key]):
+                    averages[key][i] = (((
+                            averages[key][i] * test_parameters['number_of_runs'] +
+                            saved_averages[key][i] * no_of_saved_runs)) /
+                                        (test_parameters['number_of_runs'] + no_of_saved_runs))
+        no_runs = int(no_of_saved_runs) + int(test_parameters['number_of_runs'])
+        test_parameters['number_of_runs'] = no_runs
+        return averages, test_parameters
+
+
+def extract_saved_averages (file: str = 'averages.pickle') -> Tuple[int, Dict]:
+    saved_averages = {}
+    try:
+        with open(file, 'rb') as f:
+            saved_averages = pickle.load(f)
+            no_of_saved_runs = int(saved_averages[1])
+            saved_averages = saved_averages[0]
+    except:
+        pass
+    return no_of_saved_runs, saved_averages
+
