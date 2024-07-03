@@ -2,7 +2,8 @@
 This module is a helper module for the main part of the experiment
 
 It contains the following functions:
-    - run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule, constrained_voting_rule, number_of_questions: list[int]) -> list[int]
+    - run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
+    constrained_voting_rule, number_of_questions: list[int]) -> list[int]
     - run_experiment_wrapper(args) -> list[int]
 """
 from multiprocessing import Pool
@@ -20,7 +21,8 @@ from Experiment_framework.Experiment_helper import fabricate_election
 def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
                    constrained_voting_rule, number_of_questions: list[int]) -> list[int]:
     """
-    Run the experiment a single time with one fabricated election and return the distances between the committees for that election and the given numbers of questions
+    Run the experiment a single time with one fabricated election and return the distances between the committees for
+    that election and the given numbers of questions
     :param target_committee_size: the size of the committee to be found
     :param num_candidates: the number of candidates in the election
     :param num_voters: the number of voters in the election
@@ -103,7 +105,9 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
         fig.add_scatter(x = list(test_params['number_of_questions']), y = average, mode = 'markers',
                         name = rule.__str__())
     fig.update_layout(
-        title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, {test_params['num_candidates']} candidates, {test_params['num_voters']} voters, {test_params['number_of_runs']} runs",
+        title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, "
+                f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
+                f"voters, {test_params['number_of_runs']} runs",
         xaxis_title = 'Number of questions',
         yaxis_title = 'Distance between the committees')
     

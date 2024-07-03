@@ -1,8 +1,9 @@
+import bottleneck as bn
 import numpy as np
+
 from Experiment_framework.Election import Election
 from Voting_rules import questionPrice
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
-import bottleneck as bn
 
 
 class KbordaLastFCFS(VotingRuleConstrained):
@@ -13,11 +14,12 @@ class KbordaLastFCFS(VotingRuleConstrained):
     Methods: find_winners(election, num_winners) -> list[int]: returns the winners of the election according to the
     K-Borda rule with the last question with budget distributed according to the first-come-first-serve principle
     """
-
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
-        Returns a list of the winners of the election according to the K-Borda rule with last k truncated ballots with the
+        Returns a list of the winners of the election according to the K-Borda rule with last k truncated ballots
+        with the
         budget k distributed according to the first-come-first-serve principle
         :param election: the election to find the winners for
         :param num_winners: the number of winners to find
@@ -29,7 +31,7 @@ class KbordaLastFCFS(VotingRuleConstrained):
         voters = election.voters
         candidates = election.candidates
         num_candidates = len(candidates)
-        scores = np.zeros(num_candidates, dtype=int)
+        scores = np.zeros(num_candidates, dtype = int)
         rank_scores = np.arange(num_candidates, 0, -1)
         # Calculate the budget for each voter
         max_questions_per_voter = question_limit // len(voters)
@@ -44,7 +46,8 @@ class KbordaLastFCFS(VotingRuleConstrained):
             temp_candidates = candidates.copy()
             counter = 0
             while temp > 0 and len(temp_candidates) > 0:
-                temp -= questionPrice.get_price(temp_candidates, [1 - 1/len(temp_candidates),1/len(temp_candidates)])
+                temp -= questionPrice.get_price(temp_candidates,
+                                                [1 - 1 / len(temp_candidates), 1 / len(temp_candidates)])
                 temp_candidates = temp_candidates[1:]
                 counter += 1
             questions_per_voter = counter
@@ -53,10 +56,10 @@ class KbordaLastFCFS(VotingRuleConstrained):
             scores[voter_preferences] += rank_scores[-questions_per_voter:]
             if questions_per_voter < num_candidates:
                 scores[voter.OrdinalPreferences[:-questions_per_voter]] += (
-                        sum(rank_scores[:-questions_per_voter])//(num_candidates - questions_per_voter))
+                        sum(rank_scores[:-questions_per_voter]) // (num_candidates - questions_per_voter))
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]
-
+    
     @staticmethod
     def __str__():
         """

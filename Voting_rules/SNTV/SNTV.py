@@ -13,7 +13,7 @@ class SNTV(VotingRule):
         find_winners(election, num_winners) -> list[int]:
             Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
     """
-
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int) -> list[int]:
         """
@@ -30,7 +30,7 @@ class SNTV(VotingRule):
             scores[voter.get_preference(0)] += 1
         # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]
-
+    
     @staticmethod
     def __str__():
         """

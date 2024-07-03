@@ -11,6 +11,7 @@ class VotingRule:
         find_winners(election, num_winners) -> list[int]:
             Returns a list of the winners of the election
     """
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int) -> list[int]:
         """
@@ -20,7 +21,7 @@ class VotingRule:
         :return: a list of the winners of the election
         """
         pass
-
+    
     @staticmethod
     def __str__():
         return "Voting Rule"

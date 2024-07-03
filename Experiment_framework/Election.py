@@ -21,7 +21,7 @@ class Election:
         __init__(candidates: list[int], voters: list[Voter]) -> None:
             Constructor of the Election class.
     """
-
+    
     def __init__(self, candidates: list[int], voters: list[Voter]) -> None:
         """
         Constructor of the Election class.

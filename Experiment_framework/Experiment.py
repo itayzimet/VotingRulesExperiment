@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from Experiment_framework.Experiment_helper import *
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
-from Experiment_framework.Experiment_helper import *
 
 
 class Experiment:
@@ -31,7 +31,8 @@ class Experiment:
     """
     
     def __init__(self, target_committee_size: int, election: Election, voting_rule: VotingRule,
-                 constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int], question_type: list[float] = None):
+                 constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int],
+                 question_type: list[float] = None):
         """
         Constructor of the Experiment class
         :type constrained_voting_rule: VotingRuleConstrained

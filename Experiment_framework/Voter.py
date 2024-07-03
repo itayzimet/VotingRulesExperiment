@@ -21,14 +21,14 @@ class Voter:
         __str__()
             Return a string representation of the voter.
     """
-
+    
     def __init__(self, preferences: list[int]) -> None:
         """
         Initialize the voter with ordinal preferences.
         :param preferences: list of integers representing the ordinal preferences of the voter.
         """
         self.OrdinalPreferences = preferences
-
+    
     def split_candidates(self, candidates: list[int]) -> list[list[int]]:
         """
         Split the candidates evenly into those preferred and not preferred by the voter.
@@ -36,7 +36,7 @@ class Voter:
         :return: a tuple containing the preferred and not preferred candidates.
         """
         return self.general_bucket_question(candidates, [0.5, 0.5])
-
+    
     def general_bucket_question(self, candidates: list[int], question: list[float]) -> list[list[int]]:
         """
         Split the given candidates into buckets based on the voter's preferences.
@@ -49,7 +49,7 @@ class Voter:
         candidates = set(candidates)
         temp = len(candidates)
         for i, bucket in enumerate(question):
-            bucket = int(bucket*len(candidates))
+            bucket = int(bucket * len(candidates))
             temp -= bucket
             question[i] = bucket
         question[-1] += temp
@@ -66,7 +66,7 @@ class Voter:
                         break
                     left_to_fill = question[current_bucket]
         return buckets
-
+    
     def __str__(self):
         """
         Return a string representation of the voter.
