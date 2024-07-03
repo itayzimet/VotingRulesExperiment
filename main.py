@@ -13,8 +13,6 @@ from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
 from Voting_rules.KBorda.KbordaNextLastEQ import KbordaNextLastEQ
 from Voting_rules.KBorda.KbordaNextLastFCFS import KbordaNextLastFCFS
 from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
-from Voting_rules.SNTV.SNTV import SNTV
-from Voting_rules.SNTV.SntvConstrained import SntvConstrained
 from Voting_rules.VotingRuleRandom import VotingRuleRandom
 
 """

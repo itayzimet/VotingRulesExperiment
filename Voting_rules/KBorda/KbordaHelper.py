@@ -1,3 +1,5 @@
+import inspect
+
 import numpy as np
 
 from Experiment_framework.Voter import Voter
@@ -31,7 +33,7 @@ class KbordaHelper:
         :param rank: the rank of the candidate
         :return: None
         """
-        if len(node.sons) == 0:  # node is a leaf
+        if len(node.sons) <= 1:  # node is a leaf
             # score them all based on the position of the leaf regardless of the order in the leaf
             scores[node.value] += rank - len(node.value)//2
             return
@@ -52,6 +54,8 @@ class KbordaHelper:
         :return: None
         """
         if self.questions[voter_idx] <= 0 or len(current_node.value) <= 1:
+            return
+        if len(inspect.stack(0)) >= 40:
             return
         self.questions[voter_idx] -= questionPrice.get_price(current_node.value, question_type)
         buckets = voter.general_bucket_question(current_node.value, question_type.copy())

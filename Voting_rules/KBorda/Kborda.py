@@ -41,6 +41,21 @@ class Kborda(VotingRule):
         return bn.argpartition(scores, num_winners)[-num_winners:]
 
     @staticmethod
+    def calculate_scores(election: Election) -> list[int]:
+        # Get the voters, candidates and the number of candidates
+        voters = election.voters
+        num_candidates = election.numberOfCandidates
+        # Initialize the scores of the candidates
+        scores = np.zeros(num_candidates, dtype=int)
+        # Pre-calculate the scores for each rank
+        rank_scores = np.arange(num_candidates, 0, -1)
+        # Count the votes for each candidate
+        for voter in voters:
+            voter_preferences = voter.OrdinalPreferences
+            scores[voter_preferences] += rank_scores
+        return list(scores)
+
+    @staticmethod
     def __str__():
         """
         Returns the name of the voting rule

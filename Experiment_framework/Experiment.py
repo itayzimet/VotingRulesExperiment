@@ -31,7 +31,7 @@ class Experiment:
     """
     
     def __init__(self, target_committee_size: int, election: Election, voting_rule: VotingRule,
-                 constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int]):
+                 constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int], question_type: list[float] = None):
         """
         Constructor of the Experiment class
         :type constrained_voting_rule: VotingRuleConstrained
@@ -40,6 +40,7 @@ class Experiment:
         :param voting_rule: the voting rule to find the committee with
         :param constrained_voting_rule: the constrained voting rule to find the committee with
         :param number_of_questions: the number of questions all voters can answer for the constrained voting rule
+        :param question_type: the question type for the constrained voting rule
         """
         # Set the attributes
         self.targetCommitteeSize = target_committee_size
@@ -54,7 +55,10 @@ class Experiment:
         self.committeeDistance = []
         # Find the committees with the constrained voting rule
         for i in self.numberOfQuestions:
-            rule = constrained_voting_rule()
+            if question_type is not None:
+                rule = constrained_voting_rule(question_type)
+            else:
+                rule = constrained_voting_rule()
             self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
         for committee in self.committees:
