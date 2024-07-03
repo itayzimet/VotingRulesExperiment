@@ -22,13 +22,13 @@ class QuestionGenerator(nn.Module):
         )
     
     def forward(self, x, temperature = 1.0):
-        logits = self.network(x)
-        probabilities = torch.softmax(logits / temperature, dim = 1).squeeze()
+        temp = self.network(x)
+        probabilities = torch.softmax(temp / temperature, dim = 1).squeeze()
         return probabilities
 
 
-def train_model(model, num_epochs = 100, learning_rate = 0.001):
-    optimizer = optim.Adam(model.parameters(), lr = learning_rate)
+def train_model(_model, num_epochs = 100, learning_rate = 0.001):
+    optimizer = optim.Adam(_model.parameters(), lr = learning_rate)
     criterion = nn.MSELoss()
     
     for epoch in range(num_epochs):
@@ -41,7 +41,7 @@ def train_model(model, num_epochs = 100, learning_rate = 0.001):
             0)
         
         optimizer.zero_grad()
-        question = model(input_tensor).squeeze()
+        question = _model(input_tensor).squeeze()
         
         election = fabricate_election(num_candidates, num_voters)
         true_scores = Kborda.calculate_scores(election)
@@ -67,7 +67,7 @@ def train_model(model, num_epochs = 100, learning_rate = 0.001):
             print(f"Question: {question.tolist()}")
             print(f"Symmetric difference: {symmetric_difference}")
     
-    return model
+    return _model
 
 
 def evaluate_model(model, num_tests = 100):
