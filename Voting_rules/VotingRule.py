@@ -24,4 +24,8 @@ class VotingRule:
     
     @staticmethod
     def __str__():
+        """
+        Returns the name of the voting rule
+        :return: the name of the voting rule
+        """
         return "Voting Rule"

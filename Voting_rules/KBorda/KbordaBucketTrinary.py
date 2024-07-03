@@ -2,11 +2,9 @@ import bottleneck as bn
 import numpy as np
 
 from Experiment_framework.Election import Election
-from Experiment_framework.Voter import Voter
-from Voting_rules import questionPrice
+from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
-from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 
 
 class KbordaBucketTrinary(VotingRuleConstrained):

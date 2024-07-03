@@ -7,11 +7,14 @@ from Experiment_framework.Voter import Voter
 """
 This module is a helper module for the experiment
 
-It contains the following functions: - fabricate_election(number_of_candidates: int, number_of_voters: int) -> 
-Election - committee_distance(committee1: list[int], committee2: list[int]) -> int - export_to_excel(
-number_of_questions: list[int], distances: list[list[int]]) -> None - run_experiment(target_committee_size: int, 
-num_candidates: int, num_voters: int, voting_rule, constrained_voting_rule, number_of_questions: list[int]) -> list[
-int] - run_experiment_wrapper(args) -> list[int]"""
+It contains the following functions:
+- fabricate_election(number_of_candidates: int, number_of_voters: int) ->
+Election
+- committee_distance(committee1: list[int], committee2: list[int]) -> int
+- export_to_excel(number_of_questions: list[int], distances: list[list[int]]) -> None
+- run_experiment(target_committee_size: int, num_candidates: int, num_voters: int,
+voting_rule, constrained_voting_rule, number_of_questions: list[int]) -> list[int]
+- run_experiment_wrapper(args) -> list[int]"""
 
 
 def fabricate_election(number_of_candidates: int, number_of_voters: int) -> Election:
