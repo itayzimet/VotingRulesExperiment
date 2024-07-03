@@ -13,7 +13,7 @@ class SntvConstrained(VotingRuleConstrained):
         find_winners(election, num_winners, question_limit) -> list[int]:
             Returns a list of the winners of the election according to the Single Non-Transferable Vote rule
     """
-
+    
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
         Returns a list of the winners of the election according to the Single Non-Transferable Vote rule constrained
@@ -33,7 +33,7 @@ class SntvConstrained(VotingRuleConstrained):
             question_limit -= 1
         # Return the num_winners candidates with the highest scores using bottleneck argsort
         return bn.argpartition(scores, num_winners)[-num_winners:]
-
+    
     @staticmethod
     def __str__():
         """

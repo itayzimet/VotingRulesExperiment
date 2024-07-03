@@ -12,7 +12,7 @@ class VotingRuleConstrained:
         find_winners(election, question_limit) -> list[int]:
             Returns a list of the winners of the election
     """
-
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -23,7 +23,7 @@ class VotingRuleConstrained:
         :return: the list of winners of the election
         """
         pass
-
+    
     @staticmethod
     def __str__():
         """

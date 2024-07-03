@@ -1,5 +1,5 @@
-#%%
-def get_price (candidates: list[int], buckets: list[float]) -> float:
+# %%
+def get_price(candidates: list[int], buckets: list[float]) -> float:
     """
     Get the price of the question.
     :param candidates: list of candidates
@@ -9,7 +9,7 @@ def get_price (candidates: list[int], buckets: list[float]) -> float:
     return len(candidates) * (1 - get_variance(buckets)) ** 10
 
 
-def get_variance (buckets: list[float]) -> float:
+def get_variance(buckets: list[float]) -> float:
     """
     Get the variance of the buckets
     :param buckets: list of bucket ratios

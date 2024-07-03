@@ -23,7 +23,7 @@ class KbordaHelper:
     
     def __init__(self, questions: list[int]):
         self.questions = questions.copy()
-
+    
     @staticmethod
     def score_candidates(node: Node, scores: np.ndarray, rank: int):
         """
@@ -35,15 +35,15 @@ class KbordaHelper:
         """
         if len(node.sons) <= 1:  # node is a leaf
             # score them all based on the position of the leaf regardless of the order in the leaf
-            scores[node.value] += rank - len(node.value)//2
+            scores[node.value] += rank - len(node.value) // 2
             return
         for i, son in enumerate(node.sons):
             if i == 0:
                 KbordaHelper.score_candidates(son, scores, rank)
             else:
-                rank -= len(node.sons[i-1].value)
+                rank -= len(node.sons[i - 1].value)
                 KbordaHelper.score_candidates(son, scores, rank)
-                
+    
     def fill_tree(self, voter: Voter, current_node: Node, voter_idx: int, question_type: list[float]) -> None:
         """
         Recursively create a binary tree to split the preferences of the voter
@@ -62,4 +62,3 @@ class KbordaHelper:
         for bucket in buckets:
             current_node.sons.append(Node(bucket))
             self.fill_tree(voter, current_node.sons[-1], voter_idx, question_type)
-            

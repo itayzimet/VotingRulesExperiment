@@ -8,10 +8,10 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 
 class KbordaBucket(VotingRuleConstrained):
-
+    
     def __init__(self, question_type: list[float]):
         self.question_type = question_type
-
+    
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
         Find the winners of the election by splitting the candidates using the bucket syntax
@@ -24,7 +24,7 @@ class KbordaBucket(VotingRuleConstrained):
         voters = election.voters
         candidates = election.candidates
         num_candidates = election.numberOfCandidates
-        scores = np.zeros(num_candidates, dtype=int)
+        scores = np.zeros(num_candidates, dtype = int)
         # Set up the budget for each voter
         questions = [question_limit // len(voters)] * len(voters)
         helper = KbordaHelper(questions)
@@ -40,7 +40,7 @@ class KbordaBucket(VotingRuleConstrained):
             KbordaHelper.score_candidates(root_node, scores, rank)
         # Return the winners
         return bn.argpartition(scores, num_winners)[-num_winners:]
-
+    
     def calculate_scores(self, election: Election, question_limit: int) -> list[int]:
         """
         Calculate the scores of the candidates using the bucket syntax
@@ -52,7 +52,7 @@ class KbordaBucket(VotingRuleConstrained):
         voters = election.voters
         candidates = election.candidates
         num_candidates = election.numberOfCandidates
-        scores = np.zeros(num_candidates, dtype=int)
+        scores = np.zeros(num_candidates, dtype = int)
         # Set up the budget for each voter
         questions = [question_limit // len(voters)] * len(voters)
         helper = KbordaHelper(questions)
@@ -68,7 +68,7 @@ class KbordaBucket(VotingRuleConstrained):
             KbordaHelper.score_candidates(root_node, scores, rank)
         # Return the scores
         return list(scores)
-
+    
     @staticmethod
     def __str__():
         return "K-Borda Bucket"

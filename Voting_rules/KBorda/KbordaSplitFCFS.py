@@ -18,7 +18,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
     according to the K-Borda rule constrained by the number of questions in the form of a split between preferred and
     not preferred candidates by the voter distributed First Come First Serve among voters.
     """
-
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -35,7 +35,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
         voters = election.voters
         candidates = election.candidates
         num_candidates = len(candidates)
-        scores = np.zeros(num_candidates, dtype=int)
+        scores = np.zeros(num_candidates, dtype = int)
         helper = KbordaHelper([question_limit])
         for idx, voter in enumerate(voters):
             # Create a binary tree to split the preferences of the voter
@@ -45,7 +45,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
             # score them all based on the position in the leaf regardless of the order in the leaf
             rank = num_candidates
             KbordaHelper.score_candidates(root_node, scores, rank)
-
+        
         # Return the num_winners candidates with the highest scores using bottleneck argpartition
         return bn.argpartition(scores, num_winners)[-num_winners:]
     

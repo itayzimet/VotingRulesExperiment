@@ -1,4 +1,4 @@
-#%%
+# %%
 
 import numpy as np
 
@@ -21,13 +21,13 @@ graph for the experiment.
 """
 
 
-#%%
+# %%
 def main():
     """
     Main function to run the experiment
     :return: None
     """
-    #%%
+    # %%
     test_parameters = dict(
         target_committee_size = 50, num_candidates = 100, num_voters = 100,
         voting_rule = Kborda,
@@ -41,15 +41,15 @@ def main():
             VotingRuleRandom],
         number_of_questions = range(1, 150000, 1000), number_of_runs = 20,
         multithreaded = True)
-    #%%
+    # %%
     """KBorda testing"""
-    #%%
+    # %%
     # load averages from pickle file
     no_of_saved_runs, saved_averages = extract_saved_averages()
-    #%%
+    # %%
     # Run the test for KBorda
     averages = run_test(test_parameters)
-    #%%
+    # %%
     # Average the saved averages and the new averages
     averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages, test_parameters)
     # add averages to pickle file
@@ -58,13 +58,13 @@ def main():
     # Calculate the average Accuracy for each voting rule
     for key in averages:
         total_averages[key] = float(np.mean(averages[key]))
-    #%%
+    # %%
     # Print the average Accuracy for each voting rule
     print(total_averages)
     # Plot the graph for KBorda
     plot_graph(test_parameters, averages)
 
 
-#%%
+# %%
 if __name__ == '__main__':
     main()
