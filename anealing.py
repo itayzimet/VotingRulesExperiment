@@ -67,7 +67,7 @@ def evaluate_function(func: list):
         return eval(expression)
     
     total_error = 0
-    num_tests = 1
+    num_tests = 10
     
     for _ in range(num_tests):
         num_winners = random.randint(20, 50)
@@ -140,17 +140,6 @@ def simulated_annealing(t, _alpha, _max_iter):
     return _best_function, _best_score
 
 
-T = 1
-alpha = 0.999999995
-max_iter = 1000
-
-best_function, best_score = simulated_annealing(T, alpha, max_iter)
-print(f"Best function (vector size: {len(best_function)}):")
-for expr in best_function:
-    print(expr)
-print(f"Best score (average error): {best_score}")
-
-
 # Test the best function
 def test_best_function(func):
     # noinspection PyUnusedLocal
@@ -164,7 +153,10 @@ def test_best_function(func):
     for _ in range(10):
         x1, x2, x3, x4 = random.randint(1, 50), random.randint(1, 100), random.randint(1, 100), random.randint(1,
                                                                                                                150000)
-        result = [execute(expression, x1, x2, x3, x4) for expression in func]
+        try:
+            result = [execute(expression, x1, x2, x3, x4) for expression in func]
+        except ZeroDivisionError:
+            result = [0]
         print(f"""Inputs:
         num winners: {x1}
         num candidates: {x2}
@@ -178,5 +170,24 @@ def test_best_function(func):
         print()
 
 
-print("\nTesting the best function:")
-test_best_function(best_function)
+def main():
+    """
+    Main function to run the anealing ai
+    :return: None
+    """
+    T = 1
+    alpha = 0.999999995
+    max_iter = 1000
+    
+    best_function, best_score = simulated_annealing(T, alpha, max_iter)
+    print(f"Best function (vector size: {len(best_function)}):")
+    for expr in best_function:
+        print(expr)
+    print(f"Best score (average error): {best_score}")
+    
+    print("\nTesting the best function:")
+    test_best_function(best_function)
+
+
+if __name__ == '__main__':
+    main()

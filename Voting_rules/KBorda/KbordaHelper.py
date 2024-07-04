@@ -55,7 +55,7 @@ class KbordaHelper:
         """
         if self.questions[voter_idx] <= 0 or len(current_node.value) <= 1:
             return
-        if len(inspect.stack(0)) >= 40:
+        if len(inspect.stack(0)) >= 30:
             return
         self.questions[voter_idx] -= questionPrice.get_price(current_node.value, question_type)
         buckets = voter.general_bucket_question(current_node.value, question_type.copy())
