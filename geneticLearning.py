@@ -119,7 +119,7 @@ def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mu
 
 def main():
     # Run the genetic algorithm
-    pop_size = 200
+    pop_size = 20
     generations = 20
     tournament_size = 5
     crossover_rate = 0.8

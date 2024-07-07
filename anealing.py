@@ -11,6 +11,7 @@ from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from dotenv import load_dotenv
 
+
 def send_message(message: str):
     load_dotenv()
     token = os.getenv("TELEGRAM_TOKEN")
@@ -31,16 +32,15 @@ def softmax(x: list):
 
 def random_function(min_size = 1, max_size = 10):
     """Generate a random function structure with variable output size."""
-    # the function generated will output a question type for voter.general_bucket_question
-    # the function will take in 4 inputs: num_winners, num_candidates, num_voters, budget
+    
     operations = ['+', '-', '*', '/']
     inputs = ['winners', 'candidates', 'voters', 'budget']
-    constants = [str(x) for x in range(1, 1000, 10)]
+    constants = [str(x) for x in range(1, 100, 10)]
     
     def generate_expr():
         if random.random() < 0.1:
             return f"{random.choice(constants)}"
-        elif random.random() < 0.5:
+        elif random.random() < 0.6:
             return f"{random.choice(inputs)}"
         else:
             return f"({generate_expr()} {random.choice(operations)} {generate_expr()})"
@@ -115,7 +115,7 @@ def evaluate_function(func: list):
             mean_squared_error = sum(
                 [(true_scores[i] - committee_scores[i]) ** 2 for i in range(num_candidates)]) / num_candidates
             
-            error = normalized_symmetric_difference + mean_squared_error
+            error = normalized_symmetric_difference  # + mean_squared_error
             total_error += error
         except:
             total_error += 1000000
