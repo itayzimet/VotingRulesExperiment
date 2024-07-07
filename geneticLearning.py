@@ -1,5 +1,7 @@
+import os
 import random
 
+from dotenv import load_dotenv
 from tqdm.contrib.telegram import tqdm, trange
 
 from anealing import random_function, evaluate_function, mutate_function, test_best_function, send_message
@@ -70,14 +72,15 @@ def evaluate_chromosome(chromosome):
 
 
 def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mutation_rate):
+    load_dotenv()
     population = initialize_population(pop_size)
     population_fitness = []
     for chromosome in tqdm(population, desc = 'Evaluating initial population',
-                           token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989"):
+                           token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID")):
         population_fitness.append(evaluate_chromosome(chromosome))
     best_chromosome, best_fitness = min(population_fitness, key = lambda x: x[1])
     
-    gens = trange(generations, token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989",
+    gens = trange(generations, token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
                   desc = 'Running generations')
     
     for _ in gens:

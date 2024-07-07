@@ -1,4 +1,5 @@
 import math
+import os
 import random
 
 import bottleneck as bn
@@ -8,11 +9,12 @@ import requests
 from Experiment_framework import Experiment_helper
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
-
+from dotenv import load_dotenv
 
 def send_message(message: str):
-    token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY"
-    chat_id = "880187989"
+    load_dotenv()
+    token = os.getenv("TELEGRAM_TOKEN")
+    chat_id = os.getenv("CHAT_ID")
     requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
                   data = {"chat_id": chat_id, "text": message})
 
