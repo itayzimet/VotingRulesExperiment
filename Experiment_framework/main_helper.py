@@ -11,6 +11,7 @@ import os
 import pickle
 from typing import Any, Tuple, Dict
 
+from dotenv import load_dotenv
 import plotly.express as px
 from tqdm.contrib.telegram import tqdm
 
@@ -65,6 +66,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
     number_of_runs = params['number_of_runs']
     multithreaded = params['multithreaded']
     averages = {}
+    load_dotenv()
     for rule in constrained_voting_rules:
         if multithreaded:
             with Pool() as pool:
@@ -74,7 +76,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                                       rule,
                                                       number_of_questions)
                                                       for _ in range(number_of_runs)]),
-                                        token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989",
+                                        token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
                                         total = number_of_runs, desc = 'Running experiments'))
         else:
             differences = []
