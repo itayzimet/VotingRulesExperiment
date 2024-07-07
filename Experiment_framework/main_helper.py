@@ -12,7 +12,7 @@ import pickle
 from typing import Any, Tuple, Dict
 
 import plotly.express as px
-from tqdm import tqdm
+from tqdm.contrib.telegram import tqdm
 
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
@@ -74,6 +74,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                                       rule,
                                                       number_of_questions)
                                                       for _ in range(number_of_runs)]),
+                                        token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989",
                                         total = number_of_runs, desc = 'Running experiments'))
         else:
             differences = []

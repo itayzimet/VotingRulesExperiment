@@ -3,17 +3,27 @@ import random
 
 import bottleneck as bn
 import numpy as np
+import requests
 
 from Experiment_framework import Experiment_helper
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 
 
+def send_message(message: str):
+    token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY"
+    chat_id = "880187989"
+    requests.post(f"https://api.telegram.org/bot{token}/sendMessage",
+                  data = {"chat_id": chat_id, "text": message})
+
+
 def softmax(x: list):
     """Compute the softmax of vector x."""
     # all output values should be between 0 and 1
     # the sum of all output values should be 1
+    # filter out the values that are less than 1/1000 they are considered to be 0 and should be removed
     e_x = np.exp(np.array(x) - np.max(x))
+    e_x = e_x[e_x > 1e-3]
     return e_x / e_x.sum()
 
 
@@ -99,10 +109,11 @@ def evaluate_function(func: list):
             committee_winners = bn.argpartition(committee_scores, num_winners)[-num_winners:]
             
             symmetric_difference = len(set(true_winners) ^ set(committee_winners))
+            normalized_symmetric_difference = symmetric_difference / num_winners
             mean_squared_error = sum(
                 [(true_scores[i] - committee_scores[i]) ** 2 for i in range(num_candidates)]) / num_candidates
             
-            error = symmetric_difference / num_winners + mean_squared_error
+            error = normalized_symmetric_difference + mean_squared_error
             total_error += error
         except:
             total_error += 1000000
@@ -155,19 +166,32 @@ def test_best_function(func):
                                                                                                                150000)
         try:
             result = [execute(expression, x1, x2, x3, x4) for expression in func]
+            normalized_result = softmax(result)
         except ZeroDivisionError:
             result = [0]
+            normalized_result = [1]
         print(f"""Inputs:
         num winners: {x1}
         num candidates: {x2}
         num voters: {x3}
         budget: {x4}""")
+        send_message(f"""Inputs:
+        num winners: {x1}
+        num candidates: {x2}
+        num voters: {x3}
+        budget: {x4}""")
         print(f"Output (size {len(result)}): {[f'{x:.6f}' for x in result]}")
+        send_message(f"Output (size {len(result)}): {[f'{x:.6f}' for x in result]}")
         print(f"Sum: {sum(result):.6f}")
-        print(f"Normalized: {[f'{x / sum(result):.6f}' for x in result]}")
+        send_message(f"Sum: {sum(result):.6f}")
+        print(f"Normalized: {[f'{x:.6f}' for x in normalized_result]}")
+        send_message(f"Normalized: {[f'{x:.6f}' for x in normalized_result]}")
         print(f"Sum of normalized: {sum([x / sum(result) for x in result]):.6f}")
+        send_message(f"Sum of normalized: {sum([x / sum(result) for x in result]):.6f}")
         print(f"Error: {evaluate_function(func)}")
+        send_message(f"Error: {evaluate_function(func)}")
         print()
+        send_message("\n")
 
 
 def main():

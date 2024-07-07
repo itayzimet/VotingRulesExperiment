@@ -1,6 +1,8 @@
 import random
 
-from anealing import random_function, evaluate_function, mutate_function, test_best_function
+from tqdm.contrib.telegram import tqdm, trange
+
+from anealing import random_function, evaluate_function, mutate_function, test_best_function, send_message
 
 
 # Assuming all the necessary imports and existing functions are present
@@ -9,7 +11,7 @@ def initialize_population(pop_size, min_size = 1, max_size = 10):
     return [random_function(min_size, max_size) for _ in range(pop_size)]
 
 
-def crossover(parent1, parent2):
+def crossover(parent1: list, parent2: list) -> tuple[list, list]:
     # Determine the length of the shorter parent
     min_length = min(len(parent1), len(parent2))
     
@@ -62,12 +64,23 @@ def tournament_selection(population, tournament_size):
     return min(tournament, key = lambda x: evaluate_function(x))
 
 
+def evaluate_chromosome(chromosome):
+    fitness = evaluate_function(chromosome)
+    return chromosome, fitness
+
+
 def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mutation_rate):
     population = initialize_population(pop_size)
-    best_chromosome = min(population, key = lambda x: evaluate_function(x))
-    best_fitness = evaluate_function(best_chromosome)
+    population_fitness = []
+    for chromosome in tqdm(population, desc = 'Evaluating initial population',
+                           token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989"):
+        population_fitness.append(evaluate_chromosome(chromosome))
+    best_chromosome, best_fitness = min(population_fitness, key = lambda x: x[1])
     
-    for gen in range(generations):
+    gens = trange(generations, token = "6403664563:AAHzVSI8HvKY20SDA1924Tdp2vEGJDxL1GY", chat_id = "880187989",
+                  desc = 'Running generations')
+    
+    for _ in gens:
         new_population = []
         
         while len(new_population) < pop_size:
@@ -94,28 +107,38 @@ def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mu
         if current_best_fitness < best_fitness:
             best_chromosome = current_best
             best_fitness = current_best_fitness
-            print(f"Generation {gen}, New best fitness: {best_fitness}")
+            gens.postfix = f"New best fitness: {best_fitness % 1e6:.2f}"
         else:
-            print(f"Generation {gen}, Best fitness: {best_fitness}")
-        print(f"Best chromosome: {best_chromosome}")
+            gens.postfix = f"Best fitness: {best_fitness % 1e6:.2f}"
     
     return best_chromosome, best_fitness
 
 
-# Run the genetic algorithm
-pop_size = 10
-generations = 10
-tournament_size = 5
-crossover_rate = 0.8
-mutation_rate = 0.2
+def main():
+    # Run the genetic algorithm
+    pop_size = 200
+    generations = 20
+    tournament_size = 5
+    crossover_rate = 0.8
+    mutation_rate = 0.2
+    
+    best_function, best_score = genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mutation_rate)
+    
+    print(f"\nBest function (vector size: {len(best_function)}):")
+    send_message(f"Best function: (vector size: {len(best_function)})")
+    for expr in best_function:
+        print(expr)
+        send_message(expr)
+    print(f"Best score (average error): {best_score}")
+    send_message(f"Best score (average error): {best_score}")
+    
+    # Test the best function using the existing test_best_function
+    print("\nTesting the best function:")
+    send_message("Testing the best function:")
+    test_best_function(best_function)
+    
+    return best_function, best_score
 
-best_function, best_score = genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mutation_rate)
 
-print(f"\nBest function (vector size: {len(best_function)}):")
-for expr in best_function:
-    print(expr)
-print(f"Best score (average error): {best_score}")
-
-# Test the best function using the existing test_best_function
-print("\nTesting the best function:")
-test_best_function(best_function)
+if __name__ == "__main__":
+    main()
