@@ -1,5 +1,3 @@
-import inspect
-
 import numpy as np
 
 from Experiment_framework.Voter import Voter
@@ -44,21 +42,23 @@ class KbordaHelper:
                 rank -= len(node.sons[i - 1].value)
                 KbordaHelper.score_candidates(son, scores, rank)
     
-    def fill_tree(self, voter: Voter, current_node: Node, voter_idx: int, question_type: list[float]) -> None:
+    def fill_tree(self, voter: Voter, current_node: Node, voter_idx: int, question_type: list[float],
+                  i: int = 0) -> None:
         """
         Recursively create a binary tree to split the preferences of the voter
         :param voter: the voter to split the preferences for
         :param current_node: the current node of the binary tree
         :param voter_idx: the index of the voter
         :param question_type: the question type to split according to
+        :param i: the recursion depth
         :return: None
         """
         if self.questions[voter_idx] <= 0 or len(current_node.value) <= 1:
             return
-        if len(inspect.stack(0)) >= 40:
+        if i >= 30:
             return
         self.questions[voter_idx] -= questionPrice.get_price(current_node.value, question_type)
         buckets = voter.general_bucket_question(current_node.value, question_type.copy())
         for bucket in buckets:
             current_node.sons.append(Node(bucket))
-            self.fill_tree(voter, current_node.sons[-1], voter_idx, question_type)
+            self.fill_tree(voter, current_node.sons[-1], voter_idx, question_type, i + 1)
