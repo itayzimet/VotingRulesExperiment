@@ -81,7 +81,7 @@ def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mu
     best_chromosome, best_fitness = min(population_fitness, key = lambda x: x[1])
     
     gens = trange(generations, token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
-                  desc = 'Running generations')
+                  desc = 'Running genetic algorithm', postfix = f"Best fitness: {best_fitness % 1e6:.2f})")
     
     for _ in gens:
         new_population = []
@@ -119,7 +119,7 @@ def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mu
 
 def main():
     # Run the genetic algorithm
-    pop_size = 200
+    pop_size = 20
     generations = 20
     tournament_size = 5
     crossover_rate = 0.8
@@ -127,16 +127,13 @@ def main():
     
     best_function, best_score = genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mutation_rate)
     
-    print(f"\nBest function (vector size: {len(best_function)}):")
     send_message(f"Best function: (vector size: {len(best_function)})")
     for expr in best_function:
         print(expr)
         send_message(expr)
-    print(f"Best score (average error): {best_score}")
     send_message(f"Best score (average error): {best_score}")
     
     # Test the best function using the existing test_best_function
-    print("\nTesting the best function:")
     send_message("Testing the best function:")
     test_best_function(best_function)
     

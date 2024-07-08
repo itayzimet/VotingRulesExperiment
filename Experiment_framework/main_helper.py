@@ -13,7 +13,7 @@ from typing import Any, Tuple, Dict
 
 from dotenv import load_dotenv
 import plotly.express as px
-from tqdm.contrib.telegram import tqdm
+from tqdm.contrib.telegram import tqdm, trange
 
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
@@ -80,7 +80,8 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                         total = number_of_runs, desc = 'Running experiments'))
         else:
             differences = []
-            for _ in tqdm(range(number_of_runs), desc = 'Running experiments', total = number_of_runs):
+            for _ in trange(number_of_runs, desc = 'Running experiments', total = number_of_runs,
+                            token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID")):
                 differences.append(
                     run_experiment(target_committee_size, num_candidates, num_voters, voting_rule, rule,
                                    number_of_questions))
