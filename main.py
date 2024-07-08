@@ -2,8 +2,10 @@
 
 import numpy as np
 
+from anealing import send_message
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
+from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
 from Voting_rules.KBorda.KbordaBucketTrinary import KbordaBucketTrinary
 from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
@@ -40,7 +42,7 @@ def main():
             KbordaBucketSplit, KbordaBucketTrinary,
             VotingRuleRandom],
         number_of_questions = range(1, 150000, 1000), number_of_runs = 20,
-        multithreaded = True)
+        multithreaded = False)
     # %%
     """KBorda testing"""
     # %%
@@ -60,7 +62,7 @@ def main():
         total_averages[key] = float(np.mean(averages[key]))
     # %%
     # Print the average Accuracy for each voting rule
-    print(total_averages)
+    send_message(total_averages.__str__())
     # Plot the graph for KBorda
     plot_graph(test_parameters, averages)
 

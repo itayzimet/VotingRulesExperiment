@@ -69,6 +69,5 @@ class KbordaBucket(VotingRuleConstrained):
         # Return the scores
         return list(scores)
     
-    @staticmethod
-    def __str__():
-        return "K-Borda Bucket"
+    def __str__(self):
+        return f"K-Borda Bucket: {self.question_type}"
