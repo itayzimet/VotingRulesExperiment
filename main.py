@@ -41,7 +41,7 @@ def main():
             KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketSplit, KbordaBucketTrinary,
             VotingRuleRandom],
-        number_of_questions = range(1, 150000, 1000), number_of_runs = 20,
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 1,
         multithreaded = False)
     # %%
     """KBorda testing"""
