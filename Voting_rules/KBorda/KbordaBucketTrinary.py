@@ -8,8 +8,8 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 
 class KbordaBucketTrinary(VotingRuleConstrained):
-    
-    def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
+    @staticmethod
+    def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
         This function finds the winners of an election by splitting the candidates into three equal sized buckets and
         asking questions to the voters to determine the scores of the candidates.
