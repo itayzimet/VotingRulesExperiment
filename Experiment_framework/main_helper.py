@@ -116,6 +116,8 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
         yaxis_title = 'Distance between the committees')
     
     fig.show()
+    
+    fig.write_html('graph.html')
 
 
 def write_averages_to_file(averages, test_parameters):

@@ -1,9 +1,12 @@
 # %%
 
 import numpy as np
+import torch
 
-from anealing import send_message
+from anealing import simulated_annealing, send_message, test_best_function
 from Experiment_framework.main_helper import *
+from geneticLearning import genetic_algorithm
+from learning import QuestionGenerator, train_model, evaluate_model
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
@@ -29,6 +32,56 @@ def main():
     Main function to run the experiment
     :return: None
     """
+    
+    # %% Annealing training
+    T = 1000
+    alpha = 0.9
+    max_iter = 100000
+    
+    best_annealing_function, best_score = simulated_annealing(T, alpha, max_iter)
+    send_message("Annealing training results:")
+    send_message(f"Best function (vector size: {len(best_annealing_function)}):")
+    for expr in best_annealing_function:
+        print(expr)
+        send_message(expr)
+    send_message(f"Best score (average error): {best_score}")
+    test_best_function(best_annealing_function)
+    
+    # export to pickle
+    with open('best_function.pkl', 'wb') as f:
+        pickle.dump(best_annealing_function, f)
+    
+    # %% Genetic training
+    pop_size = 2000
+    generations = 200
+    tournament_size = 200
+    crossover_rate = 0.8
+    mutation_rate = 0.2
+    
+    best_genetic_function, best_score = genetic_algorithm(pop_size, generations, tournament_size, crossover_rate,
+                                                          mutation_rate)
+    send_message("Genetic training results:")
+    send_message(f"Best function: (vector size: {len(best_genetic_function)})")
+    for expr in best_genetic_function:
+        print(expr)
+        send_message(expr)
+    send_message(f"Best score (average error): {best_score}")
+    test_best_function(best_genetic_function)
+    
+    # export to pickle
+    with open('best_function.pkl', 'wb') as f:
+        pickle.dump(best_genetic_function, f)
+    
+    # Deep learning
+    model = QuestionGenerator()
+    train_model(model)
+    
+    final_error = evaluate_model(model)
+    send_message(f"Final average error: {final_error}")
+    
+    final_learning_model = model.network
+    torch.save(final_learning_model, 'final_model.pth')
+    
     # %%
     test_parameters = dict(
         target_committee_size = 50, num_candidates = 100, num_voters = 100,
@@ -40,9 +93,11 @@ def main():
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketSplit, KbordaBucketTrinary,
+            KbordaBucket(best_annealing_function), KbordaBucket(best_genetic_function),
+            KbordaBucket(final_learning_model),
             VotingRuleRandom],
-        number_of_questions = range(1, 150000, 1000), number_of_runs = 1,
-        multithreaded = False)
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 1000,
+        multithreaded = True)
     # %%
     """KBorda testing"""
     # %%

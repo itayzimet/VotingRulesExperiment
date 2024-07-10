@@ -70,13 +70,13 @@ def train_model(_model, num_epochs = 100, learning_rate = 0.001):
     return _model
 
 
-def evaluate_model(model, num_tests = 100):
+def evaluate_model(model, num_tests = 10000):
     total_error = 0
     criterion = nn.MSELoss()
     
     for _ in range(num_tests):
-        num_winners = random.randint(1, 50)
         num_candidates = random.randint(1, 100)
+        num_winners = random.randint(1, num_candidates//2)
         num_voters = random.randint(1, 100)
         budget = random.randint(1, 150000)
         
@@ -88,13 +88,19 @@ def evaluate_model(model, num_tests = 100):
         
         election = fabricate_election(num_candidates, num_voters)
         kborda_bucket = KbordaBucket(list(question.numpy()))
-        true_scores = torch.tensor(Kborda.calculate_scores(election), dtype = torch.float32)
-        true_scores = true_scores / true_scores.sum()
+        # true_scores = torch.tensor(Kborda.calculate_scores(election), dtype = torch.float32)
+        # true_scores = true_scores / true_scores.sum()
+        #
+        # test_scores = torch.tensor(kborda_bucket.calculate_scores(election, budget), dtype = torch.float32)
+        # test_scores = test_scores / test_scores.sum()
         
-        test_scores = torch.tensor(kborda_bucket.calculate_scores(election, budget), dtype = torch.float32)
-        test_scores = test_scores / test_scores.sum()
+        true_winners = kborda_bucket.find_winners(election, num_winners, budget)
+        test_winners = KbordaBucket(question.tolist()).find_winners(election, num_winners, budget)
         
-        error = criterion(true_scores, test_scores).item()
+        symmetric_difference = len(set(true_winners) ^ set(test_winners))
+        
+        error = symmetric_difference
+        error = error * question.sum()
         total_error += error
     
     return total_error / num_tests

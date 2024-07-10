@@ -46,10 +46,11 @@ class Voter:
         the last is the least preferred.
         """
         buckets = [[] for _ in question]
+        num_candidates = len(candidates)
+        temp = num_candidates
         candidates = set(candidates)
-        temp = len(candidates)
         for i, bucket in enumerate(question):
-            bucket = int(bucket * len(candidates))
+            bucket = int(bucket * num_candidates)
             temp -= bucket
             question[i] = bucket
         question[-1] += temp
@@ -58,7 +59,7 @@ class Voter:
         for candidate in self.OrdinalPreferences:
             if candidate in candidates:
                 buckets[current_bucket].append(candidate)
-                candidates.discard(candidate)
+                candidates.remove(candidate)
                 left_to_fill -= 1
                 if left_to_fill == 0:
                     current_bucket += 1

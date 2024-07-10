@@ -109,7 +109,7 @@ def evaluate_function(func: list, num_tests = 10, num_winners = 50, num_candidat
             symmetric_difference = len(set(true_winners) ^ set(committee_winners))
             mean_squared_error = np.mean((true_scores - committee_scores) ** 2)
             
-            error = mean_squared_error  # + symmetric_difference
+            error = symmetric_difference
             total_error += error
         except:
             total_error += 1000000
