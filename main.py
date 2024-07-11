@@ -72,7 +72,7 @@ def main():
     with open('best_function.pkl', 'wb') as f:
         pickle.dump(best_genetic_function, f)
     
-    # Deep learning
+    # %% Deep learning
     model = QuestionGenerator()
     train_model(model)
     

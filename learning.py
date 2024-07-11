@@ -118,8 +118,8 @@ print(f"Final average error: {final_error}")
 # Test the trained model
 def test_model(model):
     for _ in range(10):
-        num_winners = random.randint(1, 50)
-        num_candidates = random.randint(1, 100)
+        num_candidates = random.randint(1, 300)
+        num_winners = random.randint(1, num_candidates//2)
         num_voters = random.randint(1, 100)
         budget = random.randint(1000, 150000)
         

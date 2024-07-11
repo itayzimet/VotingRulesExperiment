@@ -23,9 +23,6 @@ def send_message(message: str):
 
 def softmax(x: list):
     """Compute the softmax of vector x."""
-    # all output values should be between 0 and 1
-    # the sum of all output values should be 1
-    # filter out the values that are less than 1/1000 they are considered to be 0 and should be removed
     e_x = np.exp(np.array(x) - np.max(x))
     e_x = e_x[e_x > 1e-3]
     return e_x / e_x.sum()
@@ -66,7 +63,7 @@ def mutate_function(func):
     return func
 
 
-def evaluate_function(func: list, num_tests = 10, num_winners = 50, num_candidates = 100, num_voters = 100,
+def evaluate_function(func: list, num_tests = 10, num_winners = 150, num_candidates = 300, num_voters = 100,
                       max_budget = 10000):
     """Evaluate the function with the given parameters."""
     
