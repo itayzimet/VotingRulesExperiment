@@ -6,25 +6,9 @@ import torch.nn as nn
 import torch.optim as optim
 
 from Experiment_framework.Experiment_helper import fabricate_election
+from QuestionGenerator import QuestionGenerator
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
-
-
-class QuestionGenerator(nn.Module):
-    def __init__(self, input_size = 4, hidden_size = 64, output_size = 10):
-        super(QuestionGenerator, self).__init__()
-        self.network = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, output_size),
-        )
-    
-    def forward(self, x, temperature = 1.0):
-        temp = self.network(x)
-        probabilities = torch.softmax(temp / temperature, dim = 1).squeeze()
-        return probabilities
 
 
 def train_model(_model, num_epochs = 100, learning_rate = 0.001):

@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 from Experiment_framework.Election import Election
-from learning import QuestionGenerator
+from QuestionGenerator import QuestionGenerator
 from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
@@ -11,12 +11,9 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 class KbordaBucket(VotingRuleConstrained):
     
-    def __init__(self, question_type: list[float]):
+    def __init__(self, question_type: list[float], model: QuestionGenerator = None):
         self.question_type = question_type
-    
-    def __init__(self, model: QuestionGenerator):
         self.model = model
-    
     
     def find_winners(self, election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -93,7 +90,8 @@ class KbordaBucket(VotingRuleConstrained):
         # Set up the budget for each voter
         questions = [question_limit // len(voters)] * len(voters)
         helper = KbordaHelper(questions)
-        input_tensor = torch.tensor([num_winners, num_candidates, len(voters), question_limit], dtype = torch.float32).unsqueeze(0)
+        input_tensor = torch.tensor([num_winners, num_candidates, len(voters), question_limit],
+                                    dtype = torch.float32).unsqueeze(0)
         with torch.no_grad():
             question = self.model(input_tensor).squeeze().numpy()
         for i, voter in enumerate(voters):

@@ -6,7 +6,8 @@ import torch
 from anealing import simulated_annealing, send_message, test_best_function
 from Experiment_framework.main_helper import *
 from geneticLearning import genetic_algorithm
-from learning import QuestionGenerator, train_model, evaluate_model
+from learning import train_model, evaluate_model
+from QuestionGenerator import QuestionGenerator
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
