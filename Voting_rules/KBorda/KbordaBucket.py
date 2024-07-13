@@ -162,7 +162,8 @@ class KbordaBucket(VotingRuleConstrained):
         # Set up the budget for each voter
         questions = [question_limit // len(voters)] * len(voters)
         helper = KbordaHelper(questions)
-        input_tensor = torch.tensor([1, num_candidates, len(voters), question_limit], dtype = torch.float32).unsqueeze(0)
+        input_tensor = torch.tensor([1, num_candidates, len(voters), question_limit], dtype = torch.float32).unsqueeze(
+            0)
         with torch.no_grad():
             question = self.model(input_tensor).squeeze().numpy()
         for i, voter in enumerate(voters):

@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import bottleneck as bn
 import numpy as np
 
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRule import VotingRule
-import bottleneck as bn
 
 
 class Kborda(VotingRule):

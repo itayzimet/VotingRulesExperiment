@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import bottleneck as bn
+
 from Experiment_framework.Election import Election
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
-import bottleneck as bn
 
 
 class SntvConstrained(VotingRuleConstrained):
