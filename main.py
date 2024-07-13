@@ -94,10 +94,10 @@ def main():
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketSplit, KbordaBucketTrinary,
-            KbordaBucket(best_annealing_function), KbordaBucket(best_genetic_function),
-            KbordaBucket(final_learning_model),
+            KbordaBucket(question_expression = best_annealing_function), KbordaBucket(question_expression = best_genetic_function),
+            KbordaBucket(model = final_learning_model),
             VotingRuleRandom],
-        number_of_questions = range(1, 150000, 1000), number_of_runs = 1000,
+        number_of_questions = range(1, 150000, 1000), number_of_runs = 1,
         multithreaded = True)
     # %%
     """KBorda testing"""

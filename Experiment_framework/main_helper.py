@@ -77,7 +77,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                                       number_of_questions)
                                                       for _ in range(number_of_runs)]),
                                         token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
-                                        total = number_of_runs, desc = 'Running experiments'))
+                                        total = number_of_runs, desc = f'Running experiments: {rule.__str__()}',))
         else:
             differences = []
             for _ in trange(number_of_runs, desc = 'Running experiments', total = number_of_runs,

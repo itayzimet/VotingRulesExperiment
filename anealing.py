@@ -22,16 +22,18 @@ def send_message(message: str):
 
 
 def softmax(x: list):
-    """Compute the softmax of vector x."""
-    e_x = np.exp(np.array(x) - np.max(x))
-    e_x = e_x[e_x > 1e-3]
-    return e_x / e_x.sum()
+    try:
+        e_x = np.exp(np.array(x) - np.max(x))
+        e_x = e_x[e_x > 1e-3]
+        return e_x / e_x.sum()
+    except:
+        return [1]
 
 
 def random_function(min_size = 1, max_size = 10):
     """Generate a random function structure with variable output size."""
     
-    operations = ['+', '-', '*', '/', '%', '**']
+    operations = ['+', '-', '*', '/', '%']
     inputs = ['winners', 'candidates', 'voters', 'budget']
     constants = [str(x) for x in [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]]
     
@@ -63,41 +65,31 @@ def mutate_function(func):
     return func
 
 
-def evaluate_function(func: list, num_tests = 10, num_winners = 150, num_candidates = 300, num_voters = 100,
+def evaluate_function(func: list, num_tests = 10, num_winners = 50, num_candidates = 100, num_voters = 50,
                       max_budget = 10000):
     """Evaluate the function with the given parameters."""
     
     def execute(expression, _num_winners: int, _num_candidates: int, _num_voters: int, _budget: int):
-        winners = _num_winners
-        candidates = _num_candidates
-        voters = _num_voters
-        budget = _budget
-        return eval(expression)
+        try:
+            winners = _num_winners
+            candidates = _num_candidates
+            voters = _num_voters
+            budget = _budget
+            return eval(expression)
+        except:
+            Exception("Error in expression")
     
     total_error = 0
     for _ in range(num_tests):
         budget = random.randint(0, max_budget)
         try:
-            # Generate a question type
-            question = [execute(expression, num_winners, num_candidates, num_voters, budget) for expression in func]
-            question = softmax(question)
-            sum_question = sum(question)
-            if sum_question > 1:
-                # Normalize the question type
-                question = [q / sum_question for q in question]
-                # Add a final bucket to make it sum to 1
-                question.append(1 - sum_question)
-            else:
-                if sum_question != 1:
-                    # Add a final bucket to make it sum to 1
-                    question.append(1 - sum_question)
             
             # Generate an election based on the parameters
             election = Experiment_helper.fabricate_election(num_candidates, num_voters)
             # experiment = Experiment(num_winners, election, Kborda, KbordaBucket, [budget], question)
             true_scores = Kborda.calculate_scores(election)
             true_scores = np.array(true_scores)
-            committee_scores = KbordaBucket(question).calculate_scores(election, budget)
+            committee_scores = KbordaBucket(question_expression = func).calculate_scores(election, budget)
             committee_scores = np.array(committee_scores)
             
             true_winners = bn.argpartition(true_scores, num_winners)[-num_winners:]
@@ -148,15 +140,18 @@ def simulated_annealing(t, _alpha, _max_iter):
 
 
 # Test the best function
-def test_best_function(func):
+def test_best_function(func, num_tests = 10):
     def execute(expression, _num_winners: int, _num_candidates: int, _num_voters: int, _budget: int):
-        winners = _num_winners
-        candidates = _num_candidates
-        voters = _num_voters
-        budget = _budget
-        return eval(expression)
+        try:
+            winners = _num_winners
+            candidates = _num_candidates
+            voters = _num_voters
+            budget = _budget
+            return eval(expression)
+        except:
+            Exception("Error in expression")
     
-    for _ in range(10):
+    for _ in range(num_tests):
         x1, x2, x3, x4 = random.randint(1, 50), random.randint(1, 100), random.randint(1, 100), random.randint(1,
                                                                                                                150000)
         try:
@@ -165,17 +160,30 @@ def test_best_function(func):
         except ZeroDivisionError:
             result = [0]
             normalized_result = [1]
-        send_message(f"""Inputs:
-        num winners: {x1}
-        num candidates: {x2}
-        num voters: {x3}
-        budget: {x4}""")
-        send_message(f"Output (size {len(result)}): {[f'{x:.6f}' for x in result]}")
-        send_message(f"Sum: {sum(result):.6f}")
-        send_message(f"Normalized: {[f'{x:.6f}' for x in normalized_result]}")
-        send_message(f"Sum of normalized: {sum([x / sum(result) for x in result]):.6f}")
-        send_message(f"Error: {evaluate_function(func)}")
-        send_message("\n")
+        try:
+            send_message(
+                f"""Inputs:
+            num winners: {x1}
+            num candidates: {x2}
+            num voters: {x3}
+            budget: {x4}
+            Output (size {len(result)}): {[f'{x}' for x in result]}
+            Sum: {sum(result)}
+            Normalized: {[f'{x}' for x in normalized_result]}
+            Sum of normalized: {sum(normalized_result)}
+            Error: {evaluate_function(func)}""")
+        except TypeError:
+            send_message(
+                f"""Inputs:
+            num winners: {x1}
+            num candidates: {x2}
+            num voters: {x3}
+            budget: {x4}
+            Output (size {len(result)}): {[f'{x}' for x in result]}
+            Sum: {result}
+            Normalized: {[f'{x}' for x in normalized_result]}
+            Sum of normalized: {sum(normalized_result)}
+            Error: {evaluate_function(func)}""")
 
 
 def main():
