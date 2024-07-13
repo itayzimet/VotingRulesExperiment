@@ -51,7 +51,7 @@ class KbordaBucket(VotingRuleConstrained):
             question = [
                 execute(expression, num_winners, election.numberOfCandidates, len(election.voters), question_limit) for
                 expression in self.question_expression]
-            question = softmax(question)
+            question = list(softmax(question))
             sum_question = sum(question)
             if sum_question > 1:
                 # Normalize the question type
