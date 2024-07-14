@@ -6,7 +6,10 @@ def get_price(candidates: list[int], buckets: list[float]) -> float:
     :param buckets: list of bucket ratios
     :return: the price of the question
     """
-    return len(candidates) * len(buckets) * (1 - get_variance(buckets))
+    try:
+        return len(candidates) * len(buckets) * (1 - get_variance(buckets))
+    except:
+        return 1000000000
 
 
 def get_variance(buckets: list[float]) -> float:

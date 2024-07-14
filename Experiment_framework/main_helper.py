@@ -6,13 +6,16 @@ It contains the following functions:
     constrained_voting_rule, number_of_questions: list[int]) -> list[int]
     - run_experiment_wrapper(args) -> list[int]
 """
+import json
 from multiprocessing import Pool
 import os
 import pickle
+import random
 from typing import Any, Tuple, Dict
 
 from dotenv import load_dotenv
 import plotly.express as px
+import requests
 from tqdm.contrib.telegram import tqdm, trange
 
 from Experiment_framework.Experiment import Experiment
@@ -96,11 +99,12 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
     return averages
 
 
-def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> None:
+def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file_name = "graph.html") -> None:
     """
     Plots the graph for the experiment
     :param test_params: the parameters of the test
     :param averages: the average differences between the committees for the different constrained voting rules
+    :param file_name: the name of the file to save the graph to
     :return: None
     """
     # make it a scatter plot
@@ -117,7 +121,7 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]]) -> N
     
     fig.show()
     
-    fig.write_html('graph.html')
+    fig.write_html(file_name)
 
 
 def write_averages_to_file(averages, test_parameters):
@@ -155,3 +159,38 @@ def extract_saved_averages(file: str = 'averages.pickle') -> Tuple[int, Dict]:
             return no_of_saved_runs, saved_averages
     except:
         return 0, saved_averages
+
+
+def send_message(message: str):
+    load_dotenv()
+    token = os.getenv("TELEGRAM_TOKEN")
+    chat_id = os.getenv("CHAT_ID")
+    requests.post(f"https://api.telegram.org/bot{token}/sendMessage", data = {"chat_id": chat_id, "text": message})
+    print(message)
+
+
+def send_file(file: str) -> dict[str, any]:
+    load_dotenv()
+    token = os.getenv("TELEGRAM_TOKEN")
+    chat_id = os.getenv("CHAT_ID")
+    file = open(file, 'rb')
+    url = f"https://api.telegram.org/bot{token}/sendDocument"
+    files = {'document': file}
+    data = {'chat_id': chat_id}
+    response = requests.post(url, files = files, data = data)
+    content = response.content.decode("utf8")
+    js = json.loads(content)
+    file.close()
+    return js
+
+
+def send_files(files: list[str]):
+    for file in files:
+        send_file(file)
+
+
+def send_plot(test_parameters: dict[str, any], averages: dict[Any, list[int]]):
+    temp_file_name = random.randint(0, 1000000).__str__() + ".html"
+    plot_graph(test_parameters, averages, temp_file_name)
+    send_file(temp_file_name)
+    os.remove(temp_file_name)
