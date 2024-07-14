@@ -21,7 +21,7 @@ def random_function(min_size = 1, max_size = 10):
         if random.random() < 0.1:
             return f"{random.choice(constants)}"
         elif random.random() < 0.6:
-            return f"{random.choice(inputs)}"
+            return f"{random.choices(inputs, weights = [0.3, 0.3, 0.3, 0.1], k = 1)[0]}"
         else:
             return f"({generate_expr()} {random.choice(operations)} {generate_expr()})"
     
