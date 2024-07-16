@@ -110,5 +110,4 @@ python main.py
 
 ## todo
 
-- Make faster
-- Make AI
+- [ ] fix Deep leaning
