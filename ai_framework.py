@@ -45,21 +45,26 @@ def mutate_function(func):
     return func
 
 
-def evaluate_function(func: list = None, num_tests = 10, num_winners = 50, num_candidates = 100, num_voters = 50,
+def evaluate_function(func: list = None, num_tests = 50, num_winners = 50, num_candidates = 100, num_voters = 50,
                       max_budget = 200000) -> float:
     """Evaluate the function with the given parameters."""
-    
+    error = 0
     total_error = 0
+    best_error = int(1e9)
+    worst_error = 0
     if func is None:
         func = random_function()
-    for _ in range(num_tests):
-        total_error = test_function(func, max_budget, num_candidates, num_voters, num_winners, total_error)
-    
+    for _ in range(num_tests+2):
+        error += test_function(func, max_budget, num_candidates, num_voters, num_winners)
+        best_error = min(best_error, error)
+        total_error += error
+        error = 0
+    total_error -= best_error
     return total_error / num_tests
 
 
-def test_function(func, max_budget, num_candidates, num_voters, num_winners, total_error):
-    budget = random.randint(max_budget // 100, max_budget)
+def test_function(func, max_budget, num_candidates, num_voters, num_winners):
+    budget = random.randint(max_budget // 5, max_budget)
     try:
         # Generate an election based on the parameters
         election = Experiment_helper.fabricate_election(num_candidates, num_voters)
@@ -74,10 +79,9 @@ def test_function(func, max_budget, num_candidates, num_voters, num_winners, tot
         # mean_squared_error = np.mean((true_scores - committee_scores) ** 2)
         
         error = symmetric_difference / num_winners
-        total_error += error
     except:
-        total_error += 1000000
-    return total_error
+        error = 1000000
+    return error
 
 
 def test_best_function(func: list | QuestionGenerator = None, num_tests = 10):

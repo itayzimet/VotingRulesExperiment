@@ -54,6 +54,9 @@ class Voter:
             temp -= bucket
             question[i] = bucket
         question[-1] += temp
+        question = [int(x) for x in question if x >= 1]
+        if len(question) == 0 and num_candidates > 0:
+            question = [num_candidates // 2, num_candidates // 2 + num_candidates % 2]
         left_to_fill = question[0]
         current_bucket = 0
         for candidate in self.OrdinalPreferences:

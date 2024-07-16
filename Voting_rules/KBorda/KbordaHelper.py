@@ -53,11 +53,19 @@ class KbordaHelper:
         :param i: the recursion depth
         :return: None
         """
-        if self.questions[voter_idx] <= 0 or len(current_node.value) <= 1:
+        price = questionPrice.get_price(current_node.value, question_type)
+        if self.questions[voter_idx] < price:
             return
-        if i >= 30:
+        if len(current_node.value) == 2:
+            buckets = voter.general_bucket_question(current_node.value, [0.5, 0.5])
+            for bucket in buckets:
+                current_node.sons.append(Node(bucket))
             return
-        self.questions[voter_idx] -= questionPrice.get_price(current_node.value, question_type)
+        if len(current_node.value) <= 1:
+            return
+        if i >= 50:
+            return
+        self.questions[voter_idx] -= price
         buckets = voter.general_bucket_question(current_node.value, question_type.copy())
         for bucket in buckets:
             current_node.sons.append(Node(bucket))
