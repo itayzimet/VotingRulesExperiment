@@ -113,8 +113,8 @@ def Deep_learning():
 def genetic():
     # %% Genetic training
     population_size = 10
-    num_generations = 10
-    tournament_size = 5
+    num_generations = 5
+    tournament_size = 2
     mutation_rate = 0.1
     crossover_rate = 0.8
     best_genetic_function, best_score = genetic_algorithm(population_size, num_generations, tournament_size,

@@ -43,7 +43,7 @@ class KbordaNextLastFCFS(VotingRuleConstrained):
             counter = 0
             while temp > 0 and len(temp_candidates) > 0:
                 temp -= questionPrice.get_price(temp_candidates,
-                                                [1 / len(temp_candidates), 1 - 2 / len(temp_candidates),
+                                                [1 / len(temp_candidates), 1 - (2 / len(temp_candidates)),
                                                  1 / len(temp_candidates)])
                 temp_candidates = temp_candidates[1:]
                 counter += 1

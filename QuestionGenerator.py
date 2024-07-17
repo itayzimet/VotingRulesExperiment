@@ -3,7 +3,7 @@ from torch import nn as nn
 
 
 class QuestionGenerator(nn.Module):
-    def __init__(self, input_size = 4, hidden_size = 64, output_size = 10):
+    def __init__(self, input_size = 4, hidden_size = 20, output_size = 10):
         super(QuestionGenerator, self).__init__()
         self.network = nn.Sequential(
             nn.Linear(input_size, hidden_size),
@@ -24,7 +24,7 @@ import numpy as np
 def normalize(z):
     sum = np.sum(z)
     z = [x / sum for x in z]
-    z = [x for x in z if x > 0.001]
+    z = [x for x in z if x > 0.01]
     sum = np.sum(z)
     z = [x / sum for x in z]
     return z
