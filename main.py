@@ -29,7 +29,7 @@ graph for the experiment.
 
 
 # %%
-def main(training_mode = True, load_saved = False):
+def main(training_mode = False, load_saved = True, compute = False):
     """
     Main function to run the experiment
     :return: None
@@ -37,7 +37,7 @@ def main(training_mode = True, load_saved = False):
     if training_mode:
         best_annealing_function = annealing()
         best_genetic_function = genetic()
-        final_learning_model = Deep_learning()
+        final_learning_model = deep_learning()
     else:
         try:
             with open('best_annealing_function.pkl', 'rb') as f:
@@ -49,6 +49,7 @@ def main(training_mode = True, load_saved = False):
             send_message("Please run the training mode first.")
             return
     # %%
+    
     test_parameters = dict(
         target_committee_size = 50, num_candidates = 100, num_voters = 100,
         voting_rule = Kborda,
@@ -63,24 +64,28 @@ def main(training_mode = True, load_saved = False):
             KbordaBucket(best_genetic_function, name = 'Genetic'),
             KbordaBucket(final_learning_model, name = 'Deep Learning'),
             VotingRuleRandom],
-        number_of_questions = range(1, 400000, 1000), number_of_runs = 1,
+        number_of_questions = range(1, 400000, 1000), number_of_runs = 1000,
         multithreaded = True)
     
     # %%
     """KBorda testing"""
     # %%
     if load_saved:
-        # load averages from pickle file
         no_of_saved_runs, saved_averages = extract_saved_averages()
-    # %%
-    # Run the test for KBorda
-    averages = run_test(test_parameters)
-    # %%
-    if load_saved:
-        # Average the saved averages and the new averages
-        averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages, test_parameters)
-        # add averages to pickle file
+        if compute:
+            averages = run_test(test_parameters)
+            averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages,
+                                                              test_parameters)
+            write_averages_to_file(averages, test_parameters)
+        else:
+            averages = saved_averages
+            test_parameters['number_of_runs'] = no_of_saved_runs
+    elif compute:
+        averages = run_test(test_parameters)
         write_averages_to_file(averages, test_parameters)
+    else:
+        raise Exception("Please choose either load_saved or compute or both to be True.")
+    # %%
     total_averages = {}
     # Calculate the average Accuracy for each voting rule
     for key in averages:
@@ -90,9 +95,10 @@ def main(training_mode = True, load_saved = False):
     send_plot(test_parameters, averages)
     send_message(total_averages.__str__())
     send_message(test_parameters.__str__())
+    send_file('averages.pickle')
 
 
-def Deep_learning():
+def deep_learning():
     # %% Deep learning
     num_epochs = 1000
     learning_rate = 0.01
@@ -135,10 +141,10 @@ def genetic():
 
 # %% Annealing training
 def annealing():
-    T = 1000
+    t = 1000
     alpha = 0.9999995
     max_iter = 100
-    best_annealing_function, best_score = simulated_annealing(T, alpha, max_iter)
+    best_annealing_function, best_score = simulated_annealing(t, alpha, max_iter)
     send_message("Annealing training results:")
     send_message(f"Best function (vector size: {len(best_annealing_function)}):")
     for expr in best_annealing_function:

@@ -14,6 +14,7 @@ import random
 from typing import Any, Tuple, Dict
 
 from dotenv import load_dotenv
+from matplotlib import pyplot as plt
 import plotly.express as px
 import requests
 from tqdm.contrib.telegram import tqdm, trange
@@ -99,29 +100,52 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
     return averages
 
 
-def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file_name = "graph.html") -> None:
+def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file_name = "graph", latex = False) -> str:
     """
     Plots the graph for the experiment
     :param test_params: the parameters of the test
     :param averages: the average differences between the committees for the different constrained voting rules
     :param file_name: the name of the file to save the graph to
+    :param latex: whether to use latex for the graph
     :return: None
+
     """
-    # make it a scatter plot
-    fig = px.scatter()
-    for rule, average in averages.items():
-        fig.add_scatter(x = list(test_params['number_of_questions']), y = average, mode = 'markers',
-                        name = rule.__str__())
-    fig.update_layout(
-        title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, "
-                f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
-                f"voters, {test_params['number_of_runs']} runs",
-        xaxis_title = 'Number of questions',
-        yaxis_title = 'Distance between the committees')
-    
-    fig.show()
-    
-    fig.write_html(file_name)
+    if not latex:
+        # make it a scatter plot
+        fig = px.scatter()
+        for rule, average in averages.items():
+            fig.add_scatter(x = list(test_params['number_of_questions']), y = average, mode = 'markers',
+                            name = rule.__str__())
+        fig.update_layout(
+            title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee "
+                    f"members, "
+                    f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
+                    f"voters, {test_params['number_of_runs']} runs",
+            xaxis_title = 'Number of questions',
+            yaxis_title = 'Distance between the committees')
+        
+        fig.show()
+        fig.write_html(file_name + ".html")
+        return file_name + ".html"
+    else:
+        plt.figure(figsize = (15, 8))
+        plt.title(
+            f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, "
+            f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
+            f"voters, {test_params['number_of_runs']} runs")
+        x = list(test_params['number_of_questions'])
+        for rule, average in averages.items():
+            plt.plot(x, average, label = rule.__str__())
+        plt.xlabel('Number of questions')
+        plt.ylabel('Distance between the committees')
+        plt.legend(bbox_to_anchor = (1.04, 1), loc = "upper left")
+        plt.subplots_adjust(left = 0.06, right = 0.6)
+        
+        import tikzplotlib
+        tikzplotlib.clean_figure()
+        tikzplotlib.save(file_name + ".tex")
+        plt.show()
+        return file_name + ".tex"
 
 
 def write_averages_to_file(averages, test_parameters):
@@ -190,7 +214,7 @@ def send_files(files: list[str]):
 
 
 def send_plot(test_parameters: dict[str, any], averages: dict[Any, list[int]]):
-    temp_file_name = random.randint(0, 1000000).__str__() + ".html"
-    plot_graph(test_parameters, averages, temp_file_name)
-    send_file(temp_file_name)
-    os.remove(temp_file_name)
+    temp_file_name = random.randint(0, 1000000).__str__()
+    filename = plot_graph(test_parameters, averages, temp_file_name)
+    send_file(filename)
+    os.remove(filename)

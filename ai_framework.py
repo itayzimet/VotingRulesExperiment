@@ -54,7 +54,7 @@ def evaluate_function(func: list = None, num_tests = 50, num_winners = 50, num_c
     worst_error = 0
     if func is None:
         func = random_function()
-    for _ in range(num_tests+2):
+    for _ in range(num_tests + 2):
         error += test_function(func, max_budget, num_candidates, num_voters, num_winners)
         best_error = min(best_error, error)
         total_error += error

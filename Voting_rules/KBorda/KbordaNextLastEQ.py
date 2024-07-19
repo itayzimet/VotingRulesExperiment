@@ -62,7 +62,7 @@ class KbordaNextLastEQ(VotingRuleConstrained):
             # If the budget does not allow the voter to answer all questions, score the remaining candidates equally
             scores[voter.OrdinalPreferences[questions_per_voter:-questions_per_voter]] += (
                     sum(rank_scores[questions_per_voter:-questions_per_voter]) // (
-                        num_candidates - 2 * questions_per_voter))
+                    num_candidates - 2 * questions_per_voter))
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]
     

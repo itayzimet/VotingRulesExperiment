@@ -19,7 +19,8 @@ def genetic_algorithm(pop_size, generations, tournament_size, crossover_rate, mu
     best_chromosome, best_fitness = min(population_fitness, key = lambda x: x[1])
     
     gens = trange(generations, token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
-                  desc = 'Running genetic algorithm', postfix = f"Best fitness: {best_fitness % 1e6:.2f})", leave = True)
+                  desc = 'Running genetic algorithm', postfix = f"Best fitness: {best_fitness % 1e6:.2f})",
+                  leave = True)
     
     for _ in gens:
         new_population = []
