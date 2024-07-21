@@ -8,6 +8,17 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 
 class KbordaBucketSplit(VotingRuleConstrained):
+    """
+    Class for the K-Borda Bucket Split voting rule
+    
+    Methods:
+        find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]
+            Find the winners of the election by splitting the candidates using the bucket syntax
+        __str__()
+            Return the name of the voting rule as a string
+    """
+    
+    name = "K-Borda Bucket Split"
     
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
@@ -25,6 +36,9 @@ class KbordaBucketSplit(VotingRuleConstrained):
         scores = np.zeros(num_candidates, dtype = int)
         # Set up the budget for each voter
         questions = [question_limit // len(voters)] * len(voters)
+        if question_limit % len(voters) != 0:
+            for i in range(question_limit % len(voters)):
+                questions[i] += 1
         helper = KbordaHelper(questions)
         for i, voter in enumerate(voters):
             # If the voter has no budget left, skip
@@ -38,7 +52,3 @@ class KbordaBucketSplit(VotingRuleConstrained):
             KbordaHelper.score_candidates(root_node, scores, rank)
         # Return the winners
         return bn.argpartition(scores, num_winners)[-num_winners:]
-    
-    @staticmethod
-    def __str__():
-        return "K-Borda Bucket Split"

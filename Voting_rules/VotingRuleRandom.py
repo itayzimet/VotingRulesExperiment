@@ -15,6 +15,8 @@ class VotingRuleRandom(VotingRuleConstrained):
             Returns a random list of winners of the election
     """
     
+    name = "Random voting rule"
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -28,7 +30,3 @@ class VotingRuleRandom(VotingRuleConstrained):
         for i in range(election.numberOfCandidates):
             winners.append(randint(0, election.numberOfCandidates - 1))
         return winners
-    
-    @staticmethod
-    def __str__():
-        return "Random voting rule"

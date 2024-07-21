@@ -14,6 +14,8 @@ class KbordaNextLastEQ(VotingRuleConstrained):
     K-Borda rule with the next and last questions with budget distributed equally among voters
     """
     
+    name = "K-Borda Next and Last equally"
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -33,43 +35,35 @@ class KbordaNextLastEQ(VotingRuleConstrained):
         scores = np.zeros(num_candidates, dtype = int)
         rank_scores = np.arange(num_candidates, 0, -1)
         # Calculate the budget for each voter
-        questions_per_voter = (question_limit // len(voters)) // 2
-        # Calculate the amount of questions that each voter can be asked
-        temp = questions_per_voter
-        temp_candidates = candidates.copy()
-        counter = 0
-        while temp > 0 and len(temp_candidates) > 0:
-            temp -= questionPrice.get_price(temp_candidates, [1 / len(temp_candidates), 1 - (2 / len(temp_candidates)),
-                                                              1 / len(temp_candidates)])
-            temp_candidates = temp_candidates[1:]
-            counter += 1
-        questions_per_voter = counter
-        for voter in voters:
-            # If the budget is not enough to ask any question, return the num_winners candidates with the highest scores
-            if questions_per_voter <= 0:
-                return bn.argpartition(scores, num_winners)[-num_winners:]
-            # If the budget allows the voter to answer all questions, score the candidates based on the preferences
-            # of the voter
-            if 2 * questions_per_voter >= num_candidates:
-                scores[voter.OrdinalPreferences] += rank_scores
-                continue
-            # Score the candidates based on the preferences of the voters
-            # Score the first k questions and the last k questions
-            voter_first_truncated_preferences = voter.OrdinalPreferences[:questions_per_voter]
-            scores[voter_first_truncated_preferences] += rank_scores[:questions_per_voter]
-            voter_last_truncated_preferences = voter.OrdinalPreferences[-questions_per_voter:]
-            scores[voter_last_truncated_preferences] += rank_scores[-questions_per_voter:]
-            # If the budget does not allow the voter to answer all questions, score the remaining candidates equally
-            scores[voter.OrdinalPreferences[questions_per_voter:-questions_per_voter]] += (
-                    sum(rank_scores[questions_per_voter:-questions_per_voter]) // (
-                    num_candidates - 2 * questions_per_voter))
+        questions = [question_limit // len(voters)] * len(voters)
+        if question_limit % len(voters) != 0:
+            for i in range(question_limit % len(voters)):
+                questions[i] += 1
+        # Calculate the scores of the candidates
+        for i, voter in enumerate(voters):
+            if questions[i] <= 0:
+                break
+            # calculate amount of available questions
+            question_budget = questions[i]
+            question_amount = 0
+            candidates_in_bucket = candidates
+            while question_budget > 0:
+                price = questionPrice.get_price(candidates_in_bucket,
+                                                [1 / len(candidates_in_bucket), 1 - 2 / len(candidates_in_bucket),
+                                                 1 / len(candidates_in_bucket)])
+                if price > question_budget:
+                    break
+                question_budget -= price
+                candidates_in_bucket = candidates_in_bucket[- 2:]
+                question_amount += 1
+                if question_budget == len(candidates):
+                    break
+            # score the candidates
+            top_preferences = voter.OrdinalPreferences[:question_amount]
+            bottom_preferences = voter.OrdinalPreferences[-question_amount:]
+            scores[top_preferences] += rank_scores[:len(top_preferences)]
+            scores[bottom_preferences] += rank_scores[:len(bottom_preferences)]
+        
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]
-    
-    @staticmethod
-    def __str__():
-        """
-        Returns the name of the voting rule
-        :return: the name of the voting rule
-        """
-        return "K-Borda Next and Last Questions distributed equally among voters"
+        

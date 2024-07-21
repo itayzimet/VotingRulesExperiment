@@ -60,9 +60,9 @@ def main(training_mode = False, load_saved = True, compute = False):
             KbordaLastEq, KbordaLastFCFS,
             KbordaNextLastEQ, KbordaNextLastFCFS,
             KbordaBucketSplit, KbordaBucketTrinary,
-            KbordaBucket(best_annealing_function, name = 'Annealing'),
-            KbordaBucket(best_genetic_function, name = 'Genetic'),
-            KbordaBucket(final_learning_model, name = 'Deep Learning'),
+            KbordaBucket(best_annealing_function, 'Annealing'),
+            KbordaBucket(best_genetic_function, 'Genetic'),
+            KbordaBucket(final_learning_model, 'Deep Learning'),
             VotingRuleRandom],
         number_of_questions = range(1, 400000, 1000), number_of_runs = 1000,
         multithreaded = True)

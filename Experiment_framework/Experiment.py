@@ -59,7 +59,7 @@ class Experiment:
             if question_type is not None:
                 rule = constrained_voting_rule(question_type)
             else:
-                rule = constrained_voting_rule
+                rule = constrained_voting_rule()
             self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
         for committee in self.committees:

@@ -15,6 +15,8 @@ class KbordaNextLastFCFS(VotingRuleConstrained):
     K-Borda rule with the next and last questions with budget distributed equally among voters
     """
     
+    name = "K-Borda Next and Last First Come First Serve"
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -70,11 +72,3 @@ class KbordaNextLastFCFS(VotingRuleConstrained):
                     num_candidates - 2 * questions_per_voter))
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]
-    
-    @staticmethod
-    def __str__():
-        """
-        Returns the name of the voting rule
-        :return: the name of the voting rule
-        """
-        return "K-Borda Next and Last Questions distributed First Come First Serve"
