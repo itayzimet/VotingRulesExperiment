@@ -1,12 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import bottleneck as bn
-import numpy as np
 
 from Experiment_framework.Election import Election
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
-from Voting_rules.KBorda.KbordaHelper import KbordaHelper
-from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 

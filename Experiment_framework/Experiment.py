@@ -59,27 +59,13 @@ class Experiment:
             if question_type is not None:
                 rule = constrained_voting_rule(question_type)
             else:
-                rule = constrained_voting_rule()
+                rule = constrained_voting_rule if isinstance(constrained_voting_rule, VotingRuleConstrained) else constrained_voting_rule()
             self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
         # find the distance between the true committee and the committees
         for committee in self.committees:
             self.committeeDistance.append(committee_distance(self.true_committee, committee))
     
-    def export_to_excel(self) -> 'Experiment':
-        """
-        Exports the data to an Excel file
-        :return: the Experiment object
-        """
-        # Create a Pandas DataFrame with the data
-        data = {'Number of questions': self.numberOfQuestions,
-                'Committee distance': self.committeeDistance,
-                'Committees': self.committees,
-                'True committee': [self.true_committee] * len(self.numberOfQuestions)}
-        df = pd.DataFrame(data)
-        # Write the DataFrame to an Excel file
-        df.to_excel(f"{self.votingRule.__str__()}_{self.constrainedVotingRule.__str__()}.xlsx")
-        return self
-    
+ 
     def __str__(self):
         new_line = '\n'
         return f"""Experiment with candidates: {self.election.candidates}

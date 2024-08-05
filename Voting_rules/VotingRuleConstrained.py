@@ -19,6 +19,7 @@ class VotingRuleConstrained:
         Constructor of the VotingRuleConstrained class
         """
         pass
+    
     @staticmethod
     def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
         """
@@ -29,7 +30,7 @@ class VotingRuleConstrained:
         :return: the list of winners of the election
         """
         pass
-
+    
     def __str__(self):
         """
         Returns the name of the voting rule

@@ -46,7 +46,7 @@ class KbordaNextLastEQ(VotingRuleConstrained):
             # calculate amount of available questions
             question_budget = questions[i]
             question_amount = 0
-            candidates_in_bucket = candidates
+            candidates_in_bucket = candidates.copy()
             while question_budget > 0:
                 price = questionPrice.get_price(candidates_in_bucket,
                                                 [1 / len(candidates_in_bucket), 1 - 2 / len(candidates_in_bucket),
@@ -54,16 +54,19 @@ class KbordaNextLastEQ(VotingRuleConstrained):
                 if price > question_budget:
                     break
                 question_budget -= price
-                candidates_in_bucket = candidates_in_bucket[- 2:]
+                candidates_in_bucket = candidates_in_bucket[:-2]
                 question_amount += 1
-                if question_budget == len(candidates):
+                if question_amount == len(candidates) // 2:
                     break
             # score the candidates
             top_preferences = voter.OrdinalPreferences[:question_amount]
             bottom_preferences = voter.OrdinalPreferences[-question_amount:]
-            scores[top_preferences] += rank_scores[:len(top_preferences)]
-            scores[bottom_preferences] += rank_scores[:len(bottom_preferences)]
+            middle_preferences = voter.OrdinalPreferences[question_amount:-question_amount]
+            scores[top_preferences] += rank_scores[:question_amount]
+            scores[bottom_preferences] += rank_scores[-question_amount:]
+            if len(middle_preferences) > 0:
+                scores[middle_preferences] += sum(rank_scores[question_amount:-question_amount]) // len(
+                    middle_preferences)
         
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]
-        

@@ -39,26 +39,31 @@ class KbordaLastEq(VotingRuleConstrained):
             for i in range(question_limit % len(voters)):
                 questions[i] += 1
         # Calculate the scores of the candidates
+        if questions[0] < questionPrice.get_price(candidates, [1 / len(candidates), 1 - 1 / len(candidates)]):
+            return bn.argpartition(-scores, num_winners)[:num_winners]
         for i, voter in enumerate(voters):
             if questions[i] <= 0:
                 break
             # calculate amount of available questions
             question_budget = questions[i]
             question_amount = 0
-            candidates_in_bucket = candidates
+            candidates_in_bucket = candidates.copy()
             while question_budget > 0:
                 price = questionPrice.get_price(candidates_in_bucket,
-                                                [1 - 1 / len(candidates_in_bucket), 1 / len(candidates_in_bucket)])
+                                                [1 / len(candidates_in_bucket), 1 - 1 / len(candidates_in_bucket)])
                 if price > question_budget:
                     break
                 question_budget -= price
-                candidates_in_bucket = candidates_in_bucket[-1:]
+                candidates_in_bucket = candidates_in_bucket[:-1]
                 question_amount += 1
-                if question_budget == len(candidates):
+                if question_amount == len(candidates):
                     break
             # score the candidates
             preferences = voter.OrdinalPreferences[-question_amount:]
-            scores[preferences] += rank_scores[:len(preferences)]
+            fuzzy_preferences = voter.OrdinalPreferences[:-question_amount]
+            scores[preferences] += rank_scores[-question_amount:]
+            if question_amount < num_candidates:
+                scores[fuzzy_preferences] += sum(rank_scores[:-question_amount]) // (num_candidates - question_amount)
         
         # Return the num_winners candidates with the highest scores
         return bn.argpartition(scores, num_winners)[-num_winners:]

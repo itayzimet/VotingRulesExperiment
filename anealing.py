@@ -3,7 +3,7 @@ import os
 import random
 
 from dotenv import load_dotenv
-from tqdm.contrib.telegram import trange
+from tqdm import trange
 
 from ai_framework import random_function, mutate_function, evaluate_function, test_best_function
 from Experiment_framework.main_helper import send_message
@@ -19,7 +19,7 @@ def simulated_annealing(t, _alpha, _max_iter):
     _best_score = current_score
     
     iterations = trange(_max_iter, desc = "Simulated Annealing",
-                        token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"), leave = True)
+                        )
     
     for _ in iterations:
         t *= _alpha

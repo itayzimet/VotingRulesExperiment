@@ -17,10 +17,11 @@ from dotenv import load_dotenv
 from matplotlib import pyplot as plt
 import plotly.express as px
 import requests
-from tqdm.contrib.telegram import tqdm, trange
+from tqdm import tqdm, trange
 
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Experiment_helper import fabricate_election
+from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 
 def run_experiment(target_committee_size: int, num_candidates: int, num_voters: int, voting_rule,
@@ -80,12 +81,12 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
                                                       rule,
                                                       number_of_questions)
                                                       for _ in range(number_of_runs)]),
-                                        token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID"),
                                         total = number_of_runs, desc = f'Running experiments: {rule.__str__()}', ))
         else:
             differences = []
-            for _ in trange(number_of_runs, desc = 'Running experiments', total = number_of_runs,
-                            token = os.getenv("TELEGRAM_TOKEN"), chat_id = os.getenv("CHAT_ID")):
+            for _ in trange(number_of_runs, desc = f'Running experiments: {rule.__str__()}',
+                            total = number_of_runs,
+                            ):
                 differences.append(
                     run_experiment(target_committee_size, num_candidates, num_voters, voting_rule, rule,
                                    number_of_questions))
@@ -100,7 +101,7 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
     return averages
 
 
-def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file_name = "graph", latex = False) -> str:
+def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file_name = "graph", latex = True) -> str:
     """
     Plots the graph for the experiment
     :param test_params: the parameters of the test

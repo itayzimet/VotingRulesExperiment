@@ -14,11 +14,12 @@ class KbordaBucket(VotingRuleConstrained):
         super().__init__()
         self.question_type = question_type
         if _name is None:
-            name = "question_type"
+            self.name = "question_type"
         else:
-            name = _name
+            self.name = _name
     
-    def find_winners(self, election: Election, num_winners: int, question_limit: int, distribute_equally: bool = True) -> list[int]:
+    def find_winners(self, election: Election, num_winners: int, question_limit: int,
+                     distribute_equally: bool = True) -> list[int]:
         """
         Find the winners of the election by splitting the candidates using the bucket syntax
         :param election: Election object containing the candidates and voters

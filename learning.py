@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import torch
 import torch.optim as optim
-from tqdm.contrib.telegram import trange
+from tqdm import trange
 
 from ai_framework import evaluate_function, test_best_function
 from Experiment_framework.main_helper import send_message

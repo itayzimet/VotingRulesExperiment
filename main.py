@@ -1,11 +1,14 @@
 # %%
 
+import mapel.elections as mapel
 import numpy as np
 import torch
 
 from ai_framework import test_best_function, evaluate_function
 from anealing import simulated_annealing
+from Experiment_framework.Election import Election
 from Experiment_framework.main_helper import *
+from Experiment_framework.Voter import Voter
 from geneticLearning import genetic_algorithm
 from learning import train_model
 from QuestionGenerator import QuestionGenerator
@@ -29,7 +32,7 @@ graph for the experiment.
 
 
 # %%
-def main(training_mode = False, load_saved = True, compute = False):
+def main_no_maple(training_mode = False, load_saved = True, compute = False):
     """
     Main function to run the experiment
     :return: None
@@ -55,16 +58,16 @@ def main(training_mode = False, load_saved = True, compute = False):
         voting_rule = Kborda,
         constrained_voting_rule =
         [
-            KbordaSplitFCFS,
-            KbordaNextEq, KbordaNextFCFS,
-            KbordaLastEq, KbordaLastFCFS,
-            KbordaNextLastEQ, KbordaNextLastFCFS,
-            KbordaBucketSplit, KbordaBucketTrinary,
+            KbordaSplitFCFS(),
+            KbordaNextEq(), KbordaNextFCFS(),
+            KbordaLastEq(), KbordaLastFCFS(),
+            KbordaNextLastEQ(), KbordaNextLastFCFS(),
+            KbordaBucketSplit(), KbordaBucketTrinary(),
             KbordaBucket(best_annealing_function, 'Annealing'),
             KbordaBucket(best_genetic_function, 'Genetic'),
             KbordaBucket(final_learning_model, 'Deep Learning'),
-            VotingRuleRandom],
-        number_of_questions = range(1, 400000, 1000), number_of_runs = 1000,
+            VotingRuleRandom()],
+        number_of_questions = range(1, 400000, 1000), number_of_runs = 5000,
         multithreaded = True)
     
     # %%
@@ -98,9 +101,50 @@ def main(training_mode = False, load_saved = True, compute = False):
     send_file('averages.pickle')
 
 
+def main_maple():
+    experiment = mapel.prepare_online_ordinal_experiment()
+    experiment.set_default_num_voters(100)
+    experiment.set_default_num_candidates(100)
+    
+    # generate the elections
+    experiment.add_family('ic', size = 30, color = 'red', label = 'IC', marker = 'o')
+    experiment.add_family('urn', size = 30, params = {'alpha': 0.5}, color = 'blue', label = 'Urn', marker = 'x')
+    
+    experiment.compute_distances(distance_id = 'emd-positionwise')
+    experiment.embed_2d(embedding_id = 'fr')
+    
+    experiment.print_map_2d()
+    
+    experiment.add_feature('next_fcfs', maple_feature_next_fcfs)
+    experiment.compute_feature('next_fcfs')
+    
+    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs', cmap = 'Purples')
+
+
+def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
+    """
+    This function computes the feature for the election using the Next FCFS rule.
+    :param election: Election object
+    :return: Dictionary containing the feature for the election
+    """
+    voters = election.votes
+    new_voters = []
+    for voter in voters:
+        new_voter = Voter(voter)
+        new_voters.append(new_voter)
+    election = Election(list(range(election.num_candidates)), new_voters)
+    experiment = Experiment(50, election, Kborda, KbordaNextFCFS(), list(range(1, 4500, 10)))
+    distances = experiment.committeeDistance
+    x = experiment.numberOfQuestions
+    y = distances
+    poly = np.polyfit(x, y, 3)
+    # return the strongest coefficient of the polynomial as the feature
+    return {'value': poly[-1]}
+
+
 def deep_learning():
     # %% Deep learning
-    num_epochs = 1000
+    num_epochs = 100
     learning_rate = 0.01
     model = QuestionGenerator()
     trained_model = train_model(model, num_epochs, learning_rate)
@@ -118,7 +162,7 @@ def deep_learning():
 
 def genetic():
     # %% Genetic training
-    population_size = 10
+    population_size = 5
     num_generations = 5
     tournament_size = 2
     mutation_rate = 0.1
@@ -160,4 +204,4 @@ def annealing():
 
 # %%
 if __name__ == '__main__':
-    main()
+    main_maple()
