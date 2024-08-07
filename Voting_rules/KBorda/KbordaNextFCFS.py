@@ -36,14 +36,12 @@ class KbordaNextFCFS(VotingRuleConstrained):
         scores = np.zeros(num_candidates, dtype = int)
         rank_scores = np.arange(num_candidates, 0, -1)
         # Calculate the budget for each voter
-        max_questions_per_voter = question_limit // len(voters)
+        temp = question_limit
         for voter in voters:
             # Calculate the amount of questions that this voter can be asked
-            questions_per_voter = max_questions_per_voter
-            temp = questions_per_voter
             temp_candidates = candidates.copy()
             counter = 0
-            while temp > 0 and len(temp_candidates) > 0:
+            while temp > 0 and len(temp_candidates) > 1:
                 temp -= questionPrice.get_price(temp_candidates,
                                                 [1 / len(temp_candidates), 1 - 1 / len(temp_candidates)])
                 temp_candidates = temp_candidates[1:]
