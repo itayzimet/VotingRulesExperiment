@@ -102,23 +102,70 @@ def main_no_maple(training_mode = False, load_saved = True, compute = False):
 
 
 def main_maple():
-    experiment = mapel.prepare_online_ordinal_experiment()
+    # %%
+    experiment_id = '100x100_mine'
+    distance_id = 'emd-positionwise'
+    embedding_id = 'kk'
+    
+    experiment = mapel.prepare_online_ordinal_experiment(
+        experiment_id = experiment_id,
+        distance_id = distance_id,
+        embedding_id = embedding_id,
+    
+    )
+    experiment.reset_cultures()
+    experiment.is_exported = True
     experiment.set_default_num_voters(100)
     experiment.set_default_num_candidates(100)
     
-    # generate the elections
-    experiment.add_family('ic', size = 30, color = 'red', label = 'IC', marker = 'o')
-    experiment.add_family('urn', size = 30, params = {'alpha': 0.5}, color = 'blue', label = 'Urn', marker = 'x')
+    experiment.add_family('ic', size = 10, color = 'blue')
+    alphas = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
+    for alpha in alphas:
+        experiment.add_family('urn', size = 30, color = 'red', params = {'alpha': alpha})
+    phis = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999]
+    for phi in phis:
+        experiment.add_family('mallows', size = 20, color = 'green', params = {'phi': phi})
+    experiment.add_family('conitzer', size = 30, color = 'brown')
+    experiment.add_family('walsh', size = 30, color = 'purple')
+    experiment.add_family('spoc', size = 30, color = 'orange')
+    experiment.add_family('single-crossing', size = 30, color = 'yellow')
+    dims = [1, 2, 3, 5, 10, 20]
+    for dim in dims:
+        experiment.add_family('euclidean', size = 30, color = 'cyan', params = {'dim': dim, 'space': 'uniform'})
+    dims = [2, 3, 5]
+    for dim in dims:
+        experiment.add_family('euclidean', size = 30, color = 'magenta', params = {'dim': dim, 'space': 'sphere'})
     
-    experiment.compute_distances(distance_id = 'emd-positionwise')
-    experiment.embed_2d(embedding_id = 'fr')
+    experiment.add_election('identity', color = 'black', label = 'ID', marker = 'x')
+    experiment.add_election('uniformity', color = 'black', label = 'UN', marker = 'x')
+    experiment.add_election('antagonism', color = 'black', label = 'AN', marker = 'x')
+    experiment.add_election('stratification', color = 'black', label = 'ST', marker = 'x')
+    experiment.add_family('anid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
+    experiment.add_family('stid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
+    experiment.add_family('anun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
+    experiment.add_family('stun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
     
-    experiment.print_map_2d()
+    experiment.prepare_elections()
     
     experiment.add_feature('next_fcfs', maple_feature_next_fcfs)
     experiment.compute_feature('next_fcfs')
     
-    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs', cmap = 'Purples')
+    # compute distance
+    experiment.compute_distances()
+    
+    # embed 2d and print map
+    experiment.embed_2d(embedding_id = 'kk')
+    experiment.print_map_2d(tex = True, saveas = 'map')
+    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs', cmap = 'viridis', tex = True,
+                                               saveas = 'map_colored')
+
+
+def maple_experiment(voters, num_candidates, num_questions):
+    random.shuffle(voters)
+    temp_election = Election(list(range(num_candidates)), voters)
+    # noinspection PyTypeChecker
+    experiment = Experiment(50, temp_election, Kborda, KbordaNextFCFS(), num_questions)
+    return experiment.committeeDistance
 
 
 def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
@@ -127,19 +174,39 @@ def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
     :param election: Election object
     :return: Dictionary containing the feature for the election
     """
+    
+    if election.fake:
+        return {'value': 0, 'plot': None}
     voters = election.votes
     new_voters = []
     for voter in voters:
         new_voter = Voter(voter)
         new_voters.append(new_voter)
-    election = Election(list(range(election.num_candidates)), new_voters)
-    experiment = Experiment(50, election, Kborda, KbordaNextFCFS(), list(range(1, 4500, 10)))
-    distances = experiment.committeeDistance
-    x = experiment.numberOfQuestions
+    num_candidates = election.num_candidates
+    num_questions = list(range(1, 80000, 1000))
+    
+    with Pool() as pool:
+        distances = list(
+            pool.starmap(maple_experiment,
+                         [(new_voters.copy(), num_candidates, num_questions.copy()) for _ in range(5)]))
+    distances = np.mean(distances, axis = 0)
+    x = num_questions
     y = distances
-    poly = np.polyfit(x, y, 3)
+    x = np.array(x)
+    y = np.array(y)
+    from numpy.polynomial import Polynomial
+    poly: Polynomial = Polynomial.fit(x, y, 2)
+    
+    # save plot as var to return it
+    fig, ax = plt.subplots()
+    ax.plot(x, y, 'o')
+    ax.plot(x, poly(x))
+    ax.set(xlabel = 'Number of questions', ylabel = 'Distance between the committees',
+           title = f"{election.election_id}\n {poly}")
+    ax.grid()
+    plt.show()
     # return the strongest coefficient of the polynomial as the feature
-    return {'value': poly[-1]}
+    return {'value': poly.coef[-1], 'plot': (fig, ax)}
 
 
 def deep_learning():
