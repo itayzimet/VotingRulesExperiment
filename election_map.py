@@ -27,56 +27,58 @@ def generate_election_map(exp_id: str = '100x100_third_try', distance_id: str = 
         experiment.reset_cultures()
         experiment.set_default_num_voters(num_voters)
         experiment.set_default_num_candidates(num_candidates)
-        experiment.add_family('ic', size = 10, color = 'blue', label = 'IC')
-        alphas = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
-        for alpha in alphas:
-            experiment.add_family('urn', size = 30, color = 'red', params = {'alpha': alpha}, label = f'URN {alpha}')
-        phis = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999]
-        for phi in phis:
-            experiment.add_family('mallows', size = 20, color = 'green', params = {'phi': phi}, label = f'Mallows {phi}')
-        experiment.add_family('conitzer', size = 30, color = 'brown', label = 'Conitzer')
-        experiment.add_family('walsh', size = 30, color = 'purple', label = 'Walsh')
-        experiment.add_family('spoc', size = 30, color = 'orange', label = 'SPOC')
-        experiment.add_family('single-crossing', size = 30, color = 'yellow', label = 'SC')
-        dims = [1, 2, 3, 5, 10, 20]
-        for dim in dims:
-            experiment.add_family('euclidean', size = 30, color = 'cyan', params = {'dim': dim, 'space': 'uniform'}, label = f'{dim}D Hypercube', alpha = dim/20)
-        dims = [2, 3, 5]
-        for dim in dims:
-            experiment.add_family('euclidean', size = 30, color = 'magenta', params = {'dim': dim, 'space': 'sphere'}, label = f'{dim}D Hypersphere', alpha = dim/5)
-        
-        experiment.add_election('identity', color = 'black', label = 'ID', marker = 'x')
-        experiment.add_election('uniformity', color = 'black', label = 'UN', marker = 'x')
-        experiment.add_election('antagonism', color = 'black', label = 'AN', marker = 'x')
-        experiment.add_election('stratification', color = 'black', label = 'ST', marker = 'x')
-        experiment.add_family('anid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-ID')
-        experiment.add_family('stid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-ID')
-        experiment.add_family('anun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-UN')
-        experiment.add_family('stun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-UN')
-    #%% compute distances
+        ids = (['ic'] + ['urn'] * 6 + ['mallows'] * 10 + ['conitzer', 'walsh', 'spoc', 'single-crossing'] +
+               ['euclidean'] * 9 + ['anid', 'stid', 'anun', 'stun', 'stan', 'unid'] + ['identity', 'uniformity',
+                                                                                       'antagonism', 'stratification'])
+        labels = ['IC', 'URN 0.01', 'URN 0.02', 'URN 0.05', 'URN 0.1', 'URN 0.2', 'URN 0.5', 'Mallows 0.001',
+                  'Mallows 0.01', 'Mallows 0.05', 'Mallows 0.1', 'Mallows 0.25', 'Mallows 0.5', 'Mallows 0.75',
+                  'Mallows 0.95', 'Mallows 0.99', 'Mallows 0.999', 'Conitzer', 'Walsh', 'SPOC', 'Single Crossing',
+                  '1D Hypercube',
+                  '2D Hypercube', '3D Hypercube', '5D Hypercube', '10D Hypercube', '20D Hypercube', '2D Hypersphere',
+                  '3D Hypersphere', '5D Hypersphere', 'AN-ID', 'ST-ID', 'AN-UN', 'ST-UN', 'ST-AN', 'UN-ID', 'ID', 'UN',
+                  'AN', 'ST']
+        colors = ["#FF0000", "#0000FF", "#000080", "#87CEEB", "#00FFFF", "#40E0D0", "#008080", "#00FF00", "#008000",
+                  "#90EE90", "#00FA9A", "#98FB98", "#32CD32", "#3CB371", "#2E8B57", "#228B22", "#006400", "#006400",
+                  "#FFA500", "#800080", "#FFC0CB", "#FF0000", "#DC143C", "#B22222", "#8B0000", "#CD5C5C", "#FA8072",
+                  "#808080", "#A9A9A9", "#D3D3D3", "#000000", "#000000", "#000000", "#000000", "#A52A2A", "#8B4513",
+                  "#D2691E", "#DEB887", "#FF8C00", "#FF7F50"]
+        params = [None, {'alpha': 0.01}, {'alpha': 0.02}, {'alpha': 0.05}, {'alpha': 0.1}, {'alpha': 0.2},
+                  {'alpha': 0.5}, {'phi': 0.001}, {'phi': 0.01}, {'phi': 0.05}, {'phi': 0.1}, {'phi': 0.25},
+                  {'phi': 0.5}, {'phi': 0.75}, {'phi': 0.95}, {'phi': 0.99}, {'phi': 0.999}, None, None, None, None,
+                  {'dim': 1, 'space': 'uniform'}, {'dim': 2, 'space': 'uniform'}, {'dim': 3, 'space': 'uniform'},
+                  {'dim': 5, 'space': 'uniform'}, {'dim': 10, 'space': 'uniform'}, {'dim': 20, 'space': 'uniform'},
+                  {'dim': 2, 'space': 'sphere'}, {'dim': 3, 'space': 'sphere'}, {'dim': 5, 'space': 'sphere'},
+                  None, None, None, None, None, None, None, None, None, None]
+        sizes = [10] + [30] * 6 + [20] * 10 + [30] * 13 + [20] * 6 + [1] * 4
+        markers = [None] * 30 + ['>'] * 6 + ['x'] * 4
+        zipped = zip(ids, labels, colors, params, sizes, markers)
+        for id_, label, color, param, size, marker in zipped:
+            experiment.add_family(id_, size = size, label = label, color = color, params = param, marker = marker)
+    
+    # %% compute distances
     if compute_distances:
         experiment.prepare_elections()
-        experiment.compute_distances(num_processes = 5)
-    #%% compute feature
+    experiment.compute_distances(num_processes = 8)
+    # %% compute feature
     if compute_feature:
         experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
-        experiment.compute_feature('next_fcfs_integral')
-    #%% embed 2d and print map
+    experiment.compute_feature('next_fcfs_integral')
+    # %% embed 2d and print map
     if embed:
         experiment.embed_2d(embedding_id = 'fr')
     if print_map:
         cmap = mpl.colormaps['inferno']
-        experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual =['ID', 'UN', 'AN', 'ST'], tex = True)
-        omit = []
-        for i in range(0, 19):
-            omit.append(f'anid_100_100_{i}')
-            omit.append(f'stid_100_100_{i}')
-            omit.append(f'anun_100_100_{i}')
-            omit.append(f'stun_100_100_{i}')
-        experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
-                                                   saveas = 'map_colored', figsize = (10, 8),
-                                                   textual = ['ID', 'UN', 'AN', 'ST'],
-                                                   omit = omit)
+    experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'], tex = True)
+    omit = []
+    for i in range(0, 19):
+        omit.append(f'anid_100_100_{i}')
+        omit.append(f'stid_100_100_{i}')
+        omit.append(f'anun_100_100_{i}')
+        omit.append(f'stun_100_100_{i}')
+    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
+                                               saveas = 'map_colored', figsize = (10, 8),
+                                               textual = ['ID', 'UN', 'AN', 'ST'],
+                                               omit = omit)
 
 
 def maple_experiment(voters, num_candidates, num_questions):

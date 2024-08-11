@@ -6,7 +6,7 @@ import numpy as np
 import torch
 
 from election_map import generate_election_map
-from Experiment_framework.ai_framework import deep_learning, genetic, annealing
+from Experiment_framework.ai_training import deep_learning, genetic, annealing
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
@@ -97,7 +97,7 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
     send_file('averages.pickle')
 
 
-def run_maple_experiments(exp_id: str = '100x100_third_try', distance_id: str = 'emd-positionwise',
+def run_maple_experiments(exp_id: str = '100x100_fourth_try', distance_id: str = 'emd-positionwise',
                           embedding_id: str = 'fr', num_voters: int = 100, num_candidates: int = 100,
                           generate: bool = False, compute_distances: bool = False, compute_feature: bool = False,
                           embed: bool = False, print_map: bool = False):
@@ -148,4 +148,4 @@ def main():
 
 # %%
 if __name__ == '__main__':
-    generate_election_map()
+    main()
