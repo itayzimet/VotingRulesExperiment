@@ -7,3 +7,5 @@
 /best_annealing_function.pkl
 /best_genetic_function.pkl
 /final_model.pth
+/experiments
+/images

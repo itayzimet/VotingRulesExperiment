@@ -3,6 +3,7 @@
 import mapel.elections as mapel
 import numpy as np
 import torch
+import matplotlib as mpl
 
 from ai_framework import test_best_function, evaluate_function
 from anealing import simulated_annealing
@@ -102,62 +103,71 @@ def main_no_maple(training_mode = False, load_saved = True, compute = False):
 
 
 def main_maple():
-    # %%
-    experiment_id = '100x100_mine'
+    # %% prepare experiment
+    experiment_id = '100x100_third_try'
     distance_id = 'emd-positionwise'
-    embedding_id = 'kk'
+    embedding_id = 'fr'
     
-    experiment = mapel.prepare_online_ordinal_experiment(
+    experiment = mapel.prepare_offline_ordinal_experiment(
         experiment_id = experiment_id,
         distance_id = distance_id,
         embedding_id = embedding_id,
-    
     )
-    experiment.reset_cultures()
+    
+    # experiment.reset_cultures()
     experiment.is_exported = True
-    experiment.set_default_num_voters(100)
-    experiment.set_default_num_candidates(100)
-    
-    experiment.add_family('ic', size = 10, color = 'blue')
-    alphas = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
-    for alpha in alphas:
-        experiment.add_family('urn', size = 30, color = 'red', params = {'alpha': alpha})
-    phis = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999]
-    for phi in phis:
-        experiment.add_family('mallows', size = 20, color = 'green', params = {'phi': phi})
-    experiment.add_family('conitzer', size = 30, color = 'brown')
-    experiment.add_family('walsh', size = 30, color = 'purple')
-    experiment.add_family('spoc', size = 30, color = 'orange')
-    experiment.add_family('single-crossing', size = 30, color = 'yellow')
-    dims = [1, 2, 3, 5, 10, 20]
-    for dim in dims:
-        experiment.add_family('euclidean', size = 30, color = 'cyan', params = {'dim': dim, 'space': 'uniform'})
-    dims = [2, 3, 5]
-    for dim in dims:
-        experiment.add_family('euclidean', size = 30, color = 'magenta', params = {'dim': dim, 'space': 'sphere'})
-    
-    experiment.add_election('identity', color = 'black', label = 'ID', marker = 'x')
-    experiment.add_election('uniformity', color = 'black', label = 'UN', marker = 'x')
-    experiment.add_election('antagonism', color = 'black', label = 'AN', marker = 'x')
-    experiment.add_election('stratification', color = 'black', label = 'ST', marker = 'x')
-    experiment.add_family('anid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
-    experiment.add_family('stid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
-    experiment.add_family('anun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
-    experiment.add_family('stun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'})
-    
-    experiment.prepare_elections()
-    
-    experiment.add_feature('next_fcfs', maple_feature_next_fcfs)
-    experiment.compute_feature('next_fcfs')
-    
+    # experiment.set_default_num_voters(100)
+    # experiment.set_default_num_candidates(100)
+    #
+    # experiment.add_family('ic', size = 10, color = 'blue', label = 'IC')
+    # alphas = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
+    # for alpha in alphas:
+    #     experiment.add_family('urn', size = 30, color = 'red', params = {'alpha': alpha}, label = f'URN {alpha}')
+    # phis = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999]
+    # for phi in phis:
+    #     experiment.add_family('mallows', size = 20, color = 'green', params = {'phi': phi}, label = f'Mallows {phi}')
+    # experiment.add_family('conitzer', size = 30, color = 'brown', label = 'Conitzer')
+    # experiment.add_family('walsh', size = 30, color = 'purple', label = 'Walsh')
+    # experiment.add_family('spoc', size = 30, color = 'orange', label = 'SPOC')
+    # experiment.add_family('single-crossing', size = 30, color = 'yellow', label = 'SC')
+    # dims = [1, 2, 3, 5, 10, 20]
+    # for dim in dims:
+    #     experiment.add_family('euclidean', size = 30, color = 'cyan', params = {'dim': dim, 'space': 'uniform'}, label = f'{dim}D Hypercube', alpha = dim/20)
+    # dims = [2, 3, 5]
+    # for dim in dims:
+    #     experiment.add_family('euclidean', size = 30, color = 'magenta', params = {'dim': dim, 'space': 'sphere'}, label = f'{dim}D Hypersphere', alpha = dim/5)
+    #
+    # experiment.add_election('identity', color = 'black', label = 'ID', marker = 'x')
+    # experiment.add_election('uniformity', color = 'black', label = 'UN', marker = 'x')
+    # experiment.add_election('antagonism', color = 'black', label = 'AN', marker = 'x')
+    # experiment.add_election('stratification', color = 'black', label = 'ST', marker = 'x')
+    # experiment.add_family('anid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-ID')
+    # experiment.add_family('stid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-ID')
+    # experiment.add_family('anun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-UN')
+    # experiment.add_family('stun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-UN')
+    # #%% run experiment
+    # experiment.prepare_elections()
+    #
+    # experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
+    # experiment.compute_feature('next_fcfs_integral')
+
     # compute distance
-    experiment.compute_distances()
-    
+    # experiment.compute_distances(num_processes = 5)
+
     # embed 2d and print map
-    experiment.embed_2d(embedding_id = 'kk')
-    experiment.print_map_2d(tex = True, saveas = 'map')
-    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs', cmap = 'viridis', tex = True,
-                                               saveas = 'map_colored')
+    # experiment.embed_2d(embedding_id = 'fr')
+    experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual =['ID', 'UN', 'AN', 'ST'], tex = True)
+    cmap = mpl.colormaps['inferno']
+    omit = []
+    for i in range(0, 19):
+        omit.append(f'anid_100_100_{i}')
+        omit.append(f'stid_100_100_{i}')
+        omit.append(f'anun_100_100_{i}')
+        omit.append(f'stun_100_100_{i}')
+    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
+                                               saveas = 'map_colored', figsize = (10, 8),
+                                               textual = ['ID', 'UN', 'AN', 'ST'],
+                                               omit = omit)
 
 
 def maple_experiment(voters, num_candidates, num_questions):
@@ -176,7 +186,7 @@ def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
     """
     
     if election.fake:
-        return {'value': 0, 'plot': None}
+        return {'value': None, 'plot': None}
     voters = election.votes
     new_voters = []
     for voter in voters:
@@ -194,19 +204,19 @@ def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
     y = distances
     x = np.array(x)
     y = np.array(y)
-    from numpy.polynomial import Polynomial
-    poly: Polynomial = Polynomial.fit(x, y, 2)
+    max_value = np.max(y)
+    y = y / max_value
+    integral = np.sum(y)
     
     # save plot as var to return it
     fig, ax = plt.subplots()
     ax.plot(x, y, 'o')
-    ax.plot(x, poly(x))
     ax.set(xlabel = 'Number of questions', ylabel = 'Distance between the committees',
-           title = f"{election.election_id}\n {poly}")
+           title = f"{election.election_id}\n {integral}")
     ax.grid()
-    plt.show()
+    plt.close(fig)
     # return the strongest coefficient of the polynomial as the feature
-    return {'value': poly.coef[-1], 'plot': (fig, ax)}
+    return {'value': integral, 'plot': (fig, ax)}
 
 
 def deep_learning():
