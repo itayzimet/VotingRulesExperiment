@@ -1,10 +1,9 @@
-import os
 import random
 
 from dotenv import load_dotenv
 from tqdm import tqdm, trange
 
-from ai_framework import mutate_function, evaluate_function, test_best_function, crossover, \
+from Experiment_framework.ai_framework import mutate_function, evaluate_function, test_best_function, crossover, \
     initialize_population, tournament_selection, evaluate_chromosome
 from Experiment_framework.main_helper import send_message
 

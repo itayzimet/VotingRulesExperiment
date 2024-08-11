@@ -1,18 +1,13 @@
 # %%
 
-import mapel.elections as mapel
+import argparse
+
 import numpy as np
 import torch
-import matplotlib as mpl
 
-from ai_framework import test_best_function, evaluate_function
-from anealing import simulated_annealing
-from Experiment_framework.Election import Election
+from election_map import generate_election_map
+from Experiment_framework.ai_framework import deep_learning, genetic, annealing
 from Experiment_framework.main_helper import *
-from Experiment_framework.Voter import Voter
-from geneticLearning import genetic_algorithm
-from learning import train_model
-from QuestionGenerator import QuestionGenerator
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
@@ -33,7 +28,7 @@ graph for the experiment.
 
 
 # %%
-def main_no_maple(training_mode = False, load_saved = True, compute = False):
+def run_ic_experiments(training_mode = False, load_saved = True, compute = False):
     """
     Main function to run the experiment
     :return: None
@@ -44,9 +39,9 @@ def main_no_maple(training_mode = False, load_saved = True, compute = False):
         final_learning_model = deep_learning()
     else:
         try:
-            with open('best_annealing_function.pkl', 'rb') as f:
+            with open('models/best_annealing_function.pkl', 'rb') as f:
                 best_annealing_function = pickle.load(f)
-            with open('best_genetic_function.pkl', 'rb') as f:
+            with open('models/best_genetic_function.pkl', 'rb') as f:
                 best_genetic_function = pickle.load(f)
             final_learning_model = torch.load('final_model.pth')
         except FileNotFoundError:
@@ -102,183 +97,55 @@ def main_no_maple(training_mode = False, load_saved = True, compute = False):
     send_file('averages.pickle')
 
 
-def main_maple():
-    # %% prepare experiment
-    experiment_id = '100x100_third_try'
-    distance_id = 'emd-positionwise'
-    embedding_id = 'fr'
-    
-    experiment = mapel.prepare_offline_ordinal_experiment(
-        experiment_id = experiment_id,
-        distance_id = distance_id,
-        embedding_id = embedding_id,
-    )
-    
-    # experiment.reset_cultures()
-    experiment.is_exported = True
-    # experiment.set_default_num_voters(100)
-    # experiment.set_default_num_candidates(100)
-    #
-    # experiment.add_family('ic', size = 10, color = 'blue', label = 'IC')
-    # alphas = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]
-    # for alpha in alphas:
-    #     experiment.add_family('urn', size = 30, color = 'red', params = {'alpha': alpha}, label = f'URN {alpha}')
-    # phis = [0.001, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.95, 0.99, 0.999]
-    # for phi in phis:
-    #     experiment.add_family('mallows', size = 20, color = 'green', params = {'phi': phi}, label = f'Mallows {phi}')
-    # experiment.add_family('conitzer', size = 30, color = 'brown', label = 'Conitzer')
-    # experiment.add_family('walsh', size = 30, color = 'purple', label = 'Walsh')
-    # experiment.add_family('spoc', size = 30, color = 'orange', label = 'SPOC')
-    # experiment.add_family('single-crossing', size = 30, color = 'yellow', label = 'SC')
-    # dims = [1, 2, 3, 5, 10, 20]
-    # for dim in dims:
-    #     experiment.add_family('euclidean', size = 30, color = 'cyan', params = {'dim': dim, 'space': 'uniform'}, label = f'{dim}D Hypercube', alpha = dim/20)
-    # dims = [2, 3, 5]
-    # for dim in dims:
-    #     experiment.add_family('euclidean', size = 30, color = 'magenta', params = {'dim': dim, 'space': 'sphere'}, label = f'{dim}D Hypersphere', alpha = dim/5)
-    #
-    # experiment.add_election('identity', color = 'black', label = 'ID', marker = 'x')
-    # experiment.add_election('uniformity', color = 'black', label = 'UN', marker = 'x')
-    # experiment.add_election('antagonism', color = 'black', label = 'AN', marker = 'x')
-    # experiment.add_election('stratification', color = 'black', label = 'ST', marker = 'x')
-    # experiment.add_family('anid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-ID')
-    # experiment.add_family('stid', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-ID')
-    # experiment.add_family('anun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'AN-UN')
-    # experiment.add_family('stun', color = 'silver', size = 20, marker = 3, path = {'variable': 'alpha'}, label = 'ST-UN')
-    # #%% run experiment
-    # experiment.prepare_elections()
-    #
-    # experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
-    # experiment.compute_feature('next_fcfs_integral')
-
-    # compute distance
-    # experiment.compute_distances(num_processes = 5)
-
-    # embed 2d and print map
-    # experiment.embed_2d(embedding_id = 'fr')
-    experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual =['ID', 'UN', 'AN', 'ST'], tex = True)
-    cmap = mpl.colormaps['inferno']
-    omit = []
-    for i in range(0, 19):
-        omit.append(f'anid_100_100_{i}')
-        omit.append(f'stid_100_100_{i}')
-        omit.append(f'anun_100_100_{i}')
-        omit.append(f'stun_100_100_{i}')
-    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
-                                               saveas = 'map_colored', figsize = (10, 8),
-                                               textual = ['ID', 'UN', 'AN', 'ST'],
-                                               omit = omit)
-
-
-def maple_experiment(voters, num_candidates, num_questions):
-    random.shuffle(voters)
-    temp_election = Election(list(range(num_candidates)), voters)
-    # noinspection PyTypeChecker
-    experiment = Experiment(50, temp_election, Kborda, KbordaNextFCFS(), num_questions)
-    return experiment.committeeDistance
-
-
-def maple_feature_next_fcfs(election: mapel.OrdinalElection) -> dict:
+def run_maple_experiments(exp_id: str = '100x100_third_try', distance_id: str = 'emd-positionwise',
+                          embedding_id: str = 'fr', num_voters: int = 100, num_candidates: int = 100,
+                          generate: bool = False, compute_distances: bool = False, compute_feature: bool = False,
+                          embed: bool = False, print_map: bool = False):
     """
-    This function computes the feature for the election using the Next FCFS rule.
-    :param election: Election object
-    :return: Dictionary containing the feature for the election
+    Run the Maple experiments
+    Args:
+        exp_id: the experiment id
+        distance_id: the distance id
+        embedding_id: the embedding id
+        num_voters: the number of voters
+        num_candidates: the number of candidates
+        generate: whether to generate the elections from scratch
+        compute_distances: whether to compute the distances between the elections
+        compute_feature: whether to compute the feature
+        embed: whether to embed the 2d map
+        print_map: whether to print the map
     """
-    
-    if election.fake:
-        return {'value': None, 'plot': None}
-    voters = election.votes
-    new_voters = []
-    for voter in voters:
-        new_voter = Voter(voter)
-        new_voters.append(new_voter)
-    num_candidates = election.num_candidates
-    num_questions = list(range(1, 80000, 1000))
-    
-    with Pool() as pool:
-        distances = list(
-            pool.starmap(maple_experiment,
-                         [(new_voters.copy(), num_candidates, num_questions.copy()) for _ in range(5)]))
-    distances = np.mean(distances, axis = 0)
-    x = num_questions
-    y = distances
-    x = np.array(x)
-    y = np.array(y)
-    max_value = np.max(y)
-    y = y / max_value
-    integral = np.sum(y)
-    
-    # save plot as var to return it
-    fig, ax = plt.subplots()
-    ax.plot(x, y, 'o')
-    ax.set(xlabel = 'Number of questions', ylabel = 'Distance between the committees',
-           title = f"{election.election_id}\n {integral}")
-    ax.grid()
-    plt.close(fig)
-    # return the strongest coefficient of the polynomial as the feature
-    return {'value': integral, 'plot': (fig, ax)}
+    generate_election_map(exp_id, distance_id, embedding_id, num_voters, num_candidates, generate, compute_distances,
+                          compute_feature, embed, print_map)
 
 
-def deep_learning():
-    # %% Deep learning
-    num_epochs = 100
-    learning_rate = 0.01
-    model = QuestionGenerator()
-    trained_model = train_model(model, num_epochs, learning_rate)
-    training_summary = f"Training complete."
-    # Evaluate the trained model
-    final_error = evaluate_function(trained_model)
-    training_summary += f"Final average error: {final_error}"
-    send_message(training_summary)
-    test_best_function(trained_model)
-    final_learning_model = model.network
-    torch.save(final_learning_model, 'final_model.pth')
-    send_file('final_model.pth')
-    return final_learning_model
-
-
-def genetic():
-    # %% Genetic training
-    population_size = 5
-    num_generations = 5
-    tournament_size = 2
-    mutation_rate = 0.1
-    crossover_rate = 0.8
-    best_genetic_function, best_score = genetic_algorithm(population_size, num_generations, tournament_size,
-                                                          crossover_rate, mutation_rate)
-    send_message("Genetic training results:")
-    send_message(f"Best function (vector size: {len(best_genetic_function)}):")
-    for expr in best_genetic_function:
-        print(expr)
-        send_message(expr)
-    send_message(f"Best score (average error): {best_score}")
-    test_best_function(best_genetic_function)
-    # export to pickle
-    with open('best_genetic_function.pkl', 'wb') as f:
-        pickle.dump(best_genetic_function, f)
-    send_file('best_genetic_function.pkl')
-    return best_genetic_function
-
-
-# %% Annealing training
-def annealing():
-    t = 1000
-    alpha = 0.9999995
-    max_iter = 100
-    best_annealing_function, best_score = simulated_annealing(t, alpha, max_iter)
-    send_message("Annealing training results:")
-    send_message(f"Best function (vector size: {len(best_annealing_function)}):")
-    for expr in best_annealing_function:
-        send_message(expr)
-    send_message(f"Best score (average error): {best_score}")
-    test_best_function(best_annealing_function)
-    # export to pickle
-    with open('best_annealing_function.pkl', 'wb') as f:
-        pickle.dump(best_annealing_function, f)
-    send_file('best_annealing_function.pkl')
-    return best_annealing_function
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-ic", "--ic", help = "Run the IC experiment", action = "store_true")
+    parser.add_argument("-t", "--training", help = "Run the training mode", action = "store_true")
+    parser.add_argument("-l", "--load", help = "Load the saved averages", action = "store_true")
+    parser.add_argument("-c", "--compute", help = "Compute more averages", action = "store_true")
+    parser.add_argument("-m", "--maple", help = "Run the Maple experiment", action = "store_true")
+    parser.add_argument("-e", "--embed", help = "Embed the 2d map", action = "store_true")
+    parser.add_argument("-p", "--print", help = "Print the map", action = "store_true")
+    parser.add_argument("-g", "--generate", help = "Generate the elections", action = "store_true")
+    parser.add_argument("-d", "--compute_distances", help = "Compute the distances", action = "store_true")
+    parser.add_argument("-f", "--compute_feature", help = "Compute the feature", action = "store_true")
+    parser.add_argument("-n", "--num_voters", help = "Number of voters", type = int)
+    parser.add_argument("-cand", "--num_candidates", help = "Number of candidates", type = int)
+    parser.add_argument("-exp", "--exp_id", help = "Experiment id", type = str)
+    parser.add_argument("-dist", "--distance_id", help = "Distance id", type = str)
+    parser.add_argument("-emb", "--embedding_id", help = "Embedding id", type = str)
+    args = parser.parse_args()
+    if args.ic:
+        run_ic_experiments(args.training, args.load, args.compute)
+    elif args.maple:
+        run_maple_experiments(args.exp_id, args.distance_id, args.embedding_id, args.num_voters, args.num_candidates,
+                              args.generate, args.compute_distances, args.compute_feature, args.embed, args.print)
+    else:
+        raise Exception("Please choose either IC or Maple experiment.")
 
 
 # %%
 if __name__ == '__main__':
-    main_maple()
+    generate_election_map()

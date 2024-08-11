@@ -5,9 +5,9 @@ import torch
 import torch.optim as optim
 from tqdm import trange
 
-from ai_framework import evaluate_function, test_best_function
+from Experiment_framework.ai_framework import evaluate_function, test_best_function
 from Experiment_framework.main_helper import send_message
-from QuestionGenerator import QuestionGenerator
+from Experiment_framework.QuestionGenerator import QuestionGenerator
 
 
 def train_model(_model, num_epochs = 100, learning_rate = 0.001):

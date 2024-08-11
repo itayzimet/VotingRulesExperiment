@@ -1,11 +1,7 @@
 /averages.pickle
-/.env
 /.gitignore
 /.idea
 /venv
-/backup 21.07.2024/*
-/best_annealing_function.pkl
-/best_genetic_function.pkl
-/final_model.pth
+/models
 /experiments
 /images

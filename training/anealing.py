@@ -1,11 +1,10 @@
 import math
-import os
 import random
 
 from dotenv import load_dotenv
 from tqdm import trange
 
-from ai_framework import random_function, mutate_function, evaluate_function, test_best_function
+from Experiment_framework.ai_framework import random_function, mutate_function, evaluate_function, test_best_function
 from Experiment_framework.main_helper import send_message
 
 

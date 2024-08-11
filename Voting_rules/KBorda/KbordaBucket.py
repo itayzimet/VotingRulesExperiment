@@ -2,7 +2,7 @@ import bottleneck as bn
 import numpy as np
 
 from Experiment_framework.Election import Election
-from QuestionGenerator import QuestionGenerator, execute_function
+from Experiment_framework.QuestionGenerator import QuestionGenerator, execute_function
 from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
