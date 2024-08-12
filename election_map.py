@@ -54,31 +54,35 @@ def generate_election_map(exp_id: str = '100x100_third_try', distance_id: str = 
         zipped = zip(ids, labels, colors, params, sizes, markers)
         for id_, label, color, param, size, marker in zipped:
             experiment.add_family(id_, size = size, label = label, color = color, params = param, marker = marker)
+        experiment.prepare_elections()
     
     # %% compute distances
     if compute_distances:
-        experiment.prepare_elections()
-    experiment.compute_distances(num_processes = 8)
+        experiment.compute_distances(num_processes = 10)
     # %% compute feature
     if compute_feature:
         experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
-    experiment.compute_feature('next_fcfs_integral')
+        experiment.compute_feature('next_fcfs_integral')
     # %% embed 2d and print map
     if embed:
         experiment.embed_2d(embedding_id = 'fr')
     if print_map:
         cmap = mpl.colormaps['inferno']
-    experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'], tex = True)
-    omit = []
-    for i in range(0, 19):
-        omit.append(f'anid_100_100_{i}')
-        omit.append(f'stid_100_100_{i}')
-        omit.append(f'anun_100_100_{i}')
-        omit.append(f'stun_100_100_{i}')
-    experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
-                                               saveas = 'map_colored', figsize = (10, 8),
-                                               textual = ['ID', 'UN', 'AN', 'ST'],
-                                               omit = omit)
+        experiment.print_map_2d(saveas = 'map', figsize = (10, 8),
+                                textual = ['ID', 'UN', 'AN', 'ST'],
+                                shading = True)
+        omit = []
+        for i in range(0, 19):
+            omit.append(f'anid_100_100_{i}')
+            omit.append(f'stid_100_100_{i}')
+            omit.append(f'anun_100_100_{i}')
+            omit.append(f'stun_100_100_{i}')
+            omit.append(f'stan_100_100_{i}')
+            omit.append(f'unid_100_100_{i}')
+        experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
+                                                   saveas = 'map_colored', figsize = (10, 8),
+                                                   textual = ['ID', 'UN', 'AN', 'ST'],
+                                                   omit = omit)
 
 
 def maple_experiment(voters, num_candidates, num_questions):
