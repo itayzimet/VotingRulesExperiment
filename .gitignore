@@ -3,4 +3,5 @@
 /.idea
 /venv
 /models
+/experiments/100x100/*/*
 /images
