@@ -97,7 +97,7 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
     send_file('averages.pickle')
 
 
-def run_maple_experiments(exp_id: str = '100x100_fourth_try', distance_id: str = 'emd-positionwise',
+def run_maple_experiments(exp_id: str = '100x100', distance_id: str = 'emd-positionwise',
                           embedding_id: str = 'fr', num_voters: int = 100, num_candidates: int = 100,
                           generate: bool = False, compute_distances: bool = False, compute_feature: bool = False,
                           embed: bool = False, print_map: bool = False):
