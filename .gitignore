@@ -1,7 +1,6 @@
 /averages.pickle
-/.gitignore
 /.idea
-/venv
-/models
+/venv/*
+/models/*
 /experiments/100x100/*/*
-/images
+/images/*
