@@ -66,7 +66,7 @@ def get_question_from_model_type(_budget: int, _num_candidates: int, _num_voters
 		                                  'budget':  _budget}) for expr in expression]
 	else:
 		question = model(
-			torch.tensor([_num_winners, _num_candidates, _num_voters, _budget], dtype = torch.float32).unsqueeze(
-				0)).squeeze().tolist()
+				torch.tensor([_num_winners, _num_candidates, _num_voters, _budget], dtype = torch.float32).unsqueeze(
+						0)).squeeze().tolist()
 	question = [abs(x) for x in question]
 	return question
