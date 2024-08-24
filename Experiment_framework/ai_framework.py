@@ -66,6 +66,7 @@ def evaluate_function(
 
 def test_function(func, max_budget, num_candidates, num_voters, num_winners):
 	budget = random.randint(max_budget // 5, max_budget)
+
 	try:
 		# Generate an election based on the parameters
 		election = Experiment_helper.fabricate_election(num_candidates, num_voters)
@@ -79,7 +80,7 @@ def test_function(func, max_budget, num_candidates, num_voters, num_winners):
 		symmetric_difference = len(set(true_winners) ^ set(committee_winners))
 		# mean_squared_error = np.mean((true_scores - committee_scores) ** 2)
 
-		error = symmetric_difference / num_winners
+		error = float(symmetric_difference) / num_winners
 	except:
 		error = 1000000
 	return error
@@ -167,5 +168,3 @@ def tournament_selection(population, tournament_size):
 def evaluate_chromosome(chromosome):
 	fitness = evaluate_function(chromosome)
 	return chromosome, fitness
-
-
