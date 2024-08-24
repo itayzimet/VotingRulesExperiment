@@ -20,41 +20,49 @@ def generate_election_map(
 		compute_feature: bool = False, embed: bool = False, print_map: bool = False):
 	# %% prepare experiment
 	experiment = mapel.prepare_offline_ordinal_experiment(experiment_id = exp_id, distance_id = distance_id,
-			embedding_id = embedding_id, )
+	                                                      embedding_id = embedding_id, )
 	experiment.is_exported = True
 	if generate:
 		experiment.prepare_elections()
-
 	# %% compute distances
 	if compute_distances:
 		experiment.compute_distances(num_processes = 10)
 	# %% compute feature
 	if compute_feature:
-		experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
-		experiment.compute_feature('next_fcfs_integral')
-		experiment.add_feature('split_integral', maple_feature_split)
-		experiment.compute_feature('split_integral')
+		compute_features(experiment)
 	# %% embed 2d and print map
 	if embed:
 		experiment.embed_2d(embedding_id = 'fr')
 	if print_map:
-		cmap = mpl.colormaps['inferno']
-		experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
-		                        legend_pos = (1.05, 1), shading = True, tex = True)
-		omit = []
-		for i in range(0, 19):
-			omit.append(f'anid_100_100_{i}')
-			omit.append(f'stid_100_100_{i}')
-			omit.append(f'anun_100_100_{i}')
-			omit.append(f'stun_100_100_{i}')
-			omit.append(f'stan_100_100_{i}')
-			omit.append(f'unid_100_100_{i}')
-		experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
-		                                           saveas = 'map_next', figsize = (10, 8),
-		                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
-		experiment.print_map_2d_colored_by_feature(feature_id = 'split_integral', cmap = cmap, tex = True,
-		                                           saveas = 'map_split', figsize = (10, 8),
-		                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+		print_maps(experiment)
+
+
+def print_maps(experiment):
+	cmap = mpl.colormaps['inferno']
+
+	experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
+	                        legend_pos = (1.05, 1), shading = True, tex = True)
+	omit = []
+	for i in range(0, 19):
+		omit.append(f'anid_100_100_{i}')
+		omit.append(f'stid_100_100_{i}')
+		omit.append(f'anun_100_100_{i}')
+		omit.append(f'stun_100_100_{i}')
+		omit.append(f'stan_100_100_{i}')
+		omit.append(f'unid_100_100_{i}')
+	experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
+	                                           saveas = 'map_next', figsize = (10, 8),
+	                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+	experiment.print_map_2d_colored_by_feature(feature_id = 'split_integral', cmap = cmap, tex = True,
+	                                           saveas = 'map_split', figsize = (10, 8),
+	                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+
+
+def compute_features(experiment):
+	experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
+	experiment.compute_feature('next_fcfs_integral')
+	experiment.add_feature('split_integral', maple_feature_split)
+	experiment.compute_feature('split_integral')
 
 
 def maple_experiment(voters, num_candidates, num_questions, rule = KbordaNextFCFS()):
