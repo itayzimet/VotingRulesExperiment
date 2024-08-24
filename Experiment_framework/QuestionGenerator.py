@@ -42,6 +42,24 @@ def execute_function(
 	Returns: a list of floats representing the question type, if soft_maxed is True, the sum of the list will be 1
 	and the values will be between 0 and 1.
 	"""
+	question = get_question_from_model_type(_budget, _num_candidates, _num_voters, _num_winners, model)
+	if soft_maxed:
+		question = normalize(question)
+	return question
+
+
+def get_question_from_model_type(_budget: int, _num_candidates: int, _num_voters: int, _num_winners: int, model: QuestionGenerator | list[str] | list[float]) -> list[float]:
+	"""
+	Generate a question type from the given model.
+	Args:
+		_budget: the budget for the questions
+		_num_candidates: the number of candidates in the election
+		_num_voters: the number of voters in the election
+		_num_winners: the number of winners to be selected
+		model: the model to generate the question type
+
+	Returns: a list of floats representing the question type"""
+
 	if type(model) is list:
 		expression = model
 		question = [eval(expr.__str__(), {'winners': _num_winners, 'candidates': _num_candidates, 'voters': _num_voters,
@@ -51,6 +69,4 @@ def execute_function(
 			torch.tensor([_num_winners, _num_candidates, _num_voters, _budget], dtype = torch.float32).unsqueeze(
 				0)).squeeze().tolist()
 	question = [abs(x) for x in question]
-	if soft_maxed:
-		question = normalize(question)
 	return question
