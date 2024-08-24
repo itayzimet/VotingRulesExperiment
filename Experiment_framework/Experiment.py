@@ -43,8 +43,7 @@ class Experiment:
 		:param constrained_voting_rule: the constrained voting rule to find the committee with
 		:param number_of_questions: the number of questions all voters can answer for the constrained voting rule
 		:param question_type: the question type for the constrained voting rule
-		"""
-		# Set the attributes
+		"""  # Set the attributes
 		self.targetCommitteeSize = target_committee_size
 		self.election = election
 		self.votingRule = voting_rule
@@ -56,6 +55,12 @@ class Experiment:
 		self.committees = []
 		self.committeeDistance = []
 		# Find the committees with the constrained voting rule
+		self.find_committees(constrained_voting_rule, question_type)
+		# find the distance between the true committee and the committees
+		for committee in self.committees:
+			self.committeeDistance.append(committee_distance(self.true_committee, committee))
+
+	def find_committees(self, constrained_voting_rule, question_type):
 		for i in self.numberOfQuestions:
 			if question_type is not None:
 				rule = constrained_voting_rule(question_type)
@@ -63,9 +68,6 @@ class Experiment:
 				rule = constrained_voting_rule if isinstance(constrained_voting_rule,
 				                                             VotingRuleConstrained) else constrained_voting_rule()
 			self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
-		# find the distance between the true committee and the committees
-		for committee in self.committees:
-			self.committeeDistance.append(committee_distance(self.true_committee, committee))
 
 	def __str__(self):
 		new_line = '\n'
