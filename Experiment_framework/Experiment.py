@@ -57,6 +57,9 @@ class Experiment:
 		# Find the committees with the constrained voting rule
 		self.find_committees(constrained_voting_rule, question_type)
 		# find the distance between the true committee and the committees
+		self.find_distances()
+
+	def find_distances(self):
 		for committee in self.committees:
 			self.committeeDistance.append(committee_distance(self.true_committee, committee))
 
