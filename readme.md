@@ -110,4 +110,4 @@ python main.py
 
 ## todo
 
-- [ ] fix Deep leaning
+- [ ] fix and update Readme.md
