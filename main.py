@@ -92,26 +92,23 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
 
 
 def run_maple_experiments(
-		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr', num_voters: int =
-		100,
-		num_candidates: int = 100, generate: bool = False, compute_distances: bool = False,
-		compute_feature: bool = False, embed: bool = False, print_map: bool = False):
+		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr',
+		generate: bool = False, compute_distances: bool = False, compute_feature: bool = False, embed: bool = False,
+		print_map: bool = False):
 	"""
 	Run the Maple experiments
 	Args:
 		exp_id: the experiment id
 		distance_id: the distance id
 		embedding_id: the embedding id
-		num_voters: the number of voters
-		num_candidates: the number of candidates
 		generate: whether to generate the elections from scratch
 		compute_distances: whether to compute the distances between the elections
 		compute_feature: whether to compute the feature
 		embed: whether to embed the 2d map
 		print_map: whether to print the map
 	"""
-	generate_election_map(exp_id, distance_id, embedding_id, num_voters, num_candidates, generate, compute_distances,
-	                      compute_feature, embed, print_map)
+	generate_election_map(exp_id, distance_id, embedding_id, generate, compute_distances, compute_feature, embed,
+	                      print_map)
 
 
 def main():
@@ -124,8 +121,6 @@ def main():
 	parser.add_argument("-e", "--embed", help = "Embed the 2d map", action = "store_true")
 	parser.add_argument("-p", "--print", help = "Print the map", action = "store_true")
 	parser.add_argument("-g", "--generate", help = "Generate the elections", action = "store_true")
-	parser.add_argument("-d", "--compute_distances", help = "Compute the distances", action = "store_true")
-	parser.add_argument("-f", "--compute_feature", help = "Compute the feature", action = "store_true")
 	parser.add_argument("-n", "--num_voters", help = "Number of voters", type = int)
 	parser.add_argument("-cand", "--num_candidates", help = "Number of candidates", type = int)
 	parser.add_argument("-exp", "--exp_id", help = "Experiment id", type = str)
@@ -135,8 +130,8 @@ def main():
 	if args.ic:
 		run_ic_experiments(args.training, args.load, args.compute)
 	elif args.maple:
-		run_maple_experiments(args.exp_id, args.distance_id, args.embedding_id, args.num_voters, args.num_candidates,
-		                      args.generate, args.compute_distances, args.compute_feature, args.embed, args.print)
+		run_maple_experiments(args.exp_id, args.distance_id, args.embedding_id, args.generate,
+		                      args.compute_distances, args.compute_feature, args.embed, args.print)
 	else:
 		raise Exception("Please choose either IC or Maple experiment.")
 

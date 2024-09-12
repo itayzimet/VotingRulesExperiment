@@ -14,9 +14,8 @@ from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
 
 
 def generate_election_map(
-		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr', num_voters: int =
-		100,
-		num_candidates: int = 100, generate: bool = False, compute_distances: bool = False,
+		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr', generate: bool =
+		False, compute_distances: bool = False,
 		compute_feature: bool = False, embed: bool = False, print_map: bool = False):
 	# %% prepare experiment
 	experiment = mapel.prepare_offline_ordinal_experiment(experiment_id = exp_id, distance_id = distance_id,
