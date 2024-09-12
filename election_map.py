@@ -1,7 +1,10 @@
+import pickle
 import random
+from functools import partial
 
 import matplotlib as mpl
 import numpy as np
+import torch
 from mapel import elections as mapel
 
 from Experiment_framework.Election import Election
@@ -9,14 +12,39 @@ from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Voter import Voter
 from Voting_rules import VotingRuleConstrained
 from Voting_rules.KBorda.Kborda import Kborda
+from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
+from Voting_rules.KBorda.KbordaBucketTrinary import KbordaBucketTrinary
+from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
+from Voting_rules.KBorda.KbordaLastFCFS import KbordaLastFCFS
+from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
 from Voting_rules.KBorda.KbordaNextFCFS import KbordaNextFCFS
+from Voting_rules.KBorda.KbordaNextLastEQ import KbordaNextLastEQ
+from Voting_rules.KBorda.KbordaNextLastFCFS import KbordaNextLastFCFS
+from Voting_rules.KBorda.KbordaSplitFCFS import KbordaSplitFCFS
+from Voting_rules.VotingRuleRandom import VotingRuleRandom
 
+voting_rules: list[VotingRuleConstrained] = []
 
 def generate_election_map(
-		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr', generate: bool =
-		False, compute_distances: bool = False,
-		compute_feature: bool = False, embed: bool = False, print_map: bool = False):
+		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr',
+		generate: bool = False, compute_distances: bool = False, compute_feature: bool = False, embed: bool = False,
+		print_map: bool = False):
+	try:
+		with open('models/best_annealing_function.pkl', 'rb') as f:
+			best_annealing_function = pickle.load(f)
+		with open('models/best_genetic_function.pkl', 'rb') as f:
+			best_genetic_function = pickle.load(f)
+		final_learning_model = torch.load('final_model.pth')
+	except FileNotFoundError:
+		print("Please run the training mode first.")
+		return
+
+	global voting_rules
+	voting_rules= [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
+	                KbordaNextLastEQ(), KbordaNextLastFCFS(), KbordaBucketSplit(), KbordaBucketTrinary(),
+	                KbordaBucket(best_annealing_function, 'Annealing'), KbordaBucket(best_genetic_function, 'Genetic'),
+	                KbordaBucket(final_learning_model, 'Deep Learning'), VotingRuleRandom()]
 	# %% prepare experiment
 	experiment = mapel.prepare_offline_ordinal_experiment(experiment_id = exp_id, distance_id = distance_id,
 	                                                      embedding_id = embedding_id, )
@@ -49,20 +77,17 @@ def print_maps(experiment):
 		omit.append(f'stun_100_100_{i}')
 		omit.append(f'stan_100_100_{i}')
 		omit.append(f'unid_100_100_{i}')
-	experiment.print_map_2d_colored_by_feature(feature_id = 'next_fcfs_integral', cmap = cmap, tex = True,
-	                                           saveas = 'map_next', figsize = (10, 8),
-	                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
-	experiment.print_map_2d_colored_by_feature(feature_id = 'split_integral', cmap = cmap, tex = True,
-	                                           saveas = 'map_split', figsize = (10, 8),
-	                                           textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+	print_map = partial(experiment.print_map_2d_colored_by_feature, cmap = cmap, tex = True, figsize = (10, 8),
+	                    textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+	for rule in voting_rules:
+		print_map(feature_id = rule.__str__(), saveas = f'map_{rule.__str__()}')
 
 
 def compute_features(experiment):
-	experiment.add_feature('next_fcfs_integral', maple_feature_next_fcfs)
-	experiment.compute_feature('next_fcfs_integral')
-	experiment.add_feature('split_integral', maple_feature_split)
-	experiment.compute_feature('split_integral')
-
+	for rule in voting_rules:
+		feature = partial(maple_feature, rule = rule)
+		experiment.add_feature(f'{rule.__str__()}', feature)
+		experiment.compute_feature(f'{rule.__str__()}')
 
 def maple_experiment(voters, num_candidates, num_questions, rule = KbordaNextFCFS()):
 	random.shuffle(voters)
@@ -70,14 +95,6 @@ def maple_experiment(voters, num_candidates, num_questions, rule = KbordaNextFCF
 	# noinspection PyTypeChecker
 	experiment = Experiment(50, temp_election, Kborda, rule, num_questions)
 	return experiment.committeeDistance
-
-
-def maple_feature_next_fcfs(election: mapel.OrdinalElection):
-	return maple_feature(election, KbordaNextFCFS)
-
-
-def maple_feature_split(election: mapel.OrdinalElection):
-	return maple_feature(election, KbordaBucketSplit)
 
 
 def maple_feature(election: mapel.OrdinalElection, rule: VotingRuleConstrained) -> dict:
