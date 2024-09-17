@@ -26,6 +26,7 @@ from Voting_rules.VotingRuleRandom import VotingRuleRandom
 
 voting_rules: list[VotingRuleConstrained] = []
 
+
 def generate_election_map(
 		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr',
 		generate: bool = False, compute_distances: bool = False, compute_feature: bool = False, embed: bool = False,
@@ -35,20 +36,19 @@ def generate_election_map(
 			best_annealing_function = pickle.load(f)
 		with open('models/best_genetic_function.pkl', 'rb') as f:
 			best_genetic_function = pickle.load(f)
-		final_learning_model = torch.load('final_model.pth')
+		final_learning_model = torch.load('models/final_model.pth', weights_only = False)
 	except FileNotFoundError:
 		print("Please run the training mode first.")
 		return
 
 	global voting_rules
-	voting_rules= [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
+	voting_rules = [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
 	                KbordaNextLastEQ(), KbordaNextLastFCFS(), KbordaBucketSplit(), KbordaBucketTrinary(),
 	                KbordaBucket(best_annealing_function, 'Annealing'), KbordaBucket(best_genetic_function, 'Genetic'),
 	                KbordaBucket(final_learning_model, 'Deep Learning'), VotingRuleRandom()]
 	# %% prepare experiment
 	experiment = mapel.prepare_offline_ordinal_experiment(experiment_id = exp_id, distance_id = distance_id,
-	                                                      embedding_id = embedding_id, )
-	experiment.is_exported = True
+	                                                      embedding_id = embedding_id)
 	if generate:
 		experiment.prepare_elections()
 	# %% compute distances
@@ -67,8 +67,8 @@ def generate_election_map(
 def print_maps(experiment):
 	cmap = mpl.colormaps['inferno']
 
-	experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
-	                        legend_pos = (1.05, 1), shading = True, tex = True)
+	# experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
+	#                         legend_pos = (1.05, 1), shading = True, tex = True)
 	omit = []
 	for i in range(0, 19):
 		omit.append(f'anid_100_100_{i}')
@@ -115,7 +115,7 @@ def maple_feature(election: mapel.OrdinalElection, rule: VotingRuleConstrained) 
 	num_candidates = election.num_candidates
 	num_questions = list(range(1, 80000, 1000))
 
-	distances = maple_experiment(new_voters, num_candidates, num_questions, rule())
+	distances = maple_experiment(new_voters, num_candidates, num_questions, rule)
 	x = num_questions
 	y = distances
 	x = np.array(x)

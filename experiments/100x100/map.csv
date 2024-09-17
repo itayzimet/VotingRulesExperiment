@@ -1,40 +1,40 @@
 size;num_candidates;num_voters;culture_id;params;family_id;label;color;alpha;marker;ms;path
-10;100;100;ic;{};ic_100_100;IC;turquoise;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.01};urn_100_100_0.01;URN 0.01;blue;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.02};urn_100_100_0.02;URN 0.02;blue;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.05};urn_100_100_0.05;URN 0.05;blue;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.1};urn_100_100_0.1;URN 0.1;blue;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.2};urn_100_100_0.2;URN 0.2;blue;1.0;o;20;{}
-30;100;100;urn;{'alpha': 0.5};urn_100_100_0.5;URN 0.5;blue;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.001};mallows_100_100_0.001;Mallows 0.001;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.01};mallows_100_100_0.01;Mallows 0.01;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.05};mallows_100_100_0.05;Mallows 0.05;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.1};mallows_100_100_0.1;Mallows 0.1;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.25};mallows_100_100_0.25;Mallows 0.25;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.5};mallows_100_100_0.5;Mallows 0.5;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.75};mallows_100_100_0.75;Mallows 0.75;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.95};mallows_100_100_0.95;Mallows 0.95;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.99};mallows_100_100_0.99;Mallows 0.99;green;1.0;o;20;{}
-20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.999};mallows_100_100_0.999;Mallows 0.999;green;1.0;o;20;{}
-30;100;100;conitzer;{};conitzer_100_100;Conitzer;olive;1.0;o;20;{}
-30;100;100;walsh;{};walsh_100_100;Walsh;orange;1.0;o;20;{}
-30;100;100;spoc;{};spoc_100_100;SPOC;blueviolet;1.0;o;20;{}
-30;100;100;single-crossing;{};single-crossing_100_100;Single Crossing;magenta;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 1, 'space': 'uniform'};euclidean_100_100_1_uniform;1D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 2, 'space': 'uniform'};euclidean_100_100_2_uniform;2D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 3, 'space': 'uniform'};euclidean_100_100_3_uniform;3D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 5, 'space': 'uniform'};euclidean_100_100_5_uniform;5D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 10, 'space': 'uniform'};euclidean_100_100_10_uniform;10D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 20, 'space': 'uniform'};euclidean_100_100_20_uniform;20D Hypercube;red;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 2, 'space': 'sphere'};euclidean_100_100_2_sphere;2D Hypersphere;grey;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 3, 'space': 'sphere'};euclidean_100_100_3_sphere;3D Hypersphere;grey;1.0;o;20;{}
-30;100;100;euclidean;{'dim': 5, 'space': 'sphere'};euclidean_100_100_5_sphere;5D Hypersphere;grey;1.0;o;20;{}
-20;100;100;anid;{};anid_100_100;AN-ID;brown;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
-20;100;100;stid;{};stid_100_100;ST-ID;#a6814c;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
-20;100;100;anun;{};anun_100_100;AN-UN;#9d7651;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
-20;100;100;stun;{};stun_100_100;ST-UN;#885f01;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
-20;100;100;stan;{};stan_100_100;ST-AN;#ac7e04;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
-20;100;100;unid;{};unid_100_100;UN-ID;#ae8b0c;1.0;>;20;{'variable': 'alpha', 'start': 0.0}
+10;100;100;ic;{};ic_100_100;IC;turquoise;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.01};urn_100_100_0.01;URN 0.01;blue;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.02};urn_100_100_0.02;URN 0.02;blue;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.05};urn_100_100_0.05;URN 0.05;blue;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.1};urn_100_100_0.1;URN 0.1;blue;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.2};urn_100_100_0.2;URN 0.2;blue;1.0;o;5;{}
+30;100;100;urn;{'alpha': 0.5};urn_100_100_0.5;URN 0.5;blue;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.001};mallows_100_100_0.001;Mallows 0.001;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.01};mallows_100_100_0.01;Mallows 0.01;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.05};mallows_100_100_0.05;Mallows 0.05;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.1};mallows_100_100_0.1;Mallows 0.1;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.25};mallows_100_100_0.25;Mallows 0.25;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.5};mallows_100_100_0.5;Mallows 0.5;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.75};mallows_100_100_0.75;Mallows 0.75;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.95};mallows_100_100_0.95;Mallows 0.95;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.99};mallows_100_100_0.99;Mallows 0.99;green;1.0;o;5;{}
+20;100;100;mallows;{'impartial_central_vote': True, 'phi': 0.999};mallows_100_100_0.999;Mallows 0.999;green;1.0;o;5;{}
+30;100;100;conitzer;{};conitzer_100_100;Conitzer;olive;1.0;o;5;{}
+30;100;100;walsh;{};walsh_100_100;Walsh;orange;1.0;o;5;{}
+30;100;100;spoc;{};spoc_100_100;SPOC;blueviolet;1.0;o;5;{}
+30;100;100;single-crossing;{};single-crossing_100_100;Single Crossing;magenta;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 1, 'space': 'uniform'};euclidean_100_100_1_uniform;1D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 2, 'space': 'uniform'};euclidean_100_100_2_uniform;2D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 3, 'space': 'uniform'};euclidean_100_100_3_uniform;3D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 5, 'space': 'uniform'};euclidean_100_100_5_uniform;5D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 10, 'space': 'uniform'};euclidean_100_100_10_uniform;10D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 20, 'space': 'uniform'};euclidean_100_100_20_uniform;20D Hypercube;red;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 2, 'space': 'sphere'};euclidean_100_100_2_sphere;2D Hypersphere;grey;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 3, 'space': 'sphere'};euclidean_100_100_3_sphere;3D Hypersphere;grey;1.0;o;5;{}
+30;100;100;euclidean;{'dim': 5, 'space': 'sphere'};euclidean_100_100_5_sphere;5D Hypersphere;grey;1.0;o;5;{}
+20;100;100;anid;{};anid_100_100;AN-ID;brown;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
+20;100;100;stid;{};stid_100_100;ST-ID;#a6814c;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
+20;100;100;anun;{};anun_100_100;AN-UN;#9d7651;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
+20;100;100;stun;{};stun_100_100;ST-UN;#885f01;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
+20;100;100;stan;{};stan_100_100;ST-AN;#ac7e04;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
+20;100;100;unid;{};unid_100_100;UN-ID;#ae8b0c;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
 1;100;100;identity;{};identity_100_100;ID;#000000;0;x;0;{}
 1;100;100;uniformity;{};uniformity_100_100;UN;#000000;0;x;0;{}
 1;100;100;antagonism;{};antagonism_100_100;AN;#000000;0;x;0;{}
