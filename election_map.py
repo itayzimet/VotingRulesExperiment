@@ -91,7 +91,7 @@ def compute_features(experiment):
         experiment.compute_feature(f'{rule.__str__()}')
 
 
-def mapof_experiment(voters, num_candidates, num_questions, rule, iter = 0):
+def mapof_experiment(voters, num_candidates, num_questions, rule, _ = 0):
     random.shuffle(voters)
     temp_election = Election(list(range(num_candidates)), voters)
     # noinspection PyTypeChecker
