@@ -91,12 +91,12 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
 	send_file('averages.pickle')
 
 
-def run_maple_experiments(
+def run_mapof_experiments(
 		exp_id: str = '100x100', distance_id: str = 'emd-positionwise', embedding_id: str = 'fr',
 		generate: bool = False, compute_distances: bool = False, compute_feature: bool = False, embed: bool = False,
 		print_map: bool = False):
 	"""
-	Run the Maple experiments
+	Run the mapof experiments
 	Args:
 		exp_id: the experiment id
 		distance_id: the distance id
@@ -117,7 +117,7 @@ def main():
 	parser.add_argument("-t", "--training", help = "Run the training mode", action = "store_true")
 	parser.add_argument("-l", "--load", help = "Load the saved averages", action = "store_true")
 	parser.add_argument("-c", "--compute", help = "Compute more averages", action = "store_true")
-	parser.add_argument("-m", "--maple", help = "Run the Maple experiment", action = "store_true")
+	parser.add_argument("-m", "--mapof", help = "Run the mapof experiment", action = "store_true")
 	parser.add_argument("-e", "--embed", help = "Embed the 2d map", action = "store_true")
 	parser.add_argument("-p", "--print", help = "Print the map", action = "store_true")
 	parser.add_argument("-g", "--generate", help = "Generate the elections", action = "store_true")
@@ -129,11 +129,11 @@ def main():
 	args = parser.parse_args()
 	if args.ic:
 		run_ic_experiments(args.training, args.load, args.compute)
-	elif args.maple:
-		run_maple_experiments(args.exp_id, args.distance_id, args.embedding_id, args.generate,
+	elif args.mapof:
+		run_mapof_experiments(args.exp_id, args.distance_id, args.embedding_id, args.generate,
 		                      args.compute_distances, args.compute_feature, args.embed, args.print)
 	else:
-		raise Exception("Please choose either IC or Maple experiment.")
+		raise Exception("Please choose either IC or mapof experiment.")
 
 
 # %%
