@@ -68,8 +68,8 @@ def generate_election_map(
 def print_maps(experiment):
     cmap = mpl.colormaps['inferno']
 
-    # experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
-    #                         legend_pos = (1.15, 1), tex = True)
+    experiment.print_map_2d(saveas = 'map', figsize = (10, 8), textual = ['ID', 'UN', 'AN', 'ST'],
+                            legend_pos = (1.15, 1), tex = True, show = True)
     omit = []
     for i in range(0, 19):
         omit.append(f'anid_100_100_{i}')
@@ -79,7 +79,7 @@ def print_maps(experiment):
         omit.append(f'stan_100_100_{i}')
         omit.append(f'unid_100_100_{i}')
     print_map = partial(experiment.print_map_2d_colored_by_feature, cmap = cmap, tex = True, figsize = (10, 8),
-                        textual = ['ID', 'UN', 'AN', 'ST'], omit = omit)
+                        textual = ['ID', 'UN', 'AN', 'ST'], omit = omit, strech=[0,100])
     for rule in voting_rules:
         print_map(feature_id = rule.__str__(), saveas = f'map_{rule.__str__()}')
 
