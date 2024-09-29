@@ -1,5 +1,5 @@
 # voting experiment
-
+# this is very outdated - documantation - tbd
 This is a simple voting experiment to test different voting system.
 
 ## Table of contents
