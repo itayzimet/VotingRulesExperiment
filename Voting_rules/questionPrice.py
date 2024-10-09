@@ -20,4 +20,4 @@ def get_variance(buckets: list[float]) -> float:
 	"""
 	if len(buckets) < 2:
 		return 0
-	return (sum([(b - 1 / len(buckets)) ** 2 for b in buckets]) / len(buckets)) * 4
+	return sum([(b - 1 / len(buckets)) ** 2 for b in buckets]) / len(buckets)
