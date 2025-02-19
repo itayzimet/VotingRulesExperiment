@@ -18,7 +18,7 @@ class KbordaBucketSplit(VotingRuleConstrained):
 			Return the name of the voting rule as a string
 	"""
 
-	name = "K-Borda Bucket Split"
+	name = "Split Equally"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

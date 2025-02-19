@@ -2,7 +2,7 @@ import bottleneck as bn
 import numpy as np
 
 from Experiment_framework.Election import Election
-from Experiment_framework.QuestionGenerator import execute_function, QuestionGenerator
+from Experiment_framework.QuestionGenerator import execute_function#, QuestionGenerator
 from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
@@ -10,7 +10,7 @@ from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
 class KbordaBucket(VotingRuleConstrained):
 
-	def __init__(self, question_type: list[float] | QuestionGenerator | list[str] = None, _name = None):
+	def __init__(self, question_type: list[float]| list[str] = None, _name = None):
 		super().__init__()
 		self.question_type = question_type
 		if _name is None:

@@ -5,7 +5,7 @@ import numpy as np
 
 from Experiment_framework import Experiment_helper
 from Experiment_framework.main_helper import send_message
-from Experiment_framework.QuestionGenerator import execute_function, QuestionGenerator
+from Experiment_framework.QuestionGenerator import execute_function#, QuestionGenerator
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 
@@ -86,7 +86,7 @@ def test_function(func, max_budget, num_candidates, num_voters, num_winners):
 	return error
 
 
-def test_best_function(func: list | QuestionGenerator = None, num_tests = 10):
+def test_best_function(func: list= None, num_tests = 10):
 	for _ in range(num_tests):
 		num_candidates = random.randint(2, 300)
 		num_winners = random.randint(1, num_candidates // 2)

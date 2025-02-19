@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import concurrent.futures
+
 from Experiment_framework.Experiment_helper import *
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
@@ -64,17 +66,22 @@ class Experiment:
 			self.committeeDistance.append(committee_distance(self.true_committee, committee))
 
 	def find_committees(self, constrained_voting_rule, question_type):
-		for i in self.numberOfQuestions:
+
+		def process_question(i):
 			if question_type is not None:
 				rule = constrained_voting_rule(question_type)
 			else:
 				rule = constrained_voting_rule if isinstance(constrained_voting_rule,
 				                                             VotingRuleConstrained) else constrained_voting_rule()
-			self.committees.append(rule.find_winners(self.election, self.targetCommitteeSize, i))
+			return rule.find_winners(self.election, self.targetCommitteeSize, i)
 
-	def __str__(self):
-		new_line = '\n'
-		return f"""Experiment with candidates: {self.election.candidates}
+		with concurrent.futures.ThreadPoolExecutor() as executor:
+			self.committees = list(executor.map(process_question, self.numberOfQuestions))
+
+
+def __str__(self):
+	new_line = '\n'
+	return f"""Experiment with candidates: {self.election.candidates}
     voters:
     {new_line.join([x.__str__() for x in self.election.voters])}
     target committee size: {self.targetCommitteeSize}

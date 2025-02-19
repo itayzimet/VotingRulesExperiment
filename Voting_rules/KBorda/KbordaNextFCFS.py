@@ -16,7 +16,7 @@ class KbordaNextFCFS(VotingRuleConstrained):
 	according to the K-Borda rule with the next question distributed first come first serve
 	"""
 
-	name = "K-Borda Next first come first serve"
+	name = "Next first come first serve"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

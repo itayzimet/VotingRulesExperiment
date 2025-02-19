@@ -9,8 +9,7 @@ def get_price(candidates: list[int], buckets: list[float]) -> float:
 	try:
 		return len(candidates) * len(buckets) * (1 - get_variance(buckets))
 	except:
-		return 1000000000
-
+		return float('inf')
 
 def get_variance(buckets: list[float]) -> float:
 	"""

@@ -3,15 +3,15 @@
 import argparse
 
 import numpy as np
-import torch
+# import torch
 
 from election_map import generate_election_map
-from Experiment_framework.ai_training import annealing, deep_learning, genetic
+# from Experiment_framework.ai_training import annealing, deep_learning, genetic
 from Experiment_framework.main_helper import *
 from Voting_rules.KBorda.Kborda import Kborda
-from Voting_rules.KBorda.KbordaBucket import KbordaBucket
+# from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
-from Voting_rules.KBorda.KbordaBucketTrinary import KbordaBucketTrinary
+# from Voting_rules.KBorda.KbordaBucketTrinary import KbordaBucketTrinary
 from Voting_rules.KBorda.KbordaLastEq import KbordaLastEq
 from Voting_rules.KBorda.KbordaLastFCFS import KbordaLastFCFS
 from Voting_rules.KBorda.KbordaNextEq import KbordaNextEq
@@ -33,32 +33,32 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
 	Main function to run the experiment
 	:return: None
 	"""
-	if training_mode:
-		best_annealing_function = annealing()
-		best_genetic_function = genetic()
-		final_learning_model = deep_learning()
-	else:
-		try:
-			with open('models/best_annealing_function.pkl', 'rb') as f:
-				best_annealing_function = pickle.load(f)
-			with open('models/best_genetic_function.pkl', 'rb') as f:
-				best_genetic_function = pickle.load(f)
-			final_learning_model = torch.load('final_model.pth')
-		except FileNotFoundError:
-			send_message("Please run the training mode first.")
-			return
+	# if training_mode:
+	# 	best_annealing_function = annealing()
+	# 	best_genetic_function = genetic()
+	# 	final_learning_model = deep_learning()
+	# else:
+	# 	try:
+	# 		with open('models/best_annealing_function.pkl', 'rb') as f:
+	# 			best_annealing_function = pickle.load(f)
+	# 		with open('models/best_genetic_function.pkl', 'rb') as f:
+	# 			best_genetic_function = pickle.load(f)
+	# 		final_learning_model = torch.load('final_model.pth')
+	# 	except FileNotFoundError:
+	# 		send_message("Please run the training mode first.")
+	# 		return
 	# %%
 
 	test_parameters = dict(target_committee_size = 50, num_candidates = 100, num_voters = 100, voting_rule = Kborda,
 	                       constrained_voting_rule = [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(),
 	                                                  KbordaLastEq(), KbordaLastFCFS(), KbordaNextLastEQ(),
-	                                                  KbordaNextLastFCFS(), KbordaBucketSplit(), KbordaBucketTrinary(),
-	                                                  KbordaBucket(best_annealing_function, 'Annealing'),
-	                                                  KbordaBucket(best_genetic_function, 'Genetic'),
-	                                                  KbordaBucket(final_learning_model, 'Deep Learning'),
-	                                                  VotingRuleRandom()], number_of_questions = range(1, 400000,
-	                                                                                                   1000),
-	                       number_of_runs = 5000, multithreaded = True)
+	                                                  KbordaNextLastFCFS(), KbordaBucketSplit(), # KbordaBucketTrinary(),
+	                                                  # KbordaBucket(best_annealing_function, 'Annealing'),
+	                                                  # KbordaBucket(best_genetic_function, 'Genetic'),
+	                                                  # KbordaBucket(final_learning_model, 'Deep Learning'),
+	                                                  VotingRuleRandom()], number_of_questions = range(1, 800000,
+	                                                                                                   4000),
+	                       number_of_runs = 100, multithreaded = True)
 
 	# %%
 	"""KBorda testing"""

@@ -16,7 +16,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 	not preferred candidates by the voter distributed First Come First Serve among voters.
 	"""
 
-	name = "K-Borda split First Come First Serve"
+	name = "Split First Come First Serve"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

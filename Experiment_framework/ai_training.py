@@ -4,7 +4,7 @@ import torch
 
 from Experiment_framework.ai_framework import evaluate_function, test_best_function
 from Experiment_framework.main_helper import send_file, send_message
-from Experiment_framework.QuestionGenerator import QuestionGenerator
+#from Experiment_framework.QuestionGenerator import QuestionGenerator
 from training.anealing import simulated_annealing
 from training.geneticLearning import genetic_algorithm
 from training.learning import train_model
@@ -14,7 +14,7 @@ def deep_learning():
 	# %% Deep learning
 	num_epochs = 100
 	learning_rate = 0.01
-	model = QuestionGenerator()
+	#model = QuestionGenerator()
 	trained_model = train_model(model, num_epochs, learning_rate)
 	training_summary = f"Training complete."
 	# Evaluate the trained model

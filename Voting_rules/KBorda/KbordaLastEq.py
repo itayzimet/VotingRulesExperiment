@@ -14,7 +14,7 @@ class KbordaLastEq(VotingRuleConstrained):
 	K-Borda rule with the last question with budget distributed equally among voters
 	"""
 
-	name = "K-Borda Last equally"
+	name = "Last equally"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

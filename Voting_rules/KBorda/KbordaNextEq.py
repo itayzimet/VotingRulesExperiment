@@ -16,7 +16,7 @@ class KbordaNextEq(VotingRuleConstrained):
 	K-Borda rule with the next question with budget distributed equally among voters
 	"""
 
-	name = "K-Borda Next equally"
+	name = "Next equally"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

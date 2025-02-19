@@ -16,7 +16,7 @@ class KbordaLastFCFS(VotingRuleConstrained):
 	K-Borda rule with the last question with budget distributed according to the first-come-first-serve principle
 	"""
 
-	name = "K-Borda Last first come first serve"
+	name = "Last first come first serve"
 
 	@staticmethod
 	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:

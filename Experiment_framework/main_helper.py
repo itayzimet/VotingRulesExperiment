@@ -13,6 +13,7 @@ import random
 from multiprocessing import Pool
 from typing import Any, Dict, Tuple
 
+import matplotlib
 import plotly.express as px
 import requests
 from dotenv import load_dotenv
@@ -121,23 +122,24 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file
 		fig.write_html(file_name + ".html")
 		return file_name + ".html"
 	else:
-		plt.figure(figsize = (15, 8))
+		# matplotlib.use("pgf")
+		# matplotlib.rcParams.update(
+		# 		{"pgf.texsystem": "pdflatex", 'font.family': 'serif', 'text.usetex': True, 'pgf.rcfonts': False, })
+		plt.figure()
+		fig, ax = plt.subplots()
+		plt.rcParams["figure.autolayout"] = True
 		plt.title(f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, "
 		          f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
 		          f"voters, {test_params['number_of_runs']} runs")
 		x = list(test_params['number_of_questions'])
-		for rule, average in averages.items():
-			plt.plot(x, average, label = rule.__str__())
+		colors = plt.cm.get_cmap('tab10', len(averages))  # Use a colormap with distinct colors
+		for i, (rule, average) in enumerate(averages.items()):
+			plt.plot(x, average, label=rule.__str__(), color=colors(i))
 		plt.xlabel('Number of questions')
 		plt.ylabel('Distance between the committees')
-		plt.legend(bbox_to_anchor = (1.04, 1), loc = "upper left")
-		plt.subplots_adjust(left = 0.06, right = 0.6)
-
-		import tikzplotlib
-		tikzplotlib.clean_figure()
-		tikzplotlib.save(file_name + ".tex")
-		plt.show()
-		return file_name + ".tex"
+		plt.legend(bbox_to_anchor=(0.5, -0.1), loc="upper center", ncol=len(averages)//4)
+		plt.savefig(file_name + ".svg", bbox_inches='tight')
+		return file_name + ".svg"
 
 
 def write_averages_to_file(averages, test_parameters):
@@ -208,4 +210,4 @@ def send_plot(test_parameters: dict[str, any], averages: dict[Any, list[int]]):
 	temp_file_name = random.randint(0, 1000000).__str__()
 	filename = plot_graph(test_parameters, averages, temp_file_name)
 	send_file(filename)
-	os.remove(filename)
+	# os.remove(filename)
