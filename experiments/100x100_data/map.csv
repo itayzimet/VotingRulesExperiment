@@ -1,0 +1,27 @@
+size;num_candidates;num_voters;culture_id;params;color;alpha;family_id;marker;show;path;label
+1;100;100;pseudo_identity;{};blue;1;ID;x;t;{};ID
+1;100;100;pseudo_uniformity;{};black;1;UN;x;t;{};UN
+1;100;100;pseudo_antagonism;{};red;1;AN;x;t;{};AN
+1;100;100;pseudo_stratification;{};green;1;ST;x;t;{};ST
+20;100;100;impartial;{};black;0.9;Impartial Culture;o;t;{};Impartial Culture
+20;100;100;single_peaked_conitzer;{};saddlebrown;0.6;SP by Conitzer;o;t;{};SP by Conitzer
+20;100;100;single_peaked_walsh;{};olive;0.8;SP by Walsh;o;t;{};SP by Walsh
+20;100;100;spoc;{};maroon;0.9;SPOC;o;t;{};SPOC
+20;100;100;single_crossing;{};turquoise;0.9;Single-Crossing;o;t;{};Single-Crossing
+20;100;100;euclidean;{'num_dimensions': 1, 'space': 'uniform'};DarkGreen;0.9;1D Uniform;o;t;{};1D Uniform
+20;100;100;euclidean;{'num_dimensions': 2, 'space': 'uniform'};Green;0.9;2D Uniform;o;t;{};2D Uniform
+20;100;100;euclidean;{'num_dimensions': 3, 'space': 'uniform'};Green;0.6;3D Uniform;o;t;{};3D Uniform
+20;100;100;euclidean;{'num_dimensions': 5, 'space': 'uniform'};LimeGreen;0.6;5D Uniform;o;t;{};5D Uniform
+20;100;100;euclidean;{'num_dimensions': 10, 'space': 'uniform'};SeaGreen;0.6;10D Uniform;o;t;{};10D Uniform
+20;100;100;euclidean;{'num_dimensions': 20, 'space': 'uniform'};SeaGreen;0.9;20D Uniform;o;t;{};20D Uniform
+20;100;100;euclidean;{'num_dimensions': 2, 'space': 'sphere'};black;0.2;2D Sphere;o;t;{};2D Sphere
+20;100;100;euclidean;{'num_dimensions': 3, 'space': 'sphere'};black;0.4;3D Sphere;o;t;{};3D Sphere
+20;100;100;euclidean;{'num_dimensions': 5, 'space': 'sphere'};black;0.6;5D Sphere;o;t;{};5D Sphere
+20;100;100;group_separable;{'tree_sampler': 'balanced'};hotpink;0.8;GS Balanced;o;t;{};GS Balanced
+20;100;100;group_separable;{'tree_sampler': 'caterpillar'};purple;0.8;GS Caterpillar;o;t;{};GS Caterpillar
+80;100;100;urn;{};orange;1;Urn;o;t;{};Urn
+80;100;100;norm_mallows;{};blue;1;Norm-Mallows;o;t;{};Norm-Mallows
+20;100;100;pseudo_anid;{};black;1;ANID;3;t;{'variable': 'alpha'};ANID
+20;100;100;pseudo_stid;{};black;1;STID;3;t;{'variable': 'alpha'};STID
+20;100;100;pseudo_anun;{};black;1;ANUN;3;t;{'variable': 'alpha'};ANUN
+20;100;100;pseudo_stun;{};black;1;STUN;3;t;{'variable': 'alpha'};STUN

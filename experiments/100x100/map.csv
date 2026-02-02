@@ -4,12 +4,12 @@ size;num_candidates;num_voters;culture_id;params;family_id;label;color;alpha;mar
 1;100;100;pseudo_antagonism;{};antagonism_100_100;AN;#000000;0;x;0;{}
 1;100;100;pseudo_stratification;{};stratification_100_100;ST;#000000;0;x;0;{}
 10;100;100;ic;{};ic_100_100;IC;turquoise;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.01};urn_100_100_0.01;URN 0.01;blue;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.02};urn_100_100_0.02;URN 0.02;blue;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.05};urn_100_100_0.05;URN 0.05;blue;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.1};urn_100_100_0.1;URN 0.1;blue;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.2};urn_100_100_0.2;URN 0.2;blue;1.0;o;5;{}
-30;100;100;urn;{'alpha': 0.5};urn_100_100_0.5;URN 0.5;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.01};urn_100_100_0.01;URN 0.01;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.02};urn_100_100_0.02;URN 0.02;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.05};urn_100_100_0.05;URN 0.05;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.1};urn_100_100_0.1;URN 0.1;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.2};urn_100_100_0.2;URN 0.2;blue;1.0;o;5;{}
+20;100;100;urn;{'alpha': 0.5};urn_100_100_0.5;URN 0.5;blue;1.0;o;5;{}
 20;100;100;norm_mallows;{'impartial_central_vote': True, 'normphi': 0.001};norm_mallows_100_100_0.001;norm-Mallows 0.001;green;1.0;o;5;{}
 20;100;100;norm_mallows;{'impartial_central_vote': True, 'normphi':  0.01};norm_mallows_100_100_0.01 ;norm-Mallows 0.01;green;1.0;o;5;{}
 20;100;100;norm_mallows;{'impartial_central_vote': True, 'normphi':  0.05};norm_mallows_100_100_0.05 ;norm-Mallows 0.05;green;1.0;o;5;{}
@@ -24,15 +24,15 @@ size;num_candidates;num_voters;culture_id;params;family_id;label;color;alpha;mar
 30;100;100;single_peaked_walsh;{};walsh_100_100;Walsh;orange;1.0;o;5;{}
 30;100;100;spoc;{};spoc_100_100;SPOC;blueviolet;1.0;o;5;{}
 30;100;100;single_crossing;{};single-crossing_100_100;Single Crossing;magenta;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 1, 'space': 'uniform'};euclidean_100_100_1_uniform;1D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 2, 'space': 'uniform'};euclidean_100_100_2_uniform;2D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 3, 'space': 'uniform'};euclidean_100_100_3_uniform;3D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 5, 'space': 'uniform'};euclidean_100_100_5_uniform;5D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 10, 'space': 'uniform'};euclidean_100_100_10_uniform;10D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 20, 'space': 'uniform'};euclidean_100_100_20_uniform;20D Hypercube;red;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 2, 'space': 'sphere'};euclidean_100_100_2_sphere;2D Hypersphere;grey;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 3, 'space': 'sphere'};euclidean_100_100_3_sphere;3D Hypersphere;grey;1.0;o;5;{}
-30;100;100;euclidean;{'dim': 5, 'space': 'sphere'};euclidean_100_100_5_sphere;5D Hypersphere;grey;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 1, 'space': 'uniform'};euclidean_100_100_1_uniform;1D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 2, 'space': 'uniform'};euclidean_100_100_2_uniform;2D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 3, 'space': 'uniform'};euclidean_100_100_3_uniform;3D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 5, 'space': 'uniform'};euclidean_100_100_5_uniform;5D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 10, 'space': 'uniform'};euclidean_100_100_10_uniform;10D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 20, 'space': 'uniform'};euclidean_100_100_20_uniform;20D Hypercube;red;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 2, 'space': 'sphere'};euclidean_100_100_2_sphere;2D Hypersphere;grey;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 3, 'space': 'sphere'};euclidean_100_100_3_sphere;3D Hypersphere;grey;1.0;o;5;{}
+15;100;100;euclidean;{'dim': 5, 'space': 'sphere'};euclidean_100_100_5_sphere;5D Hypersphere;grey;1.0;o;5;{}
 20;100;100;pseudo_anid;{};anid_100_100;AN-ID;brown;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
 20;100;100;pseudo_stid;{};stid_100_100;ST-ID;#a6814c;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
 20;100;100;pseudo_anun;{};anun_100_100;AN-UN;#9d7651;1.0;>;5;{'variable': 'alpha', 'start': 0.0}
