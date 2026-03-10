@@ -18,7 +18,7 @@ class KbordaNextLastFCFS(VotingRuleConstrained):
 	name = "Next and Last First Come First Serve"
 
 	@staticmethod
-	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+	def find_winners(election: Election, num_winners: int, question_limit: int, cost) -> list[int]:
 		"""
 		Returns a list of the winners of the election according to the K-Borda rule with top and bottom k truncated
 		ballots
@@ -44,7 +44,7 @@ class KbordaNextLastFCFS(VotingRuleConstrained):
 			temp_candidates = candidates.copy()
 			counter = 0
 			while temp > 0 and len(temp_candidates) > 0:
-				temp -= questionPrice.get_price(temp_candidates,
+				temp -= cost(temp_candidates,
 				                                [1 / len(temp_candidates), 1 - (2 / len(temp_candidates)),
 				                                 1 / len(temp_candidates)])
 				temp_candidates = temp_candidates[1:]

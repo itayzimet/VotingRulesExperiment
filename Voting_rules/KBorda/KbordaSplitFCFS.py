@@ -19,7 +19,7 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 	name = "Split First Come First Serve"
 
 	@staticmethod
-	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+	def find_winners(election: Election, num_winners: int, question_limit: int, cost) -> list[int]:
 		"""
 		Returns a list of the winners of the election according to the K-Borda rule constrained by the number of
 		questions in the form of a split between preferred and not preferred candidates by the voter distributed First
@@ -31,4 +31,4 @@ class KbordaSplitFCFS(VotingRuleConstrained):
 		in the form of a split between preferred and not preferred candidates by the voter distributed First Come
 		First Serve among voters.
 		"""
-		return KbordaBucket([0.5, 0.5]).find_winners(election, num_winners, question_limit, False)
+		return KbordaBucket([0.5, 0.5]).find_winners(election, num_winners, question_limit, False, cost)

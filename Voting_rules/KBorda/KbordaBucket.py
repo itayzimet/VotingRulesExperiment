@@ -3,6 +3,7 @@ import numpy as np
 
 from Experiment_framework.Election import Election
 from Experiment_framework.QuestionGenerator import execute_function#, QuestionGenerator
+from Voting_rules import questionPrice
 from Voting_rules.KBorda.KbordaHelper import KbordaHelper
 from Voting_rules.KBorda.Node import Node
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
@@ -19,7 +20,7 @@ class KbordaBucket(VotingRuleConstrained):
 			self.name = _name
 
 	def find_winners(
-			self, election: Election, num_winners: int, question_limit: int, distribute_equally: bool = True) -> list[
+			self, election: Election, num_winners: int, question_limit: int, distribute_equally: bool = True, cost = questionPrice.get_variance_price) -> list[
 		int]:
 		"""
 		Find the winners of the election by splitting the candidates using the bucket syntax
@@ -31,10 +32,10 @@ class KbordaBucket(VotingRuleConstrained):
 		"""
 		self.question_type = execute_function(num_winners, election.numberOfCandidates, election.numberOfVoters,
 		                                      question_limit, self.question_type)
-		scores = self.calculate_scores(election, question_limit, distribute_equally)
+		scores = self.calculate_scores(election, question_limit, cost, distribute_equally)
 		return bn.argpartition(-scores, num_winners)[:num_winners]
 
-	def calculate_scores(self, election: Election, question_limit: int, distribute_equally: bool = True) -> np.ndarray:
+	def calculate_scores(self, election: Election, question_limit: int, cost, distribute_equally: bool = True) -> np.ndarray:
 		"""
 		Calculate the scores of the candidates using the bucket syntax
 		:param election: Election object containing the candidates and voters
@@ -55,7 +56,7 @@ class KbordaBucket(VotingRuleConstrained):
 		for idx, voter in enumerate(election.voters):
 			idx = idx if distribute_equally else 0
 			voter_node = Node(list(range(election.numberOfCandidates)))
-			helper.fill_tree(voter, voter_node, idx, self.question_type)
+			helper.fill_tree(voter, voter_node, idx, self.question_type, cost)
 			helper.score_candidates(voter_node, scores, election.numberOfCandidates)
 		return scores
 

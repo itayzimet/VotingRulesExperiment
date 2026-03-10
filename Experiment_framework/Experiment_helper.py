@@ -17,7 +17,7 @@ voting_rule, constrained_voting_rule, number_of_questions: list[int]) -> list[in
 - run_experiment_wrapper(args) -> list[int]"""
 
 
-def fabricate_election(number_of_candidates: int, number_of_voters: int) -> Election:
+def fabricate_ic_election(number_of_candidates: int, number_of_voters: int) -> Election:
 	"""
 	Fabricates an election with the given number of candidates and voters randomly
 	:param number_of_candidates: the number of candidates
@@ -35,6 +35,38 @@ def fabricate_election(number_of_candidates: int, number_of_voters: int) -> Elec
 		voter_ordinal_preferences = np.random.permutation(candidates).tolist()
 		voter = Voter(voter_ordinal_preferences)  # Create the voter
 		voters.append(voter)  # Add the voter to the list of voters
+	return Election(candidates, voters)  # Return the fabricated election
+
+
+def euclidean_to_ordinal(voter_point, candidates):
+	x = voter_point[0]
+	y = voter_point[1]
+	[candidate.append(((x-candidate[1])**2)+((y-candidate[2])**2)) for candidate in candidates]
+	sorted_candidates = sorted(candidates, key=lambda x: x[-1])
+	preferences = [candidate[0] for candidate in sorted_candidates]
+	return preferences
+
+
+def fabricate_2d_election(number_of_candidates: int, number_of_voters: int) -> Election:
+	"""
+	Fabricates an election with the given number of candidates and voters randomly
+	:param number_of_candidates: the number of candidates
+	:param number_of_voters: the number of voters
+	:return: the fabricated election
+	"""
+	# Create the candidates
+	candidates = []
+	for i in range(number_of_candidates):
+		candidates.append([i, np.random.rand(), np.random.rand()])
+	# Create the voters
+	voters = list()
+	for i in range(number_of_voters):
+		# Shuffle the candidates using numpy.random.permutation
+		voter_point = (np.random.rand(), np.random.rand())
+		voter_ordinal_preferences = euclidean_to_ordinal(voter_point, candidates)
+		voter = Voter(voter_ordinal_preferences)  # Create the voter
+		voters.append(voter)  # Add the voter to the list of voters
+	candidates = [candidate[0] for candidate in candidates]
 	return Election(candidates, voters)  # Return the fabricated election
 
 

@@ -19,14 +19,12 @@ import requests
 from dotenv import load_dotenv
 from matplotlib import pyplot as plt
 from tqdm import tqdm, trange
-
 from Experiment_framework.Experiment import Experiment
-from Experiment_framework.Experiment_helper import fabricate_election
 
 
 def run_experiment(
 		target_committee_size: int, num_candidates: int, num_voters: int, voting_rule, constrained_voting_rule,
-		number_of_questions: list[int]) -> list[int]:
+		number_of_questions: list[int], cost, culture) -> list[int]:
 	"""
 	Run the experiment a single time with one fabricated election and return the distances between the committees for
 	that election and the given numbers of questions
@@ -39,9 +37,10 @@ def run_experiment(
 	:return: list of distances between all the committees
 	"""
 	# Fabricate an election with num_candidates candidates and num_voters voters
-	election = fabricate_election(num_candidates, num_voters)
+	election = culture(num_candidates, num_voters)
 	# Run the experiment
-	experiment = Experiment(target_committee_size, election, voting_rule, constrained_voting_rule, number_of_questions)
+	experiment = Experiment(target_committee_size, election, voting_rule, constrained_voting_rule, number_of_questions,
+							cost)
 	# Return the distance between the two committees
 	return experiment.committeeDistance
 
@@ -55,7 +54,7 @@ def run_experiment_wrapper(args):
 	return run_experiment(*args)
 
 
-def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
+def run_test(params: dict[str, any]) -> dict[Any, list[int]]|None:
 	"""
 	Run the experiment multiple times and return the average differences between the committees
 
@@ -70,20 +69,25 @@ def run_test(params: dict[str, any]) -> dict[Any, list[int]]:
 	number_of_questions = params['number_of_questions']
 	number_of_runs = params['number_of_runs']
 	multithreaded = params['multithreaded']
+	cost = params['cost']  # cost function
+	culture = params['culture']  # fabricate election function
 	averages = {}
 	load_dotenv()
+	if number_of_runs <= 0:
+		return None
 	for rule in constrained_voting_rules:
 		if multithreaded:
 			with Pool() as pool:
 				differences = list(tqdm(pool.imap(run_experiment_wrapper, [
-						(target_committee_size, num_candidates, num_voters, voting_rule, rule, number_of_questions) for
-						_ in range(number_of_runs)]), total = number_of_runs,
-				                        desc = f'Running experiments: {rule.__str__()}', ))
+					(target_committee_size, num_candidates, num_voters, voting_rule, rule, number_of_questions, cost,
+					 culture) for
+					_ in range(number_of_runs)]), total = number_of_runs,
+										desc = f'Running experiments: {rule.__str__()}', ))
 		else:
 			differences = []
 			for _ in trange(number_of_runs, desc = f'Running experiments: {rule.__str__()}', total = number_of_runs, ):
 				differences.append(run_experiment(target_committee_size, num_candidates, num_voters, voting_rule, rule,
-				                                  number_of_questions))
+												  number_of_questions, cost, culture))
 		average_differences = [0] * len(number_of_questions)
 		# Average the results from the different runs
 		for difference in differences:
@@ -110,18 +114,20 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file
 		fig = px.scatter()
 		for rule, average in averages.items():
 			fig.add_scatter(x = list(test_params['number_of_questions']), y = average, mode = 'markers',
-			                name = rule.__str__())
+							name = rule.__str__())
 		fig.update_layout(
-				title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee "
-				        f"members, "
-				        f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
-				        f"voters, {test_params['number_of_runs']} runs", xaxis_title = 'Number of questions',
-				yaxis_title = 'Distance between the committees')
-
+			title = f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee "
+					f"members, "
+					f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
+					f"voters, {test_params['number_of_runs']} runs", xaxis_title = 'Number of questions',
+			yaxis_title = 'Distance between the committees')
+		
 		fig.show()
 		fig.write_html(file_name + ".html")
 		return file_name + ".html"
 	else:
+		format = "eps"
+		dpi = 1200
 		# matplotlib.use("pgf")
 		# matplotlib.rcParams.update(
 		# 		{"pgf.texsystem": "pdflatex", 'font.family': 'serif', 'text.usetex': True, 'pgf.rcfonts': False, })
@@ -129,23 +135,23 @@ def plot_graph(test_params: dict[str, any], averages: dict[Any, list[int]], file
 		fig, ax = plt.subplots()
 		plt.rcParams["figure.autolayout"] = True
 		plt.title(f"{test_params['voting_rule'].__str__()}: {test_params['target_committee_size']} committee members, "
-		          f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
-		          f"voters, {test_params['number_of_runs']} runs")
+				  f"{test_params['num_candidates']} candidates, {test_params['num_voters']} "
+				  f"voters, {test_params['number_of_runs']} runs")
 		x = list(test_params['number_of_questions'])
 		colors = plt.cm.get_cmap('tab10', len(averages))  # Use a colormap with distinct colors
 		for i, (rule, average) in enumerate(averages.items()):
-			plt.plot(x, average, label=rule.__str__(), color=colors(i))
+			plt.plot(x, average, label = rule.__str__(), color = colors(i))
 		plt.xlabel('Number of questions')
 		plt.ylabel('Distance between the committees')
-		plt.legend(bbox_to_anchor=(0.5, -0.1), loc="upper center", ncol=len(averages)//4)
-		plt.savefig(file_name + ".svg", bbox_inches='tight')
-		return file_name + ".svg"
+		plt.legend(bbox_to_anchor = (0.5, -0.1), loc = "upper center", ncol = len(averages) // 4)
+		plt.savefig(file_name + f".{format}", bbox_inches = 'tight', format = format, dpi = dpi)
+		return f"{file_name}.{format}"
 
 
-def write_averages_to_file(averages, test_parameters):
-	if os.path.exists('averages.pickle'):
-		os.remove('averages.pickle')
-	with open('averages.pickle', 'wb') as f:
+def write_averages_to_file(averages, test_parameters, name):
+	if os.path.exists(f'{name}.pickle'):
+		os.remove(f'{name}.pickle')
+	with open(f'{name}.pickle', 'wb') as f:
 		# add the averages to a new pickle file
 		data = [averages, int(test_parameters['number_of_runs'])]
 		pickle.dump(data, f)
@@ -166,10 +172,10 @@ def combine_saved_current(
 	return averages, test_parameters
 
 
-def extract_saved_averages(file: str = 'averages.pickle') -> Tuple[int, Dict]:
+def extract_saved_averages(file) -> Tuple[int, Dict]:
 	saved_averages = {}
 	try:
-		with open(file, 'rb') as f:
+		with open(f"{file}.pickle", 'rb') as f:
 			saved_averages = pickle.load(f)
 			no_of_saved_runs = int(saved_averages[1])
 			saved_averages = saved_averages[0]
@@ -206,8 +212,8 @@ def send_files(files: list[str]):
 		send_file(file)
 
 
-def send_plot(test_parameters: dict[str, any], averages: dict[Any, list[int]]):
-	temp_file_name = random.randint(0, 1000000).__str__()
+def send_plot(test_parameters: dict[str, any], averages: dict[Any, list[int]], name):
+	temp_file_name = name+"_"+random.randint(0, 1000000).__str__()
 	filename = plot_graph(test_parameters, averages, temp_file_name)
-	send_file(filename)
-	# os.remove(filename)
+	# send_file(filename)
+# os.remove(filename)

@@ -3,6 +3,7 @@
 import concurrent.futures
 
 from Experiment_framework.Experiment_helper import *
+from Voting_rules import questionPrice
 from Voting_rules.VotingRule import VotingRule
 from Voting_rules.VotingRuleConstrained import VotingRuleConstrained
 
@@ -35,7 +36,7 @@ class Experiment:
 	def __init__(
 			self, target_committee_size: int, election: Election, voting_rule: VotingRule,
 			constrained_voting_rule: VotingRuleConstrained, number_of_questions: list[int],
-			question_type: list[float] = None):
+			question_type: list[float] = None, cost = questionPrice.get_variance_price):
 		"""
 		Constructor of the Experiment class
 		:type constrained_voting_rule: VotingRuleConstrained
@@ -57,7 +58,7 @@ class Experiment:
 		self.committees = []
 		self.committeeDistance = []
 		# Find the committees with the constrained voting rule
-		self.find_committees(constrained_voting_rule, question_type)
+		self.find_committees(constrained_voting_rule, question_type, cost)
 		# find the distance between the true committee and the committees
 		self.find_distances()
 
@@ -65,15 +66,15 @@ class Experiment:
 		for committee in self.committees:
 			self.committeeDistance.append(committee_distance(self.true_committee, committee))
 
-	def find_committees(self, constrained_voting_rule, question_type):
+	def find_committees(self, constrained_voting_rule, question_type, cost):
 
 		def process_question(i):
-			if question_type is not None:
+			if question_type is not None and callable(constrained_voting_rule):
 				rule = constrained_voting_rule(question_type)
 			else:
 				rule = constrained_voting_rule if isinstance(constrained_voting_rule,
 				                                             VotingRuleConstrained) else constrained_voting_rule()
-			return rule.find_winners(self.election, self.targetCommitteeSize, i)
+			return rule.find_winners(self.election, self.targetCommitteeSize, i, cost)
 
 		with concurrent.futures.ThreadPoolExecutor() as executor:
 			self.committees = list(executor.map(process_question, self.numberOfQuestions))

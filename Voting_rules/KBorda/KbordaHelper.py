@@ -43,7 +43,7 @@ class KbordaHelper:
 				KbordaHelper.score_candidates(son, scores, rank)
 
 	def fill_tree(
-			self, voter: Voter, current_node: Node, voter_idx: int, question_type: list[float], i: int = 0) -> None:
+			self, voter: Voter, current_node: Node, voter_idx: int, question_type: list[float], cost,  i: int = 0) -> None:
 		"""
 		Recursively create a binary tree to split the preferences of the voter
 		:param voter: the voter to split the preferences for
@@ -53,7 +53,7 @@ class KbordaHelper:
 		:param i: the recursion depth
 		:return: None
 		"""
-		price = questionPrice.get_price(current_node.value, question_type)
+		price = cost(current_node.value, question_type)
 		if self.questions[voter_idx] < price:
 			return
 		if len(current_node.value) == 2:
@@ -69,4 +69,4 @@ class KbordaHelper:
 		buckets = voter.general_bucket_question(current_node.value, question_type.copy())
 		for bucket in buckets:
 			current_node.sons.append(Node(bucket))
-			self.fill_tree(voter, current_node.sons[-1], voter_idx, question_type, i + 1)
+			self.fill_tree(voter, current_node.sons[-1], voter_idx, question_type, cost, i + 1)

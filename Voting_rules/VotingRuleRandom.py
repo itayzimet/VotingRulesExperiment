@@ -18,7 +18,7 @@ class VotingRuleRandom(VotingRuleConstrained):
 	name = "Random voting rule"
 
 	@staticmethod
-	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+	def find_winners(election: Election, num_winners: int, question_limit: int, cost) -> list[int]:
 		"""
 		Returns a random list of winners of the election
 		:param election: the election to find the winners for

@@ -17,7 +17,7 @@ class KbordaLastEq(VotingRuleConstrained):
 	name = "Last equally"
 
 	@staticmethod
-	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+	def find_winners(election: Election, num_winners: int, question_limit: int, cost) -> list[int]:
 		"""
 		Returns the winners of the election according to the K-Borda rule with last k truncated ballots
 		with the budget k distributed equally among voters
@@ -39,7 +39,7 @@ class KbordaLastEq(VotingRuleConstrained):
 			for i in range(question_limit % len(voters)):
 				questions[i] += 1
 		# Calculate the scores of the candidates
-		if questions[0] < questionPrice.get_price(candidates, [1 / len(candidates), 1 - 1 / len(candidates)]):
+		if questions[0] < cost(candidates, [1 / len(candidates), 1 - 1 / len(candidates)]):
 			return bn.argpartition(-scores, num_winners)[:num_winners]
 		for i, voter in enumerate(voters):
 			if questions[i] <= 0:
@@ -49,7 +49,7 @@ class KbordaLastEq(VotingRuleConstrained):
 			question_amount = 0
 			candidates_in_bucket = candidates.copy()
 			while question_budget > 0:
-				price = questionPrice.get_price(candidates_in_bucket,
+				price = cost(candidates_in_bucket,
 				                                [1 / len(candidates_in_bucket), 1 - 1 / len(candidates_in_bucket)])
 				if price > question_budget:
 					break

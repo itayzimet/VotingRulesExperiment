@@ -21,7 +21,7 @@ class KbordaBucketSplit(VotingRuleConstrained):
 	name = "Split Equally"
 
 	@staticmethod
-	def find_winners(election: Election, num_winners: int, question_limit: int) -> list[int]:
+	def find_winners(election: Election, num_winners: int, question_limit: int, cost) -> list[int]:
 		"""
 		Find the winners of the election by splitting the candidates using the bucket syntax
 		:param election: Election object containing the candidates and voters
@@ -46,7 +46,7 @@ class KbordaBucketSplit(VotingRuleConstrained):
 				break
 			# Create the root node
 			root_node = Node(candidates)
-			helper.fill_tree(voter, root_node, i, [0.5, 0.5])
+			helper.fill_tree(voter, root_node, i, [0.5, 0.5], cost)
 			# Score the candidates
 			rank = num_candidates
 			KbordaHelper.score_candidates(root_node, scores, rank)

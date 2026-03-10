@@ -1,5 +1,7 @@
 # %%
-def get_price(candidates: list[int], buckets: list[float]) -> float:
+import math
+
+def get_variance_price(candidates: list[int], buckets: list[float]) -> float:
 	"""
 	Get the price of the question.
 	:param candidates: list of candidates
@@ -10,6 +12,20 @@ def get_price(candidates: list[int], buckets: list[float]) -> float:
 		return len(candidates) * len(buckets) * (1 - get_variance(buckets))
 	except:
 		return float('inf')
+
+
+def get_2d_price(candidates: list[int], buckets: list[float]) -> float:
+	"""
+	Get the price of the question.
+	:param candidates: list of candidates
+	:param buckets: list of bucket ratios
+	:return: the price of the question
+	"""
+	try:
+		return len(candidates) * math.log(len(buckets))
+	except:
+		return float('inf')
+
 
 def get_variance(buckets: list[float]) -> float:
 	"""

@@ -6,8 +6,10 @@ import numpy as np
 # import torch
 
 from election_map import generate_election_map
+from Experiment_framework.Experiment_helper import fabricate_ic_election, fabricate_2d_election
 # from Experiment_framework.ai_training import annealing, deep_learning, genetic
 from Experiment_framework.main_helper import *
+from Voting_rules import questionPrice
 from Voting_rules.KBorda.Kborda import Kborda
 # from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 from Voting_rules.KBorda.KbordaBucketSplit import KbordaBucketSplit
@@ -28,7 +30,7 @@ graph for the experiment.
 
 
 # %%
-def run_ic_experiments(training_mode = False, load_saved = True, compute = False):
+def run_ic_experiments(load_saved = True, compute = False):
 	"""
 	Main function to run the experiment
 	:return: None
@@ -48,28 +50,30 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
 	# 		send_message("Please run the training mode first.")
 	# 		return
 	# %%
-
+	
 	test_parameters = dict(target_committee_size = 50, num_candidates = 100, num_voters = 100, voting_rule = Kborda,
-	                       constrained_voting_rule = [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(),
-	                                                  KbordaLastEq(), KbordaLastFCFS(), KbordaNextLastEQ(),
-	                                                  KbordaNextLastFCFS(), KbordaBucketSplit(), # KbordaBucketTrinary(),
-	                                                  # KbordaBucket(best_annealing_function, 'Annealing'),
-	                                                  # KbordaBucket(best_genetic_function, 'Genetic'),
-	                                                  # KbordaBucket(final_learning_model, 'Deep Learning'),
-	                                                  VotingRuleRandom()], number_of_questions = range(1, 800000,
-	                                                                                                   4000),
-	                       number_of_runs = 100, multithreaded = True)
-
+						   constrained_voting_rule = [KbordaSplitFCFS(), KbordaNextEq(), KbordaNextFCFS(),
+													  KbordaLastEq(), KbordaLastFCFS(), KbordaNextLastEQ(),
+													  KbordaNextLastFCFS(), KbordaBucketSplit(),
+													  # KbordaBucketTrinary(),
+													  # KbordaBucket(best_annealing_function, 'Annealing'),
+													  # KbordaBucket(best_genetic_function, 'Genetic'),
+													  # KbordaBucket(final_learning_model, 'Deep Learning'),
+													  VotingRuleRandom()], number_of_questions = range(1, 800000,
+																									   4000),
+						   number_of_runs = 100, multithreaded = True, cost = questionPrice.get_variance_price,
+						   culture = fabricate_ic_election)
+	
 	# %%
 	"""KBorda testing"""
 	# %%
 	if load_saved:
-		no_of_saved_runs, saved_averages = extract_saved_averages()
+		no_of_saved_runs, saved_averages = extract_saved_averages("ic_averages")
 		if compute:
 			averages = run_test(test_parameters)
 			averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages,
-			                                                  test_parameters)
-			write_averages_to_file(averages, test_parameters)
+															  test_parameters)
+			write_averages_to_file(averages, test_parameters, "ic_averages")
 		else:
 			averages = saved_averages
 			test_parameters['number_of_runs'] = no_of_saved_runs
@@ -85,10 +89,60 @@ def run_ic_experiments(training_mode = False, load_saved = True, compute = False
 		total_averages[key] = float(np.mean(averages[key]))
 	# %%
 	# send plot, averages, parameters and file to telegram
-	send_plot(test_parameters, averages)
+	send_plot(test_parameters, averages, "ic")
 	send_message(total_averages.__str__())
 	send_message(test_parameters.__str__())
-	send_file('averages.pickle')
+	# send_file('averages.pickle')
+
+
+def run_2d_experiments(load_saved = True, compute = False):
+	"""
+	Main function to run the experiment
+	:return: None
+	"""
+	
+	test_parameters = dict(target_committee_size = 50, num_candidates = 100, num_voters = 100, voting_rule = Kborda,
+						   constrained_voting_rule = [KbordaBucketSplit(), KbordaSplitFCFS(), KbordaNextEq(),
+													  KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
+													  KbordaNextLastEQ(), KbordaNextLastFCFS(),
+													  # KbordaBucketTrinary(),
+													  # KbordaBucket(best_annealing_function, 'Annealing'),
+													  # KbordaBucket(best_genetic_function, 'Genetic'),
+													  # KbordaBucket(final_learning_model, 'Deep Learning'),
+													  VotingRuleRandom()
+													  ], number_of_questions = range(1, 800000, 4000),
+						   number_of_runs = 5000, multithreaded = True, cost = questionPrice.get_2d_price,
+						   culture = fabricate_2d_election)
+	
+	# %%
+	"""KBorda testing"""
+	# %%
+	if load_saved:
+		no_of_saved_runs, saved_averages = extract_saved_averages("2d_averages")
+		if compute:
+			averages = run_test(test_parameters)
+			averages, test_parameters = combine_saved_current(averages, no_of_saved_runs, saved_averages,
+															  test_parameters)
+			write_averages_to_file(averages, test_parameters, "2d_averages")
+		else:
+			averages = saved_averages
+			test_parameters['number_of_runs'] = no_of_saved_runs
+	elif compute:
+		averages = run_test(test_parameters)
+		write_averages_to_file(averages, test_parameters, "2d_averages")
+	else:
+		raise Exception("Please choose either load_saved or compute or both to be True.")
+	# %%
+	total_averages = {}
+	# Calculate the average Accuracy for each voting rule
+	for key in averages:
+		total_averages[key] = float(np.mean(averages[key]))
+	# %%
+	# send plot, averages, parameters and file to telegram
+	send_plot(test_parameters, averages, "2d")
+	send_message(total_averages.__str__())
+	send_message(test_parameters.__str__())
+	# send_file('averages.pickle')
 
 
 def run_mapof_experiments(
@@ -108,13 +162,13 @@ def run_mapof_experiments(
 		print_map: whether to print the map
 	"""
 	generate_election_map(exp_id, distance_id, embedding_id, generate, compute_distances, compute_feature, embed,
-	                      print_map)
+						  print_map)
 
 
 def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-ic", "--ic", help = "Run the IC experiment", action = "store_true")
-	parser.add_argument("-t", "--training", help = "Run the training mode", action = "store_true")
+	parser.add_argument("-eu", "--euclidean", help = "Run the 2d experiment", action = "store_true")
 	parser.add_argument("-l", "--load", help = "Load the saved averages", action = "store_true")
 	parser.add_argument("-c", "--compute", help = "Compute more averages", action = "store_true")
 	parser.add_argument("-m", "--mapof", help = "Run the mapof experiment", action = "store_true")
@@ -128,12 +182,14 @@ def main():
 	parser.add_argument("-emb", "--embedding_id", help = "Embedding id", type = str)
 	args = parser.parse_args()
 	if args.ic:
-		run_ic_experiments(args.training, args.load, args.compute)
+		run_ic_experiments(args.load, args.compute)
+	elif args.euclidean:
+		run_2d_experiments(args.load, args.compute)
 	elif args.mapof:
 		run_mapof_experiments(args.exp_id, args.distance_id, args.embedding_id, args.generate,
-		                      args.compute_distances, args.compute_feature, args.embed, args.print)
+							  args.compute_distances, args.compute_feature, args.embed, args.print)
 	else:
-		raise Exception("Please choose either IC or mapof experiment.")
+		raise Exception("Please choose either IC, 2d or mapof experiment.")
 
 
 # %%

@@ -9,7 +9,7 @@ import numpy as np
 from Experiment_framework.Election import Election
 from Experiment_framework.Experiment import Experiment
 from Experiment_framework.Voter import Voter
-from Voting_rules import VotingRuleConstrained
+from Voting_rules import VotingRuleConstrained, questionPrice
 from Voting_rules.KBorda.Kborda import Kborda
 from Voting_rules.KBorda.KbordaBucket import KbordaBucket
 # from Voting_rules.KBorda.KbordaBucket import KbordaBucket
@@ -41,18 +41,18 @@ def generate_election_map(
 	# except FileNotFoundError:
 	#     print("Please run the training mode first.")
 	#     return
-
+	
 	global voting_rules
 	voting_rules = [KbordaSplitFCFS(), KbordaBucketSplit(),
-	                KbordaNextEq(), KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
-	                KbordaNextLastEQ(), KbordaNextLastFCFS(), KbordaBucketTrinary(),
-	                # KbordaBucket(best_annealing_function, 'Annealing'), KbordaBucket(best_genetic_function,'Genetic'),
-	                # KbordaBucket(final_learning_model, 'Deep Learning'),
-	                VotingRuleRandom()
-	                ]
+					KbordaNextEq(), KbordaNextFCFS(), KbordaLastEq(), KbordaLastFCFS(),
+					KbordaNextLastEQ(), KbordaNextLastFCFS(),  # KbordaBucketTrinary(),
+					# KbordaBucket(best_annealing_function, 'Annealing'), KbordaBucket(best_genetic_function,'Genetic'),
+					# KbordaBucket(final_learning_model, 'Deep Learning'),
+					VotingRuleRandom()
+					]
 	# %% prepare experiment
 	experiment = mapof.prepare_offline_ordinal_experiment(experiment_id = exp_id, distance_id = distance_id,
-	                                                      embedding_id = embedding_id)
+														  embedding_id = embedding_id)
 	if generate:
 		experiment.prepare_elections()
 	# %% compute distances
@@ -63,18 +63,18 @@ def generate_election_map(
 		compute_features(experiment)
 	# %% embed 2d and print map
 	if embed:
-		experiment.embed_2d(embedding_id = embedding_id, left='uniformity_100_100', right='identity_100_100',
-		                    up='antagonism_100_100', num_iterations=20000)
-
+		experiment.embed_2d(embedding_id = embedding_id, left = 'uniformity_100_100', right = 'identity_100_100',
+							up = 'antagonism_100_100', num_iterations = 20000)
+	
 	if print_map:
 		print_maps(experiment)
 
 
 def print_maps(experiment):
 	cmap = mpl.colormaps['inferno']
-
-	experiment.print_map_2d(saveas = 'map', #textual = ['ID', 'UN', 'AN', 'ST'],
-	                        legend_pos = (0.5, 0), show = False,
+	
+	experiment.print_map_2d(saveas = 'map',  #textual = ['ID', 'UN', 'AN', 'ST'],
+							legend_pos = (0.5, 0), show = False,
 							mask = '100x100-fr-emd-positionwise-color', legend = False)
 	omit = []
 	for i in range(0, 19):
@@ -85,32 +85,32 @@ def print_maps(experiment):
 		omit.append(f'stan_100_100_{i}')
 		omit.append(f'unid_100_100_{i}')
 	print_map = partial(experiment.print_map_2d_colored_by_feature, cmap = cmap,
-	                    # textual = ['ID', 'UN', 'AN', 'ST'],
-	                    omit = omit,# strech=[0,100],
-	                    mask = '100x100-fr-emd-positionwise-black',
-	                    show=False)
+						# textual = ['ID', 'UN', 'AN', 'ST'],
+						omit = omit,  # strech=[0,100],
+						mask = '100x100-fr-emd-positionwise-black',
+						show = False)
 	for rule in voting_rules:
 		print_map(feature_id = rule.__str__(), saveas = f'map_{rule.__str__()}')
+
 
 def compute_feature(rule: VotingRuleConstrained, experiment):
 	feature = partial(mapof_feature, rule = rule)
 	experiment.add_feature(f'{rule.__str__()}', feature)
 	experiment.compute_feature(f'{rule.__str__()}')
 
+
 def compute_features(experiment):
 	import multiprocessing
 	_compute_feature = partial(compute_feature, experiment = experiment)
-	with multiprocessing.Pool(processes=8) as pool:
+	with multiprocessing.Pool(processes = 8) as pool:
 		pool.map(_compute_feature, voting_rules)
-
-
 
 
 def mapof_experiment(voters, num_candidates, num_questions, rule, _ = 0):
 	random.shuffle(voters)
 	temp_election = Election(list(range(num_candidates)), voters)
 	# noinspection PyTypeChecker
-	experiment = Experiment(50, temp_election, Kborda, rule, num_questions)
+	experiment = Experiment(50, temp_election, Kborda, rule, num_questions, questionPrice.get_variance_price)
 	return experiment.committeeDistance
 
 
@@ -121,7 +121,7 @@ def mapof_feature(election: mapof.OrdinalElection, rule: VotingRuleConstrained) 
 	:param rule: Voting rule
 	:return: Dictionary containing the feature for the election
 	"""
-
+	
 	if election.is_pseudo:
 		return {'value': None, 'plotx': None, 'ploty': None}
 	voters = election.votes
@@ -131,12 +131,12 @@ def mapof_feature(election: mapof.OrdinalElection, rule: VotingRuleConstrained) 
 		new_voters.append(new_voter)
 	num_candidates = election.num_candidates
 	num_questions = list(range(1, 800000, 10000))
-
+	
 	run_experiment = partial(mapof_experiment, new_voters, num_candidates, num_questions, rule)
 	distances = [run_experiment(i) for i in range(0, 10)]
-
+	
 	average_distances = [np.mean(distances, axis = 0)]
-
+	
 	x = num_questions
 	y = average_distances
 	x = np.array(x)
