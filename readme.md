@@ -1,114 +1,216 @@
-# voting experiment
+# Query-Based Committee Selection — Experiment Code
 
-This is a voting experiment to test different voting systems.
+> Companion code for [*Query-Based Committee Selection*](https://arxiv.org/abs/2603.29729) (Zimet, Alouf-Heffetz & Talmon, 2026).
 
-## Installation and usage
+Multiwinner voting rules typically require full knowledge of voter preferences — impractical at scale. This repository implements a **query-based elicitation framework** that approximates winning committees under a limited budget of structured questions, and measures how quickly each strategy converges to the ground-truth outcome.
 
-clone the repository and change main.py to your liking. Then run the following commands to create a virtual environment
-and install the required packages.
+---
+
+## Getting Started
+
+**Prerequisites:** Python 3.11+
 
 ```bash
+# Clone the repo
+git clone https://github.com/itayzimet/VotingRulesExperiment.git
+cd VotingRulesExperiment
+
+# Create and activate a virtual environment
 python -m venv venv
-source venv/bin/activate
+source venv/bin/activate          # Linux / macOS
+# venv\Scripts\activate.ps1       # Windows PowerShell
+
 pip install -r requirements.txt
 ```
 
-or if you are using windows
+Edit `main.py` to configure the experiment parameters, then run with one of the three required experiment-type flags:
 
 ```bash
-python -m venv venv
-venv\Scripts\activate.ps1
-pip install -r requirements.txt
+python main.py --ic                          # Impartial Culture experiment
+python main.py --euclidean                   # 2-D Euclidean experiment
+python main.py --mapof                       # Map-of-Elections experiment
 ```
 
-Then run the following command to run the experiment
+Omitting an experiment-type flag will raise an error.
+
+### Full flag reference
+
+#### Experiment type (required — pick one)
+
+| Flag | Short | Description |
+|---|---|---|
+| `--ic` | `-ic` | Run the Impartial Culture experiment |
+| `--euclidean` | `-eu` | Run the 2-D Euclidean experiment |
+| `--mapof` | `-m` | Run the Map-of-Elections experiment |
+
+#### IC / Euclidean modifiers
+
+| Flag | Short | Description |
+|---|---|---|
+| `--load` | `-l` | Load previously saved averages instead of recomputing |
+| `--compute` | `-c` | Compute additional averages on top of loaded data |
+
+#### mapOf modifiers
+
+| Flag | Short | Description |
+|---|---|---|
+| `--generate` | `-g` | Generate the elections |
+| `--compute_distances` | `-d` | Compute pairwise distances between elections |
+| `--compute_feature` | `-f` | Compute the convergence-speed feature |
+| `--embed` | `-e` | Embed the election map into 2-D |
+| `--print` | `-p` | Render and save the map |
+| `--exp_id` | `-exp` | Experiment identifier (string) |
+| `--distance_id` | `-dist` | Distance measure identifier (string) |
+| `--embedding_id` | `-emb` | Embedding identifier (string) |
+
+#### Examples
 
 ```bash
-python main.py
+# Run a fresh IC experiment
+python main.py --ic
+
+# Load saved IC averages and compute more
+python main.py --ic --load --compute
+
+# Full mapOf pipeline from scratch
+python main.py --mapof --generate --compute_distances --compute_feature --embed --print \
+               --exp_id my_exp --distance_id emd --embedding_id fr
+
+# Load an existing mapOf result and reprint the map
+python main.py --mapof --print --exp_id my_exp --embedding_id fr
 ```
 
-## Experimental protocol
+---
 
-### Experiment control parameters
+## Repository Layout
 
-- Number of voters: 100
-- Number of candidates: 100
-- Target committee size: 50
-- Question budgets: 1 - 150000 (jumps of 1000)
-- Number of runs: 20
-- Voting system: Kborda
-- Question type: Next, Last, Next and Last, Split - all using the refinement query syntax
-- Distance metric: size of the symmetric difference between the approximation and the committee
+```
+VotingRulesExperiment/
+├── main.py                  # Entry point — configure and launch experiments
+├── Experiment_framework/    # Core experiment runner and utilities
+├── Voting_rules/            # Voting rule implementations (Kborda variants, Random)
+├── experiments/             # Saved experiment outputs
+├── training/                # Training-related utilities
+└── requirements.txt
+```
 
-### Data fabrication
- #### IC experiments
-- Generate candidates labeled 0-number of candidates - 1
-- Generate voters with random preferences by shuffling the candidates list for each voter
- #### mapOf experiments
-- Generate different election cultures using the mapof library
+---
 
+## Experimental Protocol
 
-### Experiment procedure
+### Control Parameters
+
+| Parameter | Value |
+|---|---|
+| Voters | 100 |
+| Candidates | 100 |
+| Committee size | 50 |
+| Question budget | 1 – 150 000 (steps of 1 000) |
+| Runs per configuration | 20 |
+| Voting system | k-Borda |
+| Distance metric | Symmetric difference |
+
+---
+
+### Election Models
+
+**Impartial Culture (IC)** — candidates are labelled 0 … n−1; each voter's preference order is generated by a random shuffle of the candidate list.
+
+**mapOf cultures** — diverse election models generated via the [mapof](https://github.com/szufix/mapof) library, used to stress-test strategies across different preference distributions.
+
+---
+
+### Voting Rules
+
+#### k-Borda
+
+Selects the *k* candidates with the highest Borda score from complete preference orders.
+
+The following query-based approximations are evaluated, each differing in *how* preferences are elicited and *how* the question budget is distributed across voters:
+
+| Variant | Query type | Budget allocation |
+|---|---|---|
+| `KbordaNextEq` | Next-best candidate | Equal |
+| `KbordaNextFCFS` | Next-best candidate | First-come, first-served |
+| `KbordaLastEq` | Next-worst candidate | Equal |
+| `KbordaLastFCFS` | Next-worst candidate | First-come, first-served |
+| `KbordaNextLastEq` | Next-best **and** next-worst | Equal |
+| `KbordaNextLastFCFS` | Next-best **and** next-worst | First-come, first-served |
+| `KbordaSplitEq` | Bisect remaining candidates | Equal |
+| `KbordaSplitFCFS` | Bisect remaining candidates | First-come, first-served |
+
+#### Random baseline
+
+Selects *k* candidates uniformly at random.
+
+---
+
+### Query Types
+
+All query types use the **refinement query** syntax described in the paper.
+
+| Query | Description |
+|---|---|
+| **Next** | Ask the voter for the next-best candidate not yet revealed. |
+| **Last** | Ask the voter for the next-worst candidate not yet revealed. |
+| **Next & Last** | Ask for both endpoints simultaneously. |
+| **Split** | Ask the voter to bisect the remaining candidate set into a preferred and a less-preferred half. |
+
+---
+
+### Distance Metric
+
+Committee quality is measured as the **size of the symmetric difference** between the approximated committee and the ground-truth committee — i.e. the number of candidates that appear in one but not the other.
+
+---
+
+### Experiment Procedure
 
 #### IC experiments
 
-1. For each run:
-    1. Generate candidates and voters
-    2. For each voting system
-        1. generate a committee of size target committee size using the voting system
-        2. For each approximation of the voting system
-            1. For each number of questions
-                1. generate an approximation of the committee using the approximation of the voting system
-                2. calculate the distance between the approximation and the committee
-                3. store the distance in a list
-2. calculate the average distances from the different runs for each voting system and approximation for all number of
-   questions
-3. plot the average distances for each voting system and approximation for all number of questions
-4. save the plot
-5. repeat for all voting systems and approximations
+1. Repeat for each run:
+   1. Generate voters and candidates.
+   2. Compute the ground-truth k-Borda committee.
+   3. For each query-based approximation and each budget level, generate the approximated committee and record the distance.
+2. Average distances across runs.
+3. Plot and save average distance vs. budget for each strategy.
 
 #### mapOf experiments
-1. for each culture:
-    1. generate a committee of size target committee size using the voting system
-    2. For each approximation of the voting system
-        1. For each number of questions
-            1. generate an approximation of the committee using the approximation of the voting system
-            2. calculate the distance between the approximation and the committee
-            3. store the distance in a list
-2. calculate the sum of normalized distances from the different runs for each voting system and approximation for all number of
-   questions - this will be our approximation for how quickly the Query based Rule converges.
-3. plot a map of the metrics calculated for each Query based rule
-4. save the plots
 
+1. For each election culture, repeat steps 2–3 of the IC procedure (no multi-run averaging — cultures are deterministic).
+2. Compute the **sum of normalised distances** across all budget levels as a convergence proxy.
+3. Plot a 2-D map of convergence speed for each query-based rule across the culture space.
 
-### Voting systems
+---
 
-- Kborda: Select the top k candidates with the highest borda score
-    - KbordaSplitEq: approximate the voters preferences by asking the voter to split the candidates into two sets,
-      the first set containing the candidates he prefers over the second set. Then select the top k candidates with the
-      highest borda score. Budget is distributed evenly between the voters.
-    - KbordaSplitFCFS: same as KbordaSplitEq but budget is distributed on a first come first serve basis.
-    - KbordaNextEq: approximate the voters preferences by asking the voter for the next best candidate in his preference
-      list. Then select the top k candidates with the highest borda score. Budget is distributed evenly between the
-      voters.
-    - KbordaNextFCFS: same as KbordaNextEq but budget is distributed  on a first come first serve basis.
-    - KbordaLastEq: same as KbordaNextEq but the voter is asked for the next worst candidate in his preference list.
-    - KbordaLastFCFS: same as KbordaLastEq but budget is distributed  on a first come first serve basis.
-    - KbordaNextLastEq: same as KbordaNextEq but the voter is asked for the next best and worst candidate in his
-      preference list.
-    - KbordaNextLastFCFS: same as KbordaNextLastEq but the budget is distributedon a first come first serve basis.
-- Random: Select k candidates at random
+## Paper
 
-### Question types
+If you use this code, please cite:
 
-- Next: Ask the voter for the next best candidate in his preference list.
-- Last: Ask the voter for the next worst candidate in his preference list.
-- Split: Ask the voter to halve the set of candidates provided into two sets, the first set containing the candidates he
-  prefers over the second set.
-- Next and Last: Ask the voter for the next best candidate and the next worst candidate in his preference list.
-- All question types use the refinement query syntax described in the latex document
+> Itay Asher Zimet, Shiri Alouf-Heffetz, Nimrod Talmon.
+> **Query-Based Committee Selection.**
+> *arXiv:2603.29729*, 2026.
+> https://arxiv.org/abs/2603.29729
 
-### Distance metric
+---
 
-- The metric implemented is the size of the symmetric difference between the approximation and the
-  committee
+## Acknowledgments
+
+The mapOf experiments rely on the [**mapof-elections**](https://github.com/science-for-democracy/mapof-elections) library (`pip install mapof-elections`), which provides the Map of Elections framework for generating and visualising diverse election cultures.
+
+If you use the mapOf experiment mode, please also cite the library's underlying work:
+
+> Stanisław Szufa, Niclas Boehmer, Robert Bredereck, Piotr Faliszewski, Rolf Niedermeier, Piotr Skowron, Arkadii Slinko, and Nimrod Talmon.
+> **Drawing a Map of Elections.**
+> *Artificial Intelligence*, 343: 104332, 2025.
+> https://www.sciencedirect.com/science/article/pii/S0004370225000517
+
+---
+
+## Contact
+
+Questions or clarifications? Feel free to open an issue or reach out to the authors directly.
+
+---
+
+*This README was written with the assistance of [Claude](https://claude.ai).*
