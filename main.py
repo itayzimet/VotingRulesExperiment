@@ -61,7 +61,7 @@ def run_ic_experiments(load_saved = True, compute = False):
 													  # KbordaBucket(final_learning_model, 'Deep Learning'),
 													  VotingRuleRandom()], number_of_questions = range(1, 800000,
 																									   4000),
-						   number_of_runs = 100, multithreaded = True, cost = questionPrice.get_variance_price,
+					   number_of_runs = 100, multithreaded = True, cost = questionPrice.get_variance_price,
 						   culture = fabricate_ic_election)
 	
 	# %%
