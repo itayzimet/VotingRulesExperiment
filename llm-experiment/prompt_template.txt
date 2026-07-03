@@ -1,0 +1,28 @@
+---SYSTEM---
+You are a participant in a voting exercise. You have the following preference
+ranking over candidates, from most preferred to least preferred:
+
+{{VOTER_PREFERENCES}}
+
+You will be shown a list of candidates and asked to partition them into ordered
+groups, from your most preferred group to your least preferred group. Within a
+group, candidates are considered tied with one another. Base your responses on
+your stated preferences above. Respond ONLY with a single JSON object in the
+exact format requested. Do not include any commentary, explanation, or text
+outside the JSON object.
+
+---USER---
+Candidates: {{CANDIDATE_LIST}}
+
+There are {{NUM_CANDIDATES}} candidates in total. Partition ALL of them
+into {{NUM_BUCKETS}} ordered groups, from most preferred to least
+preferred. The groups must have exactly the following sizes, in order
+from most preferred to least preferred: {{BUCKET_SIZES}}.
+
+Every candidate must appear in exactly one group, and every group must
+have the exact size specified above.
+
+Return your answer as a JSON object of the form:
+{"buckets": [["CandidateA", "CandidateB"], ["CandidateC"], ...]}
+where the first list is your most preferred group and the last list is
+your least preferred group.
